@@ -1,41 +1,15 @@
 import React, { useEffect } from "react";
 import moment from "moment";
 
+function range(start, end) {
+  if (start === end) return [start];
+  return [start, ...range(start + 1, end)];
+}
+
 function App() {
   const year = "2020";
-  const monthDays = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-  ];
+  const monthDays = range(1, 31);
+  const columns = range(1, 14);
 
   return (
     <div className="px-2 w-screen h-screen">
@@ -46,7 +20,7 @@ function App() {
             <Months />
           </tr>
           <tr>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((x) => (
+            {columns.map((x) => (
               <td className="border border-gray-500 py-6">&nbsp;</td>
             ))}
           </tr>
@@ -92,7 +66,7 @@ function Months() {
 function DateLine({ monthDay, year }) {
   const tdClass = "border border-gray-500 font-semibold";
 
-  const columns = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const columns = range(1, 12);
 
   const twoDigitsMonthDay = monthDay < 10 ? `0${monthDay}` : `${monthDay}`;
   const baseDate = `${year}-01-${twoDigitsMonthDay}`;
