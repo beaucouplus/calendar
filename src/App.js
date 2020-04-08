@@ -11,23 +11,27 @@ function App() {
   const monthDays = range(1, 31);
   const columns = range(1, 14);
 
+  const css = {
+    cellBorders: "border border-gray-500",
+  };
+
   return (
     <div className="px-2 w-screen h-screen">
       <h1 className="font-semibold text-gray-700">Year plan {year}</h1>
       <table className="table-fixed w-full border text-xs bg-white">
-        <thead className="border border-gray-500">
+        <thead className={`${css.cellBorders}`}>
           <tr>
             <Months />
           </tr>
           <tr>
             {columns.map((x) => (
-              <td className="border border-gray-500 py-6">&nbsp;</td>
+              <td className={`${css.cellBorders} py-6`}>&nbsp;</td>
             ))}
           </tr>
-          {monthDays.map((monthDay) => (
-            <DateLine monthDay={monthDay} year={year} key={monthDay} />
-          ))}
         </thead>
+        {monthDays.map((monthDay) => (
+          <DateLine monthDay={monthDay} year={year} key={monthDay} css={css} />
+        ))}
       </table>
     </div>
   );
@@ -63,10 +67,10 @@ function Months() {
   );
 }
 
-function DateLine({ monthDay, year }) {
-  const tdClass = "border border-gray-500 font-semibold";
+function DateLine({ monthDay, year, css }) {
+  const tdClass = `${css.cellBorders} font-semibold`;
 
-  const columns = range(1, 12);
+  const columns = range(0, 11);
 
   const twoDigitsMonthDay = monthDay < 10 ? `0${monthDay}` : `${monthDay}`;
   const baseDate = `${year}-01-${twoDigitsMonthDay}`;
