@@ -20,24 +20,22 @@ function App() {
       <h1 className="font-semibold text-gray-700">Year plan {year}</h1>
       <table className="table-fixed w-full border text-xs bg-white">
         <thead className={`${css.cellBorders}`}>
-          <tr>
-            <Months />
-          </tr>
-          <tr>
-            {columns.map((x) => (
-              <td className={`${css.cellBorders} py-6`}>&nbsp;</td>
-            ))}
-          </tr>
+          <MonthsRow css={css} />
         </thead>
+        <tr>
+          {columns.map((x) => (
+            <td className={`${css.cellBorders} py-6`}>&nbsp;</td>
+          ))}
+        </tr>
         {monthDays.map((monthDay) => (
-          <DateLine monthDay={monthDay} year={year} key={monthDay} css={css} />
+          <DaysRow monthDay={monthDay} year={year} key={monthDay} css={css} />
         ))}
       </table>
     </div>
   );
 }
 
-function Months() {
+function MonthsRow({ css }) {
   const months = [
     "January",
     "February",
@@ -53,9 +51,9 @@ function Months() {
     "December",
   ];
 
-  const thClass = "text-gray-700 border border-gray-500 px-1";
+  const thClass = `${css.cellBorders} text-gray-700`;
   return (
-    <>
+    <tr>
       <th className={`w-8 ${thClass}`}></th>
       {months.map((month, id) => (
         <th key={id} className={thClass}>
@@ -63,12 +61,12 @@ function Months() {
         </th>
       ))}
       <th className={`w-8 ${thClass}`}></th>
-    </>
+    </tr>
   );
 }
 
-function DateLine({ monthDay, year, css }) {
-  const tdClass = `${css.cellBorders} font-semibold`;
+function DaysRow({ monthDay, year, css }) {
+  const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
 
   const columns = range(0, 11);
 
@@ -88,21 +86,25 @@ function DateLine({ monthDay, year, css }) {
 
   return (
     <tr>
-      <td className={`text-center text-gray-700 ${tdClass} `}>{monthDay}</td>
+      <td className={tdClass}>{monthDay}</td>
       {dates.map((weekday, id) => (
-        <td
-          className={`px-2 ${tdClass} ${
-            !!weekday && weekday.weekDayName === "Sunday"
-              ? "bg-red-300 text-red-600"
-              : "text-gray-700 "
-          }`}
-          key={id}
-        >
-          {weekday && weekday.weekDayName[0]}
-        </td>
+        <DayCell weekday={weekday} css={css} key={id} />
       ))}
-      <td className={`text-center text-gray-700 ${tdClass}`}>{monthDay}</td>
+      <td className={tdClass}>{monthDay}</td>
     </tr>
+  );
+}
+
+function DayCell({ weekday, css }) {
+  const isSunday =
+    !!weekday && weekday.weekDayName === "Sunday"
+      ? "bg-red-300 text-red-600"
+      : "text-gray-700 ";
+
+  return (
+    <td className={`px-2 ${css.cellBorders} font-semibold ${isSunday}`}>
+      {weekday && weekday.weekDayName[0]}
+    </td>
   );
 }
 
