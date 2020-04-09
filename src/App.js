@@ -9,9 +9,8 @@ function range(start, end) {
 }
 
 function createCells(year) {
-  const months = range(0, 11); // months are 0 based in calculations
+  const months = range(1, 12);
   const monthDays = range(1, 31);
-  const cells = [];
 
   const daysPerMonth = {
     1: 31,
@@ -28,40 +27,37 @@ function createCells(year) {
     12: 31,
   };
 
+  const daysInMonth = {};
+  monthDays.forEach((day) => (daysInMonth[day] = []));
+
   months.forEach(function (month) {
     monthDays.forEach(function (day) {
-      if (day > daysPerMonth[month + 1]) {
-        cells.push({
-          column: month,
-          row: day,
+      if (day > daysPerMonth[month]) {
+        daysInMonth[day].push({
+          month: month,
+          day: day,
           hasDate: false,
           date: undefined,
         });
       } else {
-        cells.push({
-          column: month,
-          row: day,
+        daysInMonth[day].push({
+          month: month,
+          day: day,
           hasDate: true,
-          date: new Date(year, month, day),
+          date: new Date(year, month - 1, day),
         });
       }
     });
   });
-  return cells;
+  return daysInMonth;
 }
 
 function App() {
   const year = "2020";
   const monthDays = range(1, 31);
   const columns = range(1, 14);
-
-  const css = {
-    cellBorders: "border border-gray-500",
-  };
-
+  const css = { cellBorders: "border border-gray-500" };
   const cells = createCells(year);
-
-  useEffect(() => console.log(cells));
 
   return (
     <div className="px-2 w-screen h-screen">
@@ -78,9 +74,9 @@ function App() {
               </td>
             ))}
           </tr>
-          {monthDays.map((monthDay) => (
-            <DaysRow monthDay={monthDay} year={year} key={monthDay} css={css} />
-          ))}
+          {monthDays.map((monthDay) => {
+            return <DaysRow days={cells[monthDay]} key={monthDay} css={css} />;
+          })}
         </tbody>
       </table>
     </div>
@@ -117,45 +113,40 @@ function MonthsRow({ css }) {
   );
 }
 
-function DaysRow({ monthDay, year, css }) {
+function DaysRow({ days, css }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
-
-  const columns = range(0, 11);
-
-  const twoDigitsMonthDay = monthDay < 10 ? `0${monthDay}` : `${monthDay}`;
-  const baseDate = `${year}-01-${twoDigitsMonthDay}`;
-
-  function addMonths(months) {
-    const nextDate = dayjs(baseDate).clone().add(months, "months");
-    const formattedDate = {
-      monthDay: nextDate.date(),
-      weekDayName: nextDate.format("dddd"),
-    };
-    return monthDay <= formattedDate.monthDay ? formattedDate : undefined;
-  }
-
-  const dates = columns.map((months) => addMonths(months));
+  const monthDay = dayjs(days[0].date).format("D");
 
   return (
     <tr>
       <td className={tdClass}>{monthDay}</td>
-      {dates.map((weekday, id) => (
-        <DayCell weekday={weekday} css={css} key={id} />
-      ))}
+      {days.map((day, id) =>
+        day.hasDate ? (
+          <DayCell
+            weekday={dayjs(day.date).format("dddd")}
+            css={css}
+            key={id}
+          />
+        ) : (
+          <EmptyCell css={css} key={id} />
+        )
+      )}
       <td className={tdClass}>{monthDay}</td>
     </tr>
   );
 }
 
+function EmptyCell({ css }) {
+  return <td className={`${css.cellBorders}`}></td>;
+}
+
 function DayCell({ weekday, css }) {
   const isSunday =
-    !!weekday && weekday.weekDayName === "Sunday"
-      ? "bg-red-300 text-red-600"
-      : "text-gray-700 ";
+    weekday === "Sunday" ? "bg-red-300 text-red-600" : "text-gray-700 ";
 
   return (
     <td className={`px-2 ${css.cellBorders} font-semibold ${isSunday}`}>
-      {weekday && weekday.weekDayName[0]}
+      {weekday[0]}
     </td>
   );
 }
