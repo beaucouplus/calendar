@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 dayjs.extend(isLeapYear);
@@ -53,15 +53,22 @@ function createCells(year) {
 }
 
 function App() {
-  const year = "2020";
+  const [year, setYear] = useState(new Date().getFullYear());
   const monthDays = range(1, 31);
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
   const cells = createCells(year);
+  const previousYear = () => setYear(year - 1);
+  const nextYear = () => setYear(year + 1);
 
   return (
     <div className="px-2 w-screen h-screen">
-      <h1 className="font-semibold text-gray-700">Year plan {year}</h1>
+      <div className="font-semibold text-gray-700">
+        Year plan
+        <Button callBack={previousYear}>{"<"}</Button>
+        {year}
+        <Button callBack={nextYear}>{">"}</Button>
+      </div>
       <table className="table-fixed w-full border text-xs bg-white">
         <thead className={`${css.cellBorders}`}>
           <MonthsRow css={css} />
@@ -150,5 +157,11 @@ function DayCell({ weekday, css }) {
     </td>
   );
 }
+
+const Button = ({ children, callBack }) => (
+  <button onClick={callBack} className="px-1 focus:outline-none">
+    {children}
+  </button>
+);
 
 export default App;
