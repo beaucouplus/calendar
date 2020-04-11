@@ -39,11 +39,13 @@ function createCells(year) {
           date: undefined,
         });
       } else {
+        const date = new Date(year, month - 1, day);
         daysInMonth[day].push({
           month: month,
           day: day,
           hasDate: true,
-          date: new Date(year, month - 1, day),
+          date: date,
+          isPastDate: date < new Date(new Date().setHours(0, 0, 0, 0)),
         });
       }
     });
