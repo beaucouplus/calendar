@@ -68,11 +68,7 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell
-            weekday={dayjs(day.date).format("dddd")}
-            css={css}
-            key={id}
-          />
+          <DayCell date={day.date} css={css} key={id} isPast={day.isPastDate} />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -86,12 +82,27 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ weekday, css }) {
-  const isSunday =
-    weekday === "Sunday" ? "bg-red-300 text-red-600" : "text-gray-700 ";
+function DayCell({ date, css }) {
+  const weekday = dayjs(date).format("dddd");
+
+  const getTDStyle = () => {
+    const today = dayjs().startOf("day");
+    const currentDate = dayjs(date).startOf("day");
+    const isCurrentYear = currentDate.year() === dayjs(new Date()).year();
+    const isPast = currentDate.isBefore(today);
+    const isToday = currentDate.isSame(today);
+
+    if (isCurrentYear && isPast && weekday === "Sunday") return `text-red-300`;
+    if (isCurrentYear && isPast) return `text-gray-500`;
+    if (isToday) return `bg-blue-200 text-blue-600`;
+    if (weekday === "Sunday") return `bg-red-300 text-red-600`;
+    return `text-gray-700`;
+  };
+
+  const tdStyle = getTDStyle();
 
   return (
-    <td className={`px-2 ${css.cellBorders} font-semibold ${isSunday}`}>
+    <td className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold`}>
       {weekday[0]}
     </td>
   );
