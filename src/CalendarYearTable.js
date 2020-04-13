@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import { range, createCells } from "./utils";
 
@@ -6,7 +6,12 @@ function CalendarYearTable({ year }) {
   const monthDays = range(1, 31);
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
-  const cells = createCells(year);
+  const events = {
+    "2020-04-13": [{ title: "go to the beach" }],
+    "2020-04-19": [{ title: "confinement" }],
+  };
+
+  const cells = createCells(year, events);
 
   return (
     <table className="table-fixed w-full border text-xs bg-white">
@@ -68,7 +73,7 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell date={day.date} css={css} key={id} isPast={day.isPastDate} />
+          <DayCell date={day.date} events={day.events} css={css} key={id} />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -82,7 +87,7 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, css }) {
+function DayCell({ date, events, css }) {
   const weekday = dayjs(date).format("dddd");
 
   const getTDStyle = () => {
@@ -92,6 +97,7 @@ function DayCell({ date, css }) {
     const isPast = currentDate.isBefore(today);
     const isToday = currentDate.isSame(today);
 
+    if (events) return `bg-orange-300 text-orange-800`;
     if (isCurrentYear && isPast && weekday === "Sunday") return `text-red-300`;
     if (isCurrentYear && isPast) return `text-gray-500`;
     if (isToday) return `bg-blue-200 text-blue-600`;
