@@ -74,7 +74,7 @@ function DaysRow({ days, css }) {
         <td className={tdClass}>{monthDay}</td>
         {days.map((day, id) =>
           day.hasDate ? (
-            <Modal>
+            <Modal key={id}>
               <DayCell
                 date={day.date}
                 events={day.events}
@@ -121,8 +121,8 @@ function DayCell({ date, events, css }) {
 
   return (
     <td
-      className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold`}
-      onClick={onShowModal}
+      className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
+      onClick={() => onShowModal(weekday)}
     >
       {weekday[0]}
     </td>

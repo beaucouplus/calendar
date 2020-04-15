@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CalendarYearTable from "./CalendarYearTable";
-import { Modal, ModalStore } from "./Modal";
 import { Button } from "./Button";
 
 function App() {
@@ -24,7 +23,6 @@ function Header({ year, onSetYear }) {
       <Button callBack={previousYear}>{"<"}</Button>
       {year}
       <Button callBack={nextYear}>{">"}</Button>
-      <Modal />
     </div>
   );
 }

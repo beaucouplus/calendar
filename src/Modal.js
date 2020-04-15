@@ -5,9 +5,11 @@ const ModalContext = React.createContext();
 
 function ModalStore({ children }) {
   const [isShown, setIsShown] = useState(false);
+  const [modalContent, setModalContent] = useState("default message");
 
-  function openModal() {
+  function openModal(content) {
     setIsShown(true);
+    setModalContent(content);
   }
 
   function closeModal() {
@@ -19,6 +21,7 @@ function ModalStore({ children }) {
         isShown: isShown,
         onShowModal: openModal,
         onCloseModal: closeModal,
+        modalContent: modalContent,
       }}
     >
       {children}
@@ -27,13 +30,13 @@ function ModalStore({ children }) {
 }
 
 function Modal({ children }) {
-  const { isShown, onCloseModal } = useContext(ModalContext);
+  const { isShown, onCloseModal, modalContent } = useContext(ModalContext);
 
   return (
     <>
       {children}
       {isShown ? (
-        <ModalContent onCloseModal={onCloseModal} />
+        <ModalContent content={modalContent} onCloseModal={onCloseModal} />
       ) : (
         <React.Fragment />
       )}
@@ -41,7 +44,7 @@ function Modal({ children }) {
   );
 }
 
-function ModalContent({ onCloseModal }) {
+function ModalContent({ content, onCloseModal }) {
   return ReactDOM.createPortal(
     <aside className="absolute top-0 left-0 bg-transparent w-screen h-screen flex items-center">
       <div className="bg-white top-50 left-50 w-1/3 max-w-lg mx-auto p-2 shadow-lg">
@@ -49,7 +52,7 @@ function ModalContent({ onCloseModal }) {
           <OutlineButton callBack={onCloseModal}>X</OutlineButton>
         </div>
 
-        <div className="mx-2 my-4">Show me something I should know</div>
+        <div className="mx-2 my-4">{content}</div>
       </div>
     </aside>,
     document.body
