@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import dayjs from "dayjs";
+import { Modal, ModalStore, ModalContext } from "./Modal";
 import { range, createCells } from "./utils";
 
 function CalendarYearTable({ year }) {
@@ -67,19 +68,28 @@ function MonthsRow({ css }) {
 function DaysRow({ days, css }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
-
   return (
-    <tr>
-      <td className={tdClass}>{monthDay}</td>
-      {days.map((day, id) =>
-        day.hasDate ? (
-          <DayCell date={day.date} events={day.events} css={css} key={id} />
-        ) : (
-          <EmptyCell css={css} key={id} />
-        )
-      )}
-      <td className={tdClass}>{monthDay}</td>
-    </tr>
+    <ModalStore>
+      <tr>
+        <td className={tdClass}>{monthDay}</td>
+        {days.map((day, id) =>
+          day.hasDate ? (
+            <Modal>
+              <DayCell
+                date={day.date}
+                events={day.events}
+                css={css}
+                key={id}
+                triggerText={"prout"}
+              />
+            </Modal>
+          ) : (
+            <EmptyCell css={css} key={id} />
+          )
+        )}
+        <td className={tdClass}>{monthDay}</td>
+      </tr>
+    </ModalStore>
   );
 }
 
@@ -88,6 +98,8 @@ function EmptyCell({ css }) {
 }
 
 function DayCell({ date, events, css }) {
+  const { onShowModal } = useContext(ModalContext);
+
   const weekday = dayjs(date).format("dddd");
 
   const getTDStyle = () => {
@@ -108,7 +120,10 @@ function DayCell({ date, events, css }) {
   const tdStyle = getTDStyle();
 
   return (
-    <td className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold`}>
+    <td
+      className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold`}
+      onClick={onShowModal}
+    >
       {weekday[0]}
     </td>
   );

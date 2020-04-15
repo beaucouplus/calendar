@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
-import Button from "./Button";
-function Modal() {
-  const [isShown, setIsShown] = useState(false);
-  const triggerText = "prout";
+import { OutlineButton } from "./Button";
+const ModalContext = React.createContext();
 
-  useEffect(() => console.log(isShown));
+function ModalStore({ children }) {
+  const [isShown, setIsShown] = useState(false);
 
   function openModal() {
     setIsShown(true);
@@ -15,11 +14,26 @@ function Modal() {
     setIsShown(false);
   }
   return (
+    <ModalContext.Provider
+      value={{
+        isShown: isShown,
+        onShowModal: openModal,
+        onCloseModal: closeModal,
+      }}
+    >
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function Modal({ children }) {
+  const { isShown, onCloseModal } = useContext(ModalContext);
+
+  return (
     <>
-      <ModalTrigger triggerText={triggerText} onShowModal={() => openModal()} />
-      ;
+      {children}
       {isShown ? (
-        <ModalContent onCloseModal={() => closeModal()} />
+        <ModalContent onCloseModal={onCloseModal} />
       ) : (
         <React.Fragment />
       )}
@@ -27,26 +41,18 @@ function Modal() {
   );
 }
 
-function ModalTrigger({ triggerText, onShowModal }) {
-  return (
-    <button className="" onClick={onShowModal}>
-      {triggerText}
-    </button>
-  );
-}
-
 function ModalContent({ onCloseModal }) {
   return ReactDOM.createPortal(
     <aside className="absolute top-0 left-0 bg-transparent w-screen h-screen flex items-center">
-      <div className="bg-white top-50 left-50 max-w-sm mx-auto z-40 p-2">
-        <div className="w-full">
-          <Button callBack={onCloseModal}>Close</Button>
+      <div className="bg-white top-50 left-50 w-1/3 max-w-lg mx-auto p-2 shadow-lg">
+        <div className="w-full flex items-center justify-end flex-wrap">
+          <OutlineButton callBack={onCloseModal}>X</OutlineButton>
         </div>
 
-        <div className="modal-body">Show me something</div>
+        <div className="mx-2 my-4">Show me something I should know</div>
       </div>
     </aside>,
     document.body
   );
 }
-export default Modal;
+export { Modal, ModalStore, ModalContext };

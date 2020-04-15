@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CalendarYearTable from "./CalendarYearTable";
-import Modal from "./Modal";
-import Button from "./Button";
+import { Modal, ModalStore } from "./Modal";
+import { Button } from "./Button";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
