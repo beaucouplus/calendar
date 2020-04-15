@@ -9,10 +9,10 @@ function Button({ children, callBack, css = "" }) {
 }
 
 function OutlineButton({ children, callBack }) {
-  const outlineStyle = `bg-transparent hover:bg-blue-500
-                 text-xs text-blue-700 font-semibold hover:text-white
+  const outlineStyle = `bg-transparent hover:bg-gray-700
+                 text-xs text-gray-700 font-semibold hover:text-white
                  py-1 px-2
-                 border border-blue-500 hover:border-transparent
+                 border border-gray-700 hover:border-transparent
                  rounded`;
 
   return (

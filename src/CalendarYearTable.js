@@ -1,15 +1,18 @@
 import React, { useEffect, useContext } from "react";
 import dayjs from "dayjs";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import { Modal, ModalStore, ModalContext } from "./Modal";
 import { range, createCells } from "./utils";
+dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
   const monthDays = range(1, 31);
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
   const events = {
-    "2020-04-13": [{ title: "go to the beach" }],
+    "2020-04-13": [{ title: "go to the beach" }, { title: "play FF7" }],
     "2020-04-19": [{ title: "confinement" }],
+    "2020-05-20": [{ title: "poule au pot" }],
   };
 
   const cells = createCells(year, events);
@@ -109,12 +112,16 @@ function DayCell({ date, events, css }) {
     const isPast = currentDate.isBefore(today);
     const isToday = currentDate.isSame(today);
 
-    if (events) return `bg-orange-300 text-orange-800`;
-    if (isCurrentYear && isPast && weekday === "Sunday") return `text-red-300`;
-    if (isCurrentYear && isPast) return `text-gray-500`;
-    if (isToday) return `bg-blue-200 text-blue-600`;
-    if (weekday === "Sunday") return `bg-red-300 text-red-600`;
-    return `text-gray-700`;
+    if (events)
+      return `bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white`;
+    if (isCurrentYear && isPast && weekday === "Sunday")
+      return `hover:bg-gray-200 text-red-300`;
+    if (isCurrentYear && isPast) return `hover:bg-gray-200 text-gray-500`;
+    if (isToday)
+      return `bg-blue-200 text-blue-600 hover:bg-blue-400 hover:text-white`;
+    if (weekday === "Sunday")
+      return `bg-red-300 text-red-600 hover:bg-red-400 hover:text-white`;
+    return `hover:bg-gray-200 text-gray-700`;
   };
 
   const tdStyle = getTDStyle();
@@ -122,10 +129,23 @@ function DayCell({ date, events, css }) {
   return (
     <td
       className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
-      onClick={() => onShowModal(weekday)}
+      onClick={() => onShowModal(<EventList date={date} events={events} />)}
     >
       {weekday[0]}
     </td>
+  );
+}
+
+function EventList({ date, events }) {
+  return (
+    <div className="mx-2">
+      <h2 className="text-xl font-medium text-gray-800 leading-loose border-b-2 border-yellow-600">
+        {dayjs(date).format("LL")}
+      </h2>
+      <ul className="list-inside list-disc mt-2 text-gray-800">
+        {events && events.map((event, idx) => <li key={idx}>{event.title}</li>)}
+      </ul>
+    </div>
   );
 }
 
