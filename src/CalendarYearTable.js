@@ -80,13 +80,7 @@ function DaysRow({ days, css }) {
         {days.map((day, id) =>
           day.hasDate ? (
             <Modal key={id}>
-              <DayCell
-                date={day.date}
-                events={day.events}
-                css={css}
-                key={id}
-                triggerText={"prout"}
-              />
+              <DayCell date={day.date} events={day.events} css={css} key={id} />
             </Modal>
           ) : (
             <EmptyCell css={css} key={id} />
