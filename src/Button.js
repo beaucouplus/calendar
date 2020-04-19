@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Button({ children, callBack, css = "" }) {
   return (
@@ -7,6 +8,12 @@ function Button({ children, callBack, css = "" }) {
     </button>
   );
 }
+
+Button.propTypes = {
+  callBack: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+  css: PropTypes.string,
+};
 
 function OutlineButton({ children, callBack }) {
   const outlineStyle = `bg-transparent hover:bg-gray-700

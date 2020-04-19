@@ -1,8 +1,10 @@
 import React, { useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import { Modal, ModalStore, ModalContext } from "./Modal";
 import { range, createCells } from "./utils";
+
 dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
@@ -135,6 +137,12 @@ function DayCell({ date, events, css }) {
     </td>
   );
 }
+
+DayCell.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  events: PropTypes.array,
+  css: PropTypes.object,
+};
 
 function EventList({ date, events }) {
   return (
