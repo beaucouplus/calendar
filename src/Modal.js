@@ -46,7 +46,10 @@ function Modal({ children }) {
 
 function ModalContent({ content, onCloseModal }) {
   return ReactDOM.createPortal(
-    <aside className="absolute top-0 left-0 bg-transparent w-screen h-screen flex items-center">
+    <aside
+      className="fixed top-0 left-0 w-screen h-screen flex items-center"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.08)" }}
+    >
       <div className="bg-white top-50 left-50 w-1/3 max-w-lg mx-auto p-2 shadow-md border rounded-lg">
         <div className="w-full flex items-center justify-end flex-wrap p-1">
           <OutlineButton callBack={onCloseModal}>✕</OutlineButton>
