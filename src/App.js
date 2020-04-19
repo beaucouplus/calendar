@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CalendarYearTable from "./CalendarYearTable";
+import { Button } from "./Button";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -25,11 +26,5 @@ function Header({ year, onSetYear }) {
     </div>
   );
 }
-
-const Button = ({ children, callBack }) => (
-  <button onClick={callBack} className="px-1 focus:outline-none">
-    {children}
-  </button>
-);
 
 export default App;

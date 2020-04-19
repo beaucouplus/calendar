@@ -7,7 +7,7 @@ function range(start, end) {
   return [start, ...range(start + 1, end)];
 }
 
-function createCells(year) {
+function createCells(year, events) {
   const months = range(1, 12);
   const monthDays = range(1, 31);
 
@@ -45,6 +45,7 @@ function createCells(year) {
           day: day,
           hasDate: true,
           date: date,
+          events: events[dayjs(date).format("YYYY-MM-DD")],
         });
       }
     });
