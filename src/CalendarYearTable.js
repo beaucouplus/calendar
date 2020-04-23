@@ -22,7 +22,17 @@ function CalendarYearTable({ year }) {
   const cells = createCells(year, events);
 
   function addEvent(event) {
-    setEvents({ ...events, ...event });
+    let newEvents;
+    if (events[event.date]) {
+      newEvents = [...events[event.date], event];
+    } else {
+      newEvents = [event];
+    }
+
+    setEvents({
+      ...events,
+      [event.date]: newEvents,
+    });
   }
 
   return (
@@ -163,7 +173,8 @@ DayCell.propTypes = {
 function EventList({ date, events, onAddEvent }) {
   const addEvent = () => {
     onAddEvent({
-      [dayjs(date).format("YYYY-MM-DD")]: [{ title: "added event" }],
+      date: dayjs(date).format("YYYY-MM-DD"),
+      title: "added event",
     });
   };
 
