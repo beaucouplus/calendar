@@ -4,8 +4,7 @@ import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
 import { range, createCells } from "./utils";
-import { OutlineButton } from "./Button";
-
+import EventList from "./EventList";
 dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
@@ -13,9 +12,18 @@ function CalendarYearTable({ year }) {
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
   const dummyEvents = {
-    "2020-04-13": [{ title: "go to the beach" }, { title: "play FF7" }],
-    "2020-04-19": [{ title: "confinement" }],
-    "2020-05-20": [{ title: "poule au pot" }],
+    "2020-04-13": [
+      { date: "2020-04-13", time: "15:00", title: "go to the beach" },
+      {
+        date: "2020-04-13",
+        time: "17:00",
+        title: "play FF7 with Ryan and Simon",
+      },
+    ],
+    "2020-04-19": [{ date: "2020-04-19", time: "15:00", title: "confinement" }],
+    "2020-05-20": [
+      { date: "2020-04-20", time: "15:00", title: "poule au pot" },
+    ],
   };
 
   const [events, setEvents] = useState(dummyEvents);
@@ -168,33 +176,6 @@ DayCell.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   events: PropTypes.array,
   css: PropTypes.object,
-};
-
-function EventList({ date, events, onAddEvent }) {
-  const addEvent = () => {
-    onAddEvent({
-      date: dayjs(date).format("YYYY-MM-DD"),
-      title: "added event",
-    });
-  };
-
-  return (
-    <div className="mx-2">
-      <h2 className="text-xl font-medium text-gray-800 leading-loose border-b-2 border-yellow-600">
-        {dayjs(date).format("LL")}
-      </h2>
-      <ul className="list-inside list-disc mt-2 text-gray-800">
-        {events && events.map((event, idx) => <li key={idx}>{event.title}</li>)}
-      </ul>
-      <OutlineButton callBack={addEvent}>Add Event</OutlineButton>
-    </div>
-  );
-}
-
-EventList.propTypes = {
-  date: PropTypes.instanceOf(Date).isRequired,
-  events: PropTypes.array,
-  onAddEvent: PropTypes.func.isRequired,
 };
 
 export default CalendarYearTable;
