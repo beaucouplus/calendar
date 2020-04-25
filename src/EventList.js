@@ -1,18 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import { OutlineButton } from "./Button";
-import { useEffect } from "react";
+import { OutlineButton, OutlineSubmitButton } from "./Button";
+import { useEffect, useState, useRef } from "react";
 
 function EventList({ date, events, onAddEvent }) {
-  const addEvent = () => {
-    onAddEvent({
-      date: dayjs(date).format("YYYY-MM-DD"),
-      time: "15:00",
-      title:
-        "this event has a very long title because titles should always be readable even when they span several lines",
-    });
-  };
+  const [displayForm, setDisplayForm] = useState(false);
 
   return (
     <div className="h-full flex flex-col mx-2">
@@ -20,7 +13,10 @@ function EventList({ date, events, onAddEvent }) {
         {dayjs(date).format("LL")}{" "}
       </h2>
       <div className="mt-6">
-        <OutlineButton callBack={addEvent}>Add Event</OutlineButton>
+        <OutlineButton callBack={() => setDisplayForm(true)}>
+          Add Event
+        </OutlineButton>
+        <EventForm date={date} display={displayForm} onAddEvent={onAddEvent} />
       </div>
       <div className="h-auto flex self-stretch mt-6 mb-6 pb-6">
         <ul className="list-inside list-disc text-gray-800">
@@ -48,6 +44,47 @@ function Event({ event }) {
       </div>
       <div className="">{event.title}</div>
     </li>
+  );
+}
+
+function EventForm({ date, display, onAddEvent }) {
+  const titleInput = useRef();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onAddEvent({
+      date: dayjs(date).format("YYYY-MM-DD"),
+      time: "15:00",
+      title: titleInput.current.value,
+    });
+  };
+
+  return (
+    <>
+      {display && (
+        <form
+          action=""
+          className="bg-gray-100 mt-4 p-4"
+          onSubmit={handleSubmit}
+        >
+          <div id="form-title" className="pb-2">
+            <h3 className="leading-relaxed text-red-800 font-semibold">
+              New event
+            </h3>
+          </div>
+          <input
+            ref={titleInput}
+            className="bg-white appearance-none border-2 border-gray-400 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-red-200"
+            id="inline-full-name"
+            type="text"
+            defaultValue="Go to the beach"
+          />
+          <div className="mt-2">
+            <OutlineSubmitButton />
+          </div>
+        </form>
+      )}
+    </>
   );
 }
 

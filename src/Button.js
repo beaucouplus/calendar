@@ -29,4 +29,18 @@ function OutlineButton({ children, callBack }) {
   );
 }
 
-export { Button, OutlineButton };
+function SubmitButton({ css, value = "Submit" }) {
+  return <input type="submit" value={value} className={css} />;
+}
+
+function OutlineSubmitButton({ value }) {
+  const outlineStyle = `bg-transparent hover:bg-gray-700
+                 text-xs text-gray-700 font-semibold hover:text-white
+                 py-1 px-2
+                 border border-gray-700 hover:border-transparent
+                 rounded`;
+
+  return <SubmitButton value={value} css={outlineStyle} />;
+}
+
+export { Button, OutlineButton, SubmitButton, OutlineSubmitButton };
