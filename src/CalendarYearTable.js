@@ -1,23 +1,47 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
-import { Modal, ModalStore, ModalContext } from "./Modal";
+import Modal from "./Modal";
 import { range, createCells } from "./utils";
-
+import EventList from "./EventList";
 dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
   const monthDays = range(1, 31);
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
-  const events = {
-    "2020-04-13": [{ title: "go to the beach" }, { title: "play FF7" }],
-    "2020-04-19": [{ title: "confinement" }],
-    "2020-05-20": [{ title: "poule au pot" }],
+  const dummyEvents = {
+    "2020-04-13": [
+      { date: "2020-04-13", time: "15:00", title: "go to the beach" },
+      {
+        date: "2020-04-13",
+        time: "17:00",
+        title: "play FF7 with Ryan and Simon",
+      },
+    ],
+    "2020-04-19": [{ date: "2020-04-19", time: "15:00", title: "confinement" }],
+    "2020-05-20": [
+      { date: "2020-04-20", time: "15:00", title: "poule au pot" },
+    ],
   };
 
+  const [events, setEvents] = useState(dummyEvents);
   const cells = createCells(year, events);
+
+  function addEvent(event) {
+    let newEvents;
+    if (events[event.date]) {
+      newEvents = [...events[event.date], event];
+    } else {
+      newEvents = [event];
+    }
+
+    setEvents({
+      ...events,
+      [event.date]: newEvents,
+    });
+  }
 
   return (
     <table className="table-fixed w-full border text-xs bg-white">
@@ -33,7 +57,14 @@ function CalendarYearTable({ year }) {
           ))}
         </tr>
         {monthDays.map((monthDay) => {
-          return <DaysRow days={cells[monthDay]} key={monthDay} css={css} />;
+          return (
+            <DaysRow
+              days={cells[monthDay]}
+              key={monthDay}
+              css={css}
+              onAddEvent={addEvent}
+            />
+          );
         })}
       </tbody>
     </table>
@@ -70,25 +101,28 @@ function MonthsRow({ css }) {
   );
 }
 
-function DaysRow({ days, css }) {
+function DaysRow({ days, css, onAddEvent }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
+
   return (
-    <ModalStore>
-      <tr>
-        <td className={tdClass}>{monthDay}</td>
-        {days.map((day, id) =>
-          day.hasDate ? (
-            <Modal key={id}>
-              <DayCell date={day.date} events={day.events} css={css} key={id} />
-            </Modal>
-          ) : (
-            <EmptyCell css={css} key={id} />
-          )
-        )}
-        <td className={tdClass}>{monthDay}</td>
-      </tr>
-    </ModalStore>
+    <tr>
+      <td className={tdClass}>{monthDay}</td>
+      {days.map((day, id) =>
+        day.hasDate ? (
+          <DayCell
+            date={day.date}
+            events={day.events}
+            css={css}
+            key={id}
+            onAddEvent={onAddEvent}
+          />
+        ) : (
+          <EmptyCell css={css} key={id} />
+        )
+      )}
+      <td className={tdClass}>{monthDay}</td>
+    </tr>
   );
 }
 
@@ -96,8 +130,9 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css }) {
-  const { onShowModal } = useContext(ModalContext);
+function DayCell({ date, events, css, onAddEvent }) {
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => setShowModal(false);
 
   const weekday = dayjs(date).format("dddd");
 
@@ -123,12 +158,17 @@ function DayCell({ date, events, css }) {
   const tdStyle = getTDStyle();
 
   return (
-    <td
-      className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
-      onClick={() => onShowModal(<EventList date={date} events={events} />)}
-    >
-      {weekday[0]}
-    </td>
+    <>
+      <td
+        className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
+        onClick={() => setShowModal(true)}
+      >
+        {weekday[0]}
+      </td>
+      <Modal showModal={showModal} onCloseModal={closeModal}>
+        <EventList date={date} events={events} onAddEvent={onAddEvent} />
+      </Modal>
+    </>
   );
 }
 
@@ -137,18 +177,5 @@ DayCell.propTypes = {
   events: PropTypes.array,
   css: PropTypes.object,
 };
-
-function EventList({ date, events }) {
-  return (
-    <div className="mx-2">
-      <h2 className="text-xl font-medium text-gray-800 leading-loose border-b-2 border-yellow-600">
-        {dayjs(date).format("LL")}
-      </h2>
-      <ul className="list-inside list-disc mt-2 text-gray-800">
-        {events && events.map((event, idx) => <li key={idx}>{event.title}</li>)}
-      </ul>
-    </div>
-  );
-}
 
 export default CalendarYearTable;
