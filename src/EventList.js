@@ -61,19 +61,27 @@ function EventForm({ date, display, onAddEvent, onClose }) {
   const twoDigitsHour = renderTwoDigits(eventHour);
   const twoDigitsMinutes = renderTwoDigits(eventMinutes);
 
+  const styles = {
+    input: `bg-white appearance-none 
+      border-2 border-gray-400 
+      w-full 
+      py-2 px-4 
+      text-gray-700 leading-tight 
+      focus:outline-none focus:bg-white focus:border-blue-300`,
+  };
   const displayTimePickers = () => {
     setMinutesPickerShown(false);
     setHourPickerShown(true);
   };
 
   const chooseHour = (event) => {
-    setEventHour(event.target.value);
+    setEventHour(Number(event.target.value));
     setHourPickerShown(false);
     setMinutesPickerShown(true);
   };
 
   const chooseMinutes = (event) => {
-    setEventMinutes(event.target.value);
+    setEventMinutes(Number(event.target.value));
     setMinutesPickerShown(false);
   };
 
@@ -109,7 +117,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
             <EventLabel>Title</EventLabel>
             <input
               ref={titleInput}
-              className="bg-white appearance-none border-2 border-gray-400 w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-300"
+              className={styles.input}
               type="text"
               defaultValue="Add a title to your event"
             />
@@ -117,7 +125,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
           <div className="mt-2">
             <EventLabel>Start time</EventLabel>
             <input
-              className="bg-white appearance-none border-2 border-gray-400 w-1/5 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-300"
+              className={styles.input}
               type="text"
               value={`${twoDigitsHour}:${twoDigitsMinutes}`}
               onClick={() => displayTimePickers()}
@@ -129,7 +137,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
               display={hourPickerShown}
             />
             <MinutesPicker
-              eventHour={eventHour}
+              eventMinutes={eventMinutes}
               onChooseMinutes={(event) => chooseMinutes(event)}
               display={minutesPickerShown}
             />
@@ -143,6 +151,13 @@ function EventForm({ date, display, onAddEvent, onClose }) {
   );
 }
 
+EventForm.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  display: PropTypes.bool.isRequired,
+  onAddEvent: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
+
 function HourPicker({ eventHour, onChooseHour, display }) {
   const hours_range = range(0, 23);
 
@@ -150,7 +165,7 @@ function HourPicker({ eventHour, onChooseHour, display }) {
     <>
       {display && (
         <RangePicker
-          value={eventHour}
+          selectedItem={eventHour}
           callBack={onChooseHour}
           collection={hours_range}
         />
@@ -166,7 +181,7 @@ function MinutesPicker({ eventMinutes, onChooseMinutes, display }) {
     <>
       {display && (
         <RangePicker
-          value={eventMinutes}
+          selectedItem={eventMinutes}
           callBack={onChooseMinutes}
           collection={minutes}
         />
@@ -175,17 +190,20 @@ function MinutesPicker({ eventMinutes, onChooseMinutes, display }) {
   );
 }
 
-function RangePicker({ value, callBack, collection }) {
+function RangePicker({ selectedItem = "", callBack, collection }) {
   const style = `bg-transparent hover:bg-blue-500
                  text-sm text-gray-700 font-semibold hover:text-white
                  py-2 px-2
                  `;
+
   return (
     <div className="grid grid-cols-6 gap-2 mt-1 bg-white border-2 border-gray-400">
       {collection.map((item) => (
         <Button
           value={item}
-          css={style}
+          css={`
+            ${style} ${item === selectedItem ? "border border-blue-500" : ""}
+          `}
           callBack={callBack}
           key={item}
         >{`${item}`}</Button>
@@ -193,6 +211,12 @@ function RangePicker({ value, callBack, collection }) {
     </div>
   );
 }
+
+RangePicker.propTypes = {
+  selectedItem: PropTypes.number.isRequired,
+  callBack: PropTypes.func.isRequired,
+  collection: PropTypes.array.isRequired,
+};
 
 function EventLabel({ children }) {
   return (
