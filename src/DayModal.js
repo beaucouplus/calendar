@@ -26,7 +26,7 @@ function DayModal({ date, events, onAddEvent }) {
         />
       </div>
       <div className="grid grid-cols-3 gap-8 w-full mt-6">
-        <EventList events={events} />
+        {events && <EventList events={events} />}
       </div>
     </div>
   );
