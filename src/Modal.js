@@ -20,7 +20,7 @@ function ModalContent({ children, onCloseModal }) {
       className="fixed top-0 left-0 w-screen h-screen flex items-center"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
     >
-      <div className="static box-border top-0 right-0 h-screen w-1/2 max-w-xl p-2 bg-white border shadow-md">
+      <div className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md">
         <div className="w-full flex items-center justify-end flex-wrap p-1">
           <OutlineButton callBack={() => onCloseModal()}>✕</OutlineButton>
         </div>
