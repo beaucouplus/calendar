@@ -56,7 +56,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
       {display && (
         <form
           action=""
-          className="mt-1 p-4 bg-gray-100 border border-blue-800 w-1/3"
+          className="block absolute left-0 my-2 p-4 bg-gray-100 border border-blue-800 w-full min-w-full shadow-lg"
           onSubmit={handleSubmit}
         >
           <div
@@ -97,7 +97,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
               display={minutesPickerShown}
             />
           </div>
-          <div className="mt-2">
+          <div className="mt-4">
             <BlueSubmitButton />
           </div>
         </form>

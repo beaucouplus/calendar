@@ -34,6 +34,22 @@ function OutlineButton({ children, callBack }) {
   );
 }
 
+function HeaderButton({ children, callBack }) {
+  const style = `flex flex-row
+                 min-h-full
+                 bg-blue-100 hover:bg-blue-700
+                 text-base text-blue-800 font-semibold hover:text-white
+                 py-2 px-4
+                 border-r-2 border-l-2 hover:border-blue-700
+                 cursor-pointer`;
+
+  return (
+    <Button callBack={callBack} css={style}>
+      {children}
+    </Button>
+  );
+}
+
 function BlueButton({ children, callBack }) {
   const blueStyle = `
                  bg-blue-500 hover:bg-blue-700
@@ -82,4 +98,5 @@ export {
   OutlineSubmitButton,
   BlueSubmitButton,
   BlueButton,
+  HeaderButton,
 };

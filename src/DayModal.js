@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
-import { BlueButton } from "./Button";
+import { HeaderButton } from "./Button";
 import EventForm from "./EventForm";
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
@@ -12,19 +12,24 @@ function DayModal({ date, events, onAddEvent }) {
   const [displayForm, setDisplayForm] = useState(false);
 
   return (
-    <div className="h-full flex flex-col mx-2">
-      <h2 className="block text-3xl font-medium text-gray-800 leading-loose border-b-2 border-gray-300">
-        {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
-      </h2>
-      <div className="mt-4 pb-4">
-        <BlueButton callBack={() => setDisplayForm(true)}>Add Event</BlueButton>
-        <EventForm
-          date={date}
-          display={displayForm}
-          onAddEvent={onAddEvent}
-          onClose={() => setDisplayForm(false)}
-        />
-      </div>
+    <div className="h-full flex flex-col mx-8">
+      <header className="border-b-2 border-t-2 border-gray-300 flex flex-row">
+        <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
+          {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
+        </h2>
+        <div className="relative h-full flex-grow">
+          <HeaderButton callBack={() => setDisplayForm(true)}>
+            <i className="gg-add-r h-full mr-2"></i>Add Event
+          </HeaderButton>
+          <EventForm
+            date={date}
+            display={displayForm}
+            onAddEvent={onAddEvent}
+            onClose={() => setDisplayForm(false)}
+          />
+        </div>
+      </header>
+
       <div className="grid grid-cols-3 gap-8 w-full mt-6">
         {events && <EventList events={events} />}
       </div>
@@ -78,15 +83,19 @@ function EventList({ events }) {
   );
 }
 
-DayModal.propTypes = {
+EventList.propTypes = {
   events: PropTypes.array,
 };
 
 function EventCol({ events, title }) {
+  const titleTextColor =
+    events && events.length > 0 ? "text-gray-800" : "text-gray-400";
+
+  useEffect(() => console.log(events));
   return (
     <div className="">
       <div className="py-2">
-        <h2 className="text-xl font-medium text-gray-800">{title}</h2>
+        <h2 className={`text-xl font-medium ${titleTextColor}`}>{title}</h2>
       </div>
       <div className="h-auto flex self-stretch mt-4 mb-6 pb-6">
         <ul className="block w-full list-inside list-disc text-gray-800">
