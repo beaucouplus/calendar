@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
-import { HeaderButton } from "./Button";
+import { Button } from "./Button";
 import EventForm from "./EventForm";
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
@@ -72,13 +72,9 @@ function EventList({ events }) {
 
   return (
     <>
-      <EventCol events={morningEvents} title="Morning"></EventCol>
-      <EventCol events={afternoonEvents} title="Afternoon">
-        <h2>Afternoon</h2>
-      </EventCol>
-      <EventCol events={eveningEvents} title="Evening">
-        <h2>Evening</h2>
-      </EventCol>
+      <EventCol events={morningEvents} title="Morning" />
+      <EventCol events={afternoonEvents} title="Afternoon" />
+      <EventCol events={eveningEvents} title="Evening" />
     </>
   );
 }
@@ -114,6 +110,22 @@ function Event({ event }) {
       </div>
       <div className="mt-2">{event.title}</div>
     </li>
+  );
+}
+
+function HeaderButton({ children, callBack }) {
+  const style = `flex flex-row
+                 min-h-full
+                 bg-blue-100 hover:bg-blue-700
+                 text-base text-blue-800 font-semibold hover:text-white
+                 py-2 px-4
+                 border-r-2 border-l-2 hover:border-blue-700
+                 cursor-pointer`;
+
+  return (
+    <Button callBack={callBack} css={style}>
+      {children}
+    </Button>
   );
 }
 
