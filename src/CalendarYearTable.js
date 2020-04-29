@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
-import { range, createCells } from "./utils";
+import { range } from "./utils";
+import { createYearCalendarCells, dummyEvents } from "./calendar";
 import DayModal from "./DayModal";
 dayjs.extend(LocalizedFormat);
 
@@ -11,29 +12,9 @@ function CalendarYearTable({ year }) {
   const monthDays = range(1, 31);
   const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
-  const dummyEvents = {
-    "2020-04-13": [
-      { date: "2020-04-13", time: "11:00", title: "go to the beach" },
-      {
-        date: "2020-04-13",
-        time: "17:00",
-        title: "play FF7 with Ryan and Simon",
-      },
-      {
-        date: "2020-04-13",
-        time: "21:00",
-        title:
-          "Drinks with Natasha and Pepito at the hacienda near the cemetery.",
-      },
-    ],
-    "2020-04-19": [{ date: "2020-04-19", time: "15:00", title: "confinement" }],
-    "2020-05-20": [
-      { date: "2020-04-20", time: "15:00", title: "poule au pot" },
-    ],
-  };
 
   const [events, setEvents] = useState(dummyEvents);
-  const cells = createCells(year, events);
+  const cells = createYearCalendarCells(year, events);
 
   function addEvent(event) {
     let newEvents;
