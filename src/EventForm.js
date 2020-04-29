@@ -1,53 +1,8 @@
-import React from "react";
-import { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import { Button, OutlineButton, BlueSubmitButton, BlueButton } from "./Button";
+import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import { range } from "./utils";
-
-function EventList({ date, events, onAddEvent }) {
-  const [displayForm, setDisplayForm] = useState(false);
-
-  return (
-    <div className="h-full flex flex-col mx-2">
-      <h2 className="block text-xl font-medium text-gray-800 leading-loose border-b-2 border-gray-300">
-        {dayjs(date).format("LL")}{" "}
-      </h2>
-      <div className="mt-6">
-        <BlueButton callBack={() => setDisplayForm(true)}>Add Event</BlueButton>
-        <EventForm
-          date={date}
-          display={displayForm}
-          onAddEvent={onAddEvent}
-          onClose={() => setDisplayForm(false)}
-        />
-      </div>
-      <div className="h-auto flex self-stretch mt-6 mb-6 pb-6">
-        <ul className="block w-full list-inside list-disc text-gray-800">
-          {events &&
-            events.map((event, idx) => <Event key={idx} event={event} />)}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-EventList.propTypes = {
-  date: PropTypes.instanceOf(Date).isRequired,
-  events: PropTypes.array,
-  onAddEvent: PropTypes.func.isRequired,
-};
-
-function Event({ event }) {
-  return (
-    <li className="block w-full flex flex-row h-auto p-2 mb-2 hover:bg-gray-100 border border-transparent hover:border-gray-300">
-      <div className="border-r-2 border-red-600 h-auto font-bold pr-4 mr-4">
-        {event.time}
-      </div>
-      <div className="">{event.title}</div>
-    </li>
-  );
-}
 
 function EventForm({ date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
@@ -101,7 +56,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
       {display && (
         <form
           action=""
-          className="mt-1 p-4 bg-gray-100 border border-blue-800"
+          className="block absolute left-0 my-2 p-4 bg-gray-100 border border-blue-800 w-full min-w-full shadow-lg"
           onSubmit={handleSubmit}
         >
           <div
@@ -142,7 +97,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
               display={minutesPickerShown}
             />
           </div>
-          <div className="mt-2">
+          <div className="mt-4">
             <BlueSubmitButton />
           </div>
         </form>
@@ -226,4 +181,4 @@ function EventLabel({ children }) {
   );
 }
 
-export default EventList;
+export default EventForm;

@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
 import { range, createCells } from "./utils";
-import EventList from "./EventList";
+import DayModal from "./DayModal";
 dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
@@ -13,11 +13,17 @@ function CalendarYearTable({ year }) {
   const css = { cellBorders: "border border-gray-500" };
   const dummyEvents = {
     "2020-04-13": [
-      { date: "2020-04-13", time: "15:00", title: "go to the beach" },
+      { date: "2020-04-13", time: "11:00", title: "go to the beach" },
       {
         date: "2020-04-13",
         time: "17:00",
         title: "play FF7 with Ryan and Simon",
+      },
+      {
+        date: "2020-04-13",
+        time: "21:00",
+        title:
+          "Drinks with Natasha and Pepito at the hacienda near the cemetery.",
       },
     ],
     "2020-04-19": [{ date: "2020-04-19", time: "15:00", title: "confinement" }],
@@ -166,7 +172,7 @@ function DayCell({ date, events, css, onAddEvent }) {
         {weekday[0]}
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <EventList date={date} events={events} onAddEvent={onAddEvent} />
+        <DayModal date={date} events={events} onAddEvent={onAddEvent} />
       </Modal>
     </>
   );
