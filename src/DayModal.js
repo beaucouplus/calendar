@@ -91,7 +91,6 @@ function EventCol({ events, title }) {
   const titleTextColor =
     events && events.length > 0 ? "text-gray-800" : "text-gray-400";
 
-  useEffect(() => console.log(events));
   return (
     <div className="">
       <div className="py-2">
