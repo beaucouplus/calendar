@@ -29,6 +29,12 @@ function EventForm({ date, display, onAddEvent, onClose }) {
     setHourPickerShown(true);
   };
 
+  const close = () => {
+    setMinutesPickerShown(false);
+    setHourPickerShown(false);
+    onClose();
+  };
+
   const chooseHour = (event) => {
     setEventHour(Number(event.target.value));
     setHourPickerShown(false);
@@ -66,7 +72,7 @@ function EventForm({ date, display, onAddEvent, onClose }) {
             <h3 className="leading-relaxed text-2xl tracking-wider text-blue-700 font-semibold">
               New Event
             </h3>
-            <OutlineButton callBack={onClose}>✕</OutlineButton>
+            <OutlineButton callBack={close}>✕</OutlineButton>
           </div>
           <div className="mt-2">
             <EventLabel>Title</EventLabel>
