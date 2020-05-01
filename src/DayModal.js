@@ -10,6 +10,11 @@ dayjs.extend(isBetween);
 
 function DayModal({ date, events, onAddEvent }) {
   const [displayForm, setDisplayForm] = useState(false);
+  const [chosenEvent, setChosenEvent] = useState(undefined);
+
+  function chooseCalEvent(calEvent) {
+    setChosenEvent(calEvent);
+  }
 
   return (
     <div className="h-full flex flex-col mx-8">
@@ -22,6 +27,7 @@ function DayModal({ date, events, onAddEvent }) {
             <i className="gg-add-r h-full mr-2"></i>Add Event
           </HeaderButton>
           <EventForm
+            events={events}
             date={date}
             display={displayForm}
             onAddEvent={onAddEvent}
@@ -30,9 +36,8 @@ function DayModal({ date, events, onAddEvent }) {
         </div>
       </header>
       <HoursList events={events} />
-      <div className="grid grid-cols-3 gap-8 w-full mt-6">
-        {events && <EventList events={events} />}
-      </div>
+
+      {events && <EventList events={events} onChooseEvent={chooseCalEvent} />}
     </div>
   );
 }
@@ -58,7 +63,9 @@ function HoursList({ events }) {
         <div className="border-b-2 border-gray-300 flex flex-row">
           <ul className="flex flex-row divide-x-2 divide-gray-300 text-gray-800">
             {sortedEvents.map((event) => (
-              <li className="p-2">{event.time}</li>
+              <li className="p-2" key={event.id}>
+                {event.time}
+              </li>
             ))}
           </ul>
         </div>
@@ -67,7 +74,7 @@ function HoursList({ events }) {
   );
 }
 
-function EventList({ events }) {
+function EventList({ events, onChooseEvent }) {
   const sortedEvents =
     events &&
     events.sort((a, b) => {
@@ -95,19 +102,32 @@ function EventList({ events }) {
   const eveningEvents = filterEventsBetween(sortedEvents, "19:00", "23:59");
 
   return (
-    <>
-      <EventCol events={morningEvents} title="Morning" />
-      <EventCol events={afternoonEvents} title="Afternoon" />
-      <EventCol events={eveningEvents} title="Evening" />
-    </>
+    <div className="grid grid-cols-3 gap-8 w-full mt-6">
+      <EventCol
+        events={morningEvents}
+        onChooseEvent={onChooseEvent}
+        title="Morning"
+      />
+      <EventCol
+        events={afternoonEvents}
+        onChooseEvent={onChooseEvent}
+        title="Afternoon"
+      />
+      <EventCol
+        events={eveningEvents}
+        onChooseEvent={onChooseEvent}
+        title="Evening"
+      />
+    </div>
   );
 }
 
 EventList.propTypes = {
   events: PropTypes.array,
+  onChooseEvent: PropTypes.func.isRequired,
 };
 
-function EventCol({ events, title }) {
+function EventCol({ events, title, onChooseEvent }) {
   const titleTextColor =
     events && events.length > 0 ? "text-gray-800" : "text-gray-400";
 
@@ -119,16 +139,34 @@ function EventCol({ events, title }) {
       <div className="h-auto flex self-stretch mt-4 mb-6 pb-6">
         <ul className="block w-full list-inside list-disc text-gray-800">
           {events &&
-            events.map((event, idx) => <Event key={idx} event={event} />)}
+            events.map((event, idx) => (
+              <Event key={idx} event={event} onChooseEvent={onChooseEvent} />
+            ))}
         </ul>
       </div>
     </div>
   );
 }
 
-function Event({ event }) {
+EventCol.propTypes = {
+  events: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  onChooseEvent: PropTypes.func.isRequired,
+};
+
+function Event({ event, onChooseEvent }) {
+  const style = `block w-full h-auto 
+    mb-4 p-4 
+    border-2  border-gray-300 hover:border-blue-600
+    text-lg text-gray-800
+    cursor-pointer`;
+
+  const chooseEvent = (event) => {
+    onChooseEvent(event);
+  };
+
   return (
-    <li className="block w-full h-auto mb-4 p-4 border-2 text-lg text-gray-800 border-gray-300 hover:border-blue-600">
+    <li className={style} onClick={() => chooseEvent(event)}>
       <div className="h-auto py-1 font-bold tracking-wider border-b-2 border-gray-300">
         {event.time}
       </div>
@@ -136,6 +174,11 @@ function Event({ event }) {
     </li>
   );
 }
+
+Event.propTypes = {
+  event: PropTypes.object.isRequired,
+  onChooseEvent: PropTypes.func.isRequired,
+};
 
 function HeaderButton({ children, callBack }) {
   const style = `flex flex-row items-center

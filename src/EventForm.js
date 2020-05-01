@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import { range } from "./utils";
 
-function EventForm({ date, display, onAddEvent, onClose }) {
+function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
 
   const [eventHour, setEventHour] = useState(12);

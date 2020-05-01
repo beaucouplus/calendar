@@ -17,17 +17,8 @@ function CalendarYearTable({ year }) {
   const cells = createYearCalendarCells(year, events);
 
   function addEvent(event) {
-    let newEvents;
-    if (events[event.date]) {
-      newEvents = [...events[event.date], event];
-    } else {
-      newEvents = [event];
-    }
-
-    setEvents({
-      ...events,
-      [event.date]: newEvents,
-    });
+    const newEvent = { ...event, id: events.length + 1 };
+    setEvents([...events, newEvent]);
   }
 
   return (
@@ -130,7 +121,7 @@ function DayCell({ date, events, css, onAddEvent }) {
     const isPast = currentDate.isBefore(today);
     const isToday = currentDate.isSame(today);
 
-    if (events)
+    if (events.length > 0)
       return `bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white`;
     if (isCurrentYear && isPast && weekday === "Sunday")
       return `hover:bg-gray-200 text-red-300`;
