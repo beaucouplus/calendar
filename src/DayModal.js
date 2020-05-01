@@ -13,11 +13,11 @@ function DayModal({ date, events, onAddEvent }) {
 
   return (
     <div className="h-full flex flex-col mx-8">
-      <header className="border-b-2 border-t-2 border-gray-300 flex flex-row">
+      <header className="border-b-2 border-gray-300 flex flex-row items-center">
         <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
           {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
         </h2>
-        <div className="relative h-full flex-grow">
+        <div className="relative flex-grow">
           <HeaderButton callBack={() => setDisplayForm(true)}>
             <i className="gg-add-r h-full mr-2"></i>Add Event
           </HeaderButton>
@@ -29,7 +29,7 @@ function DayModal({ date, events, onAddEvent }) {
           />
         </div>
       </header>
-
+      <HoursList events={events} />
       <div className="grid grid-cols-3 gap-8 w-full mt-6">
         {events && <EventList events={events} />}
       </div>
@@ -42,6 +42,30 @@ DayModal.propTypes = {
   events: PropTypes.array,
   onAddEvent: PropTypes.func.isRequired,
 };
+
+function HoursList({ events }) {
+  const sortedEvents =
+    events &&
+    events.sort((a, b) => {
+      const aTime = dayjs(a.time, "HH:mm");
+      const bTime = dayjs(b.time, "HH:mm");
+
+      return aTime - bTime;
+    });
+  return (
+    <>
+      {events && (
+        <div className="border-b-2 border-gray-300 flex flex-row">
+          <ul className="flex flex-row divide-x-2 divide-gray-300 text-gray-800">
+            {sortedEvents.map((event) => (
+              <li className="p-2">{event.time}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
+  );
+}
 
 function EventList({ events }) {
   const sortedEvents =
@@ -114,12 +138,11 @@ function Event({ event }) {
 }
 
 function HeaderButton({ children, callBack }) {
-  const style = `flex flex-row
-                 min-h-full
-                 bg-blue-100 hover:bg-blue-700
-                 text-base text-blue-800 font-semibold hover:text-white
+  const style = `flex flex-row items-center
+                 bg-blue-700 hover:bg-blue-500
+                 text-xs text-white font-semibold align-middle hover:text-white
                  py-2 px-4
-                 border-r-2 border-l-2 hover:border-blue-700
+                 rounded
                  cursor-pointer`;
 
   return (
