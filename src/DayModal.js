@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
-import { Button } from "./Button";
+import { Button, OutlineButton } from "./Button";
 import EventForm from "./EventForm";
 dayjs.extend(customParseFormat);
 dayjs.extend(isBetween);
@@ -16,6 +16,15 @@ function DayModal({ date, events, onAddEvent }) {
     setChosenEvent(calEvent);
   }
 
+  const resetChosenEvent = () => setChosenEvent(undefined);
+
+  function setCurrentPage() {
+    if (chosenEvent) return "event";
+    if (!chosenEvent && events) return "eventList";
+    return "none";
+  }
+
+  const currentPage = setCurrentPage();
   return (
     <div className="h-full flex flex-col mx-8">
       <header className="border-b-2 border-gray-300 flex flex-row items-center">
@@ -36,8 +45,19 @@ function DayModal({ date, events, onAddEvent }) {
         </div>
       </header>
       <HoursList events={events} />
-
-      {events && <EventList events={events} onChooseEvent={chooseCalEvent} />}
+      <>
+        {currentPage === "event" && (
+          <EventDetails
+            event={chosenEvent}
+            onCloseEventDetails={resetChosenEvent}
+          />
+        )}
+      </>
+      <>
+        {currentPage === "eventList" && (
+          <EventList events={events} onChooseEvent={chooseCalEvent} />
+        )}
+      </>
     </div>
   );
 }
@@ -47,6 +67,24 @@ DayModal.propTypes = {
   events: PropTypes.array,
   onAddEvent: PropTypes.func.isRequired,
 };
+
+function EventDetails({ event, onCloseEventDetails }) {
+  return (
+    <div className="h-full flex flex-row justify between w-full my-10 text-gray-800">
+      <div className="font-bold text-3xl tracking-wider pr-4 border-r-2 border-gray-300">
+        {event.time}
+      </div>
+      <div className="ml-5 flex flex-grow">
+        <div className="flex-grow text-2xl">{event.title}</div>
+        <div className="flex flex-none items-start justify-end">
+          <OutlineButton callBack={() => onCloseEventDetails()}>
+            ✕
+          </OutlineButton>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function HoursList({ events }) {
   const sortedEvents =
@@ -102,7 +140,7 @@ function EventList({ events, onChooseEvent }) {
   const eveningEvents = filterEventsBetween(sortedEvents, "19:00", "23:59");
 
   return (
-    <div className="grid grid-cols-3 gap-8 w-full mt-6">
+    <div className="grid grid-cols-3 gap-8 w-full mt-10">
       <EventCol
         events={morningEvents}
         onChooseEvent={onChooseEvent}
