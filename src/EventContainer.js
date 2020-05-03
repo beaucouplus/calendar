@@ -1,0 +1,218 @@
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { OutlineButton } from "./Button";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
+
+// TODO
+// - move ordering events ups
+// remove HoursList component and move content up
+// create EventsMenu Component ?
+
+function EventContainer({ events }) {
+  const [chosenEvent, setChosenEvent] = useState(undefined);
+
+  function chooseCalEvent(calEvent) {
+    setChosenEvent(calEvent);
+  }
+
+  const resetChosenEvent = () => setChosenEvent(undefined);
+
+  function setCurrentPage() {
+    if (chosenEvent) return "event";
+    if (!chosenEvent && events.length > 0) return "eventList";
+    return "none";
+  }
+
+  const currentPage = setCurrentPage();
+
+  return (
+    <div className="bg-gray-200 p-10 my-5 rounded-lg shadow-inner">
+      <div className="flex mb-10 space-x-2">
+        <HorizontalMenu>
+          <MenuItem>
+            <i className="gg-list transform scale-90 mr-3"></i> Planning
+          </MenuItem>
+        </HorizontalMenu>
+        <HoursList events={events} />
+      </div>
+      {currentPage === "event" && (
+        <EventDetails
+          event={chosenEvent}
+          onCloseEventDetails={resetChosenEvent}
+        />
+      )}
+      <>
+        {currentPage === "eventList" && (
+          <EventList events={events} onChooseEvent={chooseCalEvent} />
+        )}
+      </>
+    </div>
+  );
+}
+
+function EventDetails({ event, onCloseEventDetails }) {
+  return (
+    <div className="h-full flex flex-row justify between w-full text-gray-800">
+      <div className="font-bold text-3xl tracking-wider pr-4 border-r-2 border-gray-300">
+        {event.time}
+      </div>
+      <div className="ml-5 flex flex-grow">
+        <div className="flex-grow text-2xl">{event.title}</div>
+        <div className="flex flex-none items-start justify-end">
+          <OutlineButton callBack={() => onCloseEventDetails()}>
+            ✕
+          </OutlineButton>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HorizontalMenu({ children }) {
+  return (
+    <ul className="bg-white flex flex-row text-sm rounded px-3 pt-3 items-center">
+      {children}
+    </ul>
+  );
+}
+
+function MenuItem({ children }) {
+  return (
+    <li className="flex px-4 pb-2 border-b-4 border-white hover:border-blue-600">
+      {children}
+    </li>
+  );
+}
+
+function HoursList({ events }) {
+  const sortedEvents =
+    events &&
+    events.sort((a, b) => {
+      const aTime = dayjs(a.time, "HH:mm");
+      const bTime = dayjs(b.time, "HH:mm");
+
+      return aTime - bTime;
+    });
+  return (
+    <>
+      {events && (
+        <HorizontalMenu>
+          {sortedEvents.map((event) => (
+            <MenuItem key={event.id}>{event.time}</MenuItem>
+          ))}
+        </HorizontalMenu>
+      )}
+    </>
+  );
+}
+
+function EventList({ events, onChooseEvent }) {
+  const sortedEvents =
+    events &&
+    events.sort((a, b) => {
+      const aTime = dayjs(a.time, "HH:mm");
+      const bTime = dayjs(b.time, "HH:mm");
+
+      return aTime - bTime;
+    });
+
+  const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
+    if (!eventList) return false;
+    return eventList.filter((event) => {
+      const eventTime = dayjs(event.time, "HH:mm");
+      return eventTime.isBetween(
+        dayjs(lowerLimit, "HH:mm"),
+        dayjs(upperLimit, "HH:mm"),
+        null,
+        "[)"
+      );
+    });
+  };
+
+  const morningEvents = filterEventsBetween(sortedEvents, "00:00", "11:59");
+  const afternoonEvents = filterEventsBetween(sortedEvents, "12:00", "18:59");
+  const eveningEvents = filterEventsBetween(sortedEvents, "19:00", "23:59");
+
+  return (
+    <div className="grid grid-cols-3 gap-8 w-full">
+      <EventCol
+        events={morningEvents}
+        onChooseEvent={onChooseEvent}
+        title="Morning"
+      />
+      <EventCol
+        events={afternoonEvents}
+        onChooseEvent={onChooseEvent}
+        title="Afternoon"
+      />
+      <EventCol
+        events={eveningEvents}
+        onChooseEvent={onChooseEvent}
+        title="Evening"
+      />
+    </div>
+  );
+}
+
+EventList.propTypes = {
+  events: PropTypes.array,
+  onChooseEvent: PropTypes.func.isRequired,
+};
+
+function EventCol({ events, title, onChooseEvent }) {
+  const titleTextColor =
+    events && events.length > 0 ? "text-blue-800" : "text-gray-600";
+
+  return (
+    <div className="">
+      <div className="py-2">
+        <h2 className={`text-xl font-medium ${titleTextColor}`}>{title}</h2>
+      </div>
+      <div className="h-auto flex self-stretch mt-4 mb-6 pb-6">
+        <ul className="block w-full list-inside list-disc text-gray-800">
+          {events &&
+            events.map((event, idx) => (
+              <Event key={idx} event={event} onChooseEvent={onChooseEvent} />
+            ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+EventCol.propTypes = {
+  events: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  onChooseEvent: PropTypes.func.isRequired,
+};
+
+function Event({ event, onChooseEvent }) {
+  const style = `block w-full h-auto 
+    mb-4 p-4
+    bg-white 
+    border-2 border-transparent rounded-lg hover:border-blue-600 shadow-md
+    text-lg text-gray-800
+    cursor-pointer`;
+
+  const chooseEvent = (event) => {
+    onChooseEvent(event);
+  };
+
+  return (
+    <li className={style} onClick={() => chooseEvent(event)}>
+      <div className="h-auto py-1 text-blue-700 font-bold tracking-wider border-b-2 border-gray-300">
+        {event.time}
+      </div>
+      <div className="mt-2">{event.title}</div>
+    </li>
+  );
+}
+
+Event.propTypes = {
+  event: PropTypes.object.isRequired,
+  onChooseEvent: PropTypes.func.isRequired,
+};
+
+export default EventContainer;
