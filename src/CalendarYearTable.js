@@ -21,6 +21,10 @@ function CalendarYearTable({ year }) {
     setEvents([...events, newEvent]);
   }
 
+  function deleteEvent(event) {
+    setEvents(events.filter((e) => e.id !== event.id));
+  }
+
   return (
     <table className="table-fixed w-full border text-xs bg-white">
       <thead className={`${css.cellBorders}`}>
@@ -41,6 +45,7 @@ function CalendarYearTable({ year }) {
               key={monthDay}
               css={css}
               onAddEvent={addEvent}
+              onDeleteEvent={deleteEvent}
             />
           );
         })}
@@ -79,7 +84,7 @@ function MonthsRow({ css }) {
   );
 }
 
-function DaysRow({ days, css, onAddEvent }) {
+function DaysRow({ days, css, onAddEvent, onDeleteEvent }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
 
@@ -94,6 +99,7 @@ function DaysRow({ days, css, onAddEvent }) {
             css={css}
             key={id}
             onAddEvent={onAddEvent}
+            onDeleteEvent={onDeleteEvent}
           />
         ) : (
           <EmptyCell css={css} key={id} />
@@ -108,7 +114,7 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css, onAddEvent }) {
+function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
   const [showModal, setShowModal] = useState(false);
   const closeModal = () => setShowModal(false);
 
@@ -144,7 +150,12 @@ function DayCell({ date, events, css, onAddEvent }) {
         {weekday[0]}
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} events={events} onAddEvent={onAddEvent} />
+        <DayModal
+          date={date}
+          events={events}
+          onAddEvent={onAddEvent}
+          onDeleteEvent={onDeleteEvent}
+        />
       </Modal>
     </>
   );

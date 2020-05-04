@@ -5,7 +5,7 @@ import isBetween from "dayjs/plugin/isBetween";
 import { Button } from "./Button";
 dayjs.extend(isBetween);
 
-function EventContainer({ events }) {
+function EventContainer({ events, onDeleteEvent }) {
   const [chosenEvent, setChosenEvent] = useState(undefined);
 
   const choosePage = (calEvent) => {
@@ -15,6 +15,11 @@ function EventContainer({ events }) {
     if (chosenEvent) return "event";
     if (!chosenEvent && events.length > 0) return "eventList";
     return "none";
+  }
+
+  function handleDeleteEvent(event) {
+    setChosenEvent(undefined);
+    onDeleteEvent(event);
   }
 
   const currentPage = setCurrentPage();
@@ -33,7 +38,9 @@ function EventContainer({ events }) {
         isDisplayed={currentPage !== "none"}
         onChoosePage={choosePage}
       />
-      {currentPage === "event" && <EventDetails event={chosenEvent} />}
+      {currentPage === "event" && (
+        <EventDetails event={chosenEvent} onDeleteEvent={handleDeleteEvent} />
+      )}
       <>
         {currentPage === "eventList" && (
           <EventList events={sortedEvents} onChooseEvent={choosePage} />
@@ -70,7 +77,7 @@ function EventsMenu({ events, isDisplayed, onChoosePage }) {
   );
 }
 
-function HorizontalMenu({ children, callBack }) {
+function HorizontalMenu({ children }) {
   return (
     <ul className="bg-white flex flex-row text-sm rounded px-3 pt-3 items-center">
       {children}
@@ -91,16 +98,16 @@ function MenuItem({ children, callBack }) {
 
 function EventDetails({ event, onDeleteEvent }) {
   return (
-    <div className="flex flex-row justify between w-full p-10 bg-white text-gray-800 rounded-lg">
+    <div className="flex flex-row justify between w-full space-x-5 p-10 bg-white text-gray-800 rounded-lg">
       <div className="font-bold text-2xl text-blue-700 tracking-wider pr-4 border-r-2 border-gray-300">
         {event.time}
       </div>
-      <div className="ml-5 flex flex-grow">
+      <div className="flex flex-grow">
         <div className="flex-grow text-2xl">{event.title}</div>
       </div>
-      <div className="ml-5 justify-end">
-        <DeleteButton callBack={onDeleteEvent}>
-          <i class="gg-trash mr-3"></i> Delete
+      <div className="justify-end">
+        <DeleteButton callBack={() => onDeleteEvent(event)}>
+          <i className="gg-trash mr-3"></i> Delete
         </DeleteButton>
       </div>
     </div>
@@ -206,11 +213,11 @@ Event.propTypes = {
 };
 
 function DeleteButton({ children, callBack }) {
-  const outlineStyle = `bg-transparent hover:bg-red-800
-                 text-sm text-red-700 font-semibold hover:text-white
-                 py-3 px-4
+  const outlineStyle = `flex flex-row items-center
+                 bg-transparent hover:bg-red-800
+                 text-sm text-red-700 align-middle hover:text-white
+                 py-2 px-4
                  border border-red-700 hover:border-transparent rounded
-                 flex
                  `;
 
   return (
