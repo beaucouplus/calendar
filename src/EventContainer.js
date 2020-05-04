@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { OutlineButton } from "./Button";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
-// TODO
-// - move ordering events ups
-// remove HoursList component and move content up
-// create EventsMenu Component ?
-
 function EventContainer({ events }) {
   const [chosenEvent, setChosenEvent] = useState(undefined);
 
-  function chooseCalEvent(calEvent) {
-    setChosenEvent(calEvent);
-  }
-
-  const resetChosenEvent = () => setChosenEvent(undefined);
-
+  const choosePage = (calEvent) => {
+    calEvent ? setChosenEvent(calEvent) : setChosenEvent(undefined);
+  };
   function setCurrentPage() {
     if (chosenEvent) return "event";
     if (!chosenEvent && events.length > 0) return "eventList";
@@ -26,33 +17,59 @@ function EventContainer({ events }) {
   }
 
   const currentPage = setCurrentPage();
+  const sortedEvents =
+    events &&
+    events.sort((a, b) => {
+      const aTime = dayjs(a.time, "HH:mm");
+      const bTime = dayjs(b.time, "HH:mm");
 
+      return aTime - bTime;
+    });
   return (
     <div className="bg-gray-200 p-10 my-5 rounded-lg shadow-inner">
-      <div className="flex mb-10 space-x-2">
-        <HorizontalMenu>
-          <MenuItem>
-            <i className="gg-list transform scale-90 mr-3"></i> Planning
-          </MenuItem>
-        </HorizontalMenu>
-        <HoursList events={events} />
-      </div>
-      {currentPage === "event" && (
-        <EventDetails
-          event={chosenEvent}
-          onCloseEventDetails={resetChosenEvent}
-        />
-      )}
+      <EventsMenu
+        events={sortedEvents}
+        isDisplayed={currentPage !== "none"}
+        onChoosePage={choosePage}
+      />
+      {currentPage === "event" && <EventDetails event={chosenEvent} />}
       <>
         {currentPage === "eventList" && (
-          <EventList events={events} onChooseEvent={chooseCalEvent} />
+          <EventList events={sortedEvents} onChooseEvent={choosePage} />
         )}
       </>
     </div>
   );
 }
 
-function EventDetails({ event, onCloseEventDetails }) {
+function EventsMenu({ events, isDisplayed, onChoosePage }) {
+  return (
+    <>
+      {isDisplayed && (
+        <div className="flex mb-10 space-x-2">
+          <HorizontalMenu>
+            <MenuItem callBack={() => onChoosePage()}>
+              <i className="gg-list transform scale-90 mr-3"></i> Planning
+            </MenuItem>
+          </HorizontalMenu>
+          <>
+            {events.length > 0 && (
+              <HorizontalMenu>
+                {events.map((event) => (
+                  <MenuItem key={event.id} callBack={() => onChoosePage(event)}>
+                    {event.time}
+                  </MenuItem>
+                ))}
+              </HorizontalMenu>
+            )}
+          </>
+        </div>
+      )}
+    </>
+  );
+}
+
+function EventDetails({ event }) {
   return (
     <div className="h-full flex flex-row justify between w-full text-gray-800">
       <div className="font-bold text-3xl tracking-wider pr-4 border-r-2 border-gray-300">
@@ -60,17 +77,12 @@ function EventDetails({ event, onCloseEventDetails }) {
       </div>
       <div className="ml-5 flex flex-grow">
         <div className="flex-grow text-2xl">{event.title}</div>
-        <div className="flex flex-none items-start justify-end">
-          <OutlineButton callBack={() => onCloseEventDetails()}>
-            ✕
-          </OutlineButton>
-        </div>
       </div>
     </div>
   );
 }
 
-function HorizontalMenu({ children }) {
+function HorizontalMenu({ children, callBack }) {
   return (
     <ul className="bg-white flex flex-row text-sm rounded px-3 pt-3 items-center">
       {children}
@@ -78,46 +90,18 @@ function HorizontalMenu({ children }) {
   );
 }
 
-function MenuItem({ children }) {
+function MenuItem({ children, callBack }) {
   return (
-    <li className="flex px-4 pb-2 border-b-4 border-white hover:border-blue-600">
+    <li
+      className="flex px-4 pb-2 border-b-4 border-white hover:border-blue-600"
+      onClick={callBack}
+    >
       {children}
     </li>
   );
 }
 
-function HoursList({ events }) {
-  const sortedEvents =
-    events &&
-    events.sort((a, b) => {
-      const aTime = dayjs(a.time, "HH:mm");
-      const bTime = dayjs(b.time, "HH:mm");
-
-      return aTime - bTime;
-    });
-  return (
-    <>
-      {events && (
-        <HorizontalMenu>
-          {sortedEvents.map((event) => (
-            <MenuItem key={event.id}>{event.time}</MenuItem>
-          ))}
-        </HorizontalMenu>
-      )}
-    </>
-  );
-}
-
 function EventList({ events, onChooseEvent }) {
-  const sortedEvents =
-    events &&
-    events.sort((a, b) => {
-      const aTime = dayjs(a.time, "HH:mm");
-      const bTime = dayjs(b.time, "HH:mm");
-
-      return aTime - bTime;
-    });
-
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
     if (!eventList) return false;
     return eventList.filter((event) => {
@@ -131,9 +115,9 @@ function EventList({ events, onChooseEvent }) {
     });
   };
 
-  const morningEvents = filterEventsBetween(sortedEvents, "00:00", "11:59");
-  const afternoonEvents = filterEventsBetween(sortedEvents, "12:00", "18:59");
-  const eveningEvents = filterEventsBetween(sortedEvents, "19:00", "23:59");
+  const morningEvents = filterEventsBetween(events, "00:00", "11:59");
+  const afternoonEvents = filterEventsBetween(events, "12:00", "18:59");
+  const eveningEvents = filterEventsBetween(events, "19:00", "23:59");
 
   return (
     <div className="grid grid-cols-3 gap-8 w-full">
