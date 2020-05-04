@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { Button } from "./Button";
 dayjs.extend(isBetween);
 
 function EventContainer({ events }) {
@@ -69,19 +70,6 @@ function EventsMenu({ events, isDisplayed, onChoosePage }) {
   );
 }
 
-function EventDetails({ event }) {
-  return (
-    <div className="h-full flex flex-row justify between w-full text-gray-800">
-      <div className="font-bold text-3xl tracking-wider pr-4 border-r-2 border-gray-300">
-        {event.time}
-      </div>
-      <div className="ml-5 flex flex-grow">
-        <div className="flex-grow text-2xl">{event.title}</div>
-      </div>
-    </div>
-  );
-}
-
 function HorizontalMenu({ children, callBack }) {
   return (
     <ul className="bg-white flex flex-row text-sm rounded px-3 pt-3 items-center">
@@ -98,6 +86,24 @@ function MenuItem({ children, callBack }) {
     >
       {children}
     </li>
+  );
+}
+
+function EventDetails({ event, onDeleteEvent }) {
+  return (
+    <div className="flex flex-row justify between w-full p-10 bg-white text-gray-800 rounded-lg">
+      <div className="font-bold text-2xl text-blue-700 tracking-wider pr-4 border-r-2 border-gray-300">
+        {event.time}
+      </div>
+      <div className="ml-5 flex flex-grow">
+        <div className="flex-grow text-2xl">{event.title}</div>
+      </div>
+      <div className="ml-5 justify-end">
+        <DeleteButton callBack={onDeleteEvent}>
+          <i class="gg-trash mr-3"></i> Delete
+        </DeleteButton>
+      </div>
+    </div>
   );
 }
 
@@ -198,5 +204,20 @@ Event.propTypes = {
   event: PropTypes.object.isRequired,
   onChooseEvent: PropTypes.func.isRequired,
 };
+
+function DeleteButton({ children, callBack }) {
+  const outlineStyle = `bg-transparent hover:bg-red-800
+                 text-sm text-red-700 font-semibold hover:text-white
+                 py-3 px-4
+                 border border-red-700 hover:border-transparent rounded
+                 flex
+                 `;
+
+  return (
+    <Button callBack={callBack} css={outlineStyle}>
+      {children}
+    </Button>
+  );
+}
 
 export default EventContainer;
