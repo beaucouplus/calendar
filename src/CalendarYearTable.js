@@ -17,17 +17,12 @@ function CalendarYearTable({ year }) {
   const cells = createYearCalendarCells(year, events);
 
   function addEvent(event) {
-    let newEvents;
-    if (events[event.date]) {
-      newEvents = [...events[event.date], event];
-    } else {
-      newEvents = [event];
-    }
+    const newEvent = { ...event, id: events.length + 1 };
+    setEvents([...events, newEvent]);
+  }
 
-    setEvents({
-      ...events,
-      [event.date]: newEvents,
-    });
+  function deleteEvent(event) {
+    setEvents(events.filter((e) => e.id !== event.id));
   }
 
   return (
@@ -50,6 +45,7 @@ function CalendarYearTable({ year }) {
               key={monthDay}
               css={css}
               onAddEvent={addEvent}
+              onDeleteEvent={deleteEvent}
             />
           );
         })}
@@ -88,7 +84,7 @@ function MonthsRow({ css }) {
   );
 }
 
-function DaysRow({ days, css, onAddEvent }) {
+function DaysRow({ days, css, onAddEvent, onDeleteEvent }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
 
@@ -103,6 +99,7 @@ function DaysRow({ days, css, onAddEvent }) {
             css={css}
             key={id}
             onAddEvent={onAddEvent}
+            onDeleteEvent={onDeleteEvent}
           />
         ) : (
           <EmptyCell css={css} key={id} />
@@ -117,7 +114,7 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css, onAddEvent }) {
+function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
   const [showModal, setShowModal] = useState(false);
   const closeModal = () => setShowModal(false);
 
@@ -130,7 +127,7 @@ function DayCell({ date, events, css, onAddEvent }) {
     const isPast = currentDate.isBefore(today);
     const isToday = currentDate.isSame(today);
 
-    if (events)
+    if (events.length > 0)
       return `bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white`;
     if (isCurrentYear && isPast && weekday === "Sunday")
       return `hover:bg-gray-200 text-red-300`;
@@ -153,7 +150,12 @@ function DayCell({ date, events, css, onAddEvent }) {
         {weekday[0]}
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} events={events} onAddEvent={onAddEvent} />
+        <DayModal
+          date={date}
+          events={events}
+          onAddEvent={onAddEvent}
+          onDeleteEvent={onDeleteEvent}
+        />
       </Modal>
     </>
   );
