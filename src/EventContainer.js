@@ -47,6 +47,13 @@ function EventContainer({ events, onDeleteEvent }) {
           <EventList events={sortedEvents} onChooseEvent={choosePage} />
         )}
       </>
+      <>
+        {currentPage === "none" && (
+          <div className="text-blue-700 text-2xl tracking-wider">
+            No events today.
+          </div>
+        )}
+      </>
     </div>
   );
 }
@@ -58,7 +65,7 @@ function EventsMenu({ events, isDisplayed, onChoosePage, chosenEvent }) {
         <div className="flex mb-10 space-x-2">
           <HorizontalMenu>
             <MenuItem callBack={() => onChoosePage()} isSelected={!chosenEvent}>
-              <i className="gg-list transform scale-90 mr-3"></i> Planning
+              <i className="gg-list mr-3"></i> Planning
             </MenuItem>
           </HorizontalMenu>
           <>
@@ -91,13 +98,11 @@ function HorizontalMenu({ children }) {
 }
 
 function MenuItem({ children, isSelected, callBack }) {
+  const style = `flex px-4 pb-2 border-b-4 border-white hover:border-blue-600 cursor-pointer`;
+  const selectedStyle = isSelected ? "border-blue-600" : "";
+
   return (
-    <li
-      className={`flex px-4 pb-2 border-b-4 border-white ${
-        isSelected ? "border-blue-600" : ""
-      } hover:border-blue-600`}
-      onClick={callBack}
-    >
+    <li className={`${style} ${selectedStyle}`} onClick={callBack}>
       {children}
     </li>
   );
