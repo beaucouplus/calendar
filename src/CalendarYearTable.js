@@ -120,6 +120,41 @@ function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
 
   const weekday = dayjs(date).format("dddd");
 
+  const cellStyle = {
+    event: {
+      past: {
+        sunday:
+          "bg-orange-200 text-red-500 hover:bg-orange-400 hover:text-white",
+        allWeek:
+          "bg-orange-200 text-orange-500 hover:bg-orange-400 hover:text-white",
+      },
+      now: {
+        sunday: "bg-teal-300 text-teal-700 hover:bg-teal-400 hover:text-white",
+        allWeek: "bg-teal-300 text-teal-700 hover:bg-teal-400 hover:text-white",
+      },
+      future: {
+        sunday:
+          "bg-orange-300 text-red-600 hover:bg-orange-400 hover:text-white",
+        allWeek:
+          "bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white",
+      },
+    },
+    empty: {
+      past: {
+        sunday: "hover:bg-gray-200 text-red-300",
+        allWeek: "hover:bg-gray-200 text-gray-500",
+      },
+      now: {
+        sunday: "bg-blue-200 text-blue-600 hover:bg-blue-400 hover:text-white",
+        allWeek: "bg-blue-200 text-blue-600 hover:bg-blue-400 hover:text-white",
+      },
+      future: {
+        sunday: "bg-gray-300 text-red-600 hover:bg-gray-400",
+        allWeek: "hover:bg-gray-200 text-gray-700",
+      },
+    },
+  };
+
   const getTDStyle = () => {
     const today = dayjs().startOf("day");
     const currentDate = dayjs(date).startOf("day");
@@ -127,16 +162,25 @@ function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
     const isPast = currentDate.isBefore(today);
     const isToday = currentDate.isSame(today);
 
-    if (events.length > 0)
-      return `bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white`;
-    if (isCurrentYear && isPast && weekday === "Sunday")
-      return `hover:bg-gray-200 text-red-300`;
-    if (isCurrentYear && isPast) return `hover:bg-gray-200 text-gray-500`;
-    if (isToday)
-      return `bg-blue-200 text-blue-600 hover:bg-blue-400 hover:text-white`;
-    if (weekday === "Sunday")
-      return `bg-red-300 text-red-600 hover:bg-red-400 hover:text-white`;
-    return `hover:bg-gray-200 text-gray-700`;
+    if (events.length > 0 && !isPast && weekday !== "Tuesday" && !isToday)
+      return cellStyle.event.future.allWeek;
+    if (events.length > 0 && !isPast && weekday !== "Tuesday" && isToday)
+      return cellStyle.event.now.allWeek;
+    if (events.length > 0 && !isPast && weekday === "Tuesday" && isToday)
+      return cellStyle.event.now.sunday;
+    if (events.length > 0 && !isPast && weekday === "Tuesday")
+      return cellStyle.event.future.sunday;
+    if (events.length > 0 && isPast && weekday === "Tuesday")
+      return cellStyle.event.past.sunday;
+    if (events.length > 0 && isPast && weekday !== "Tuesday")
+      return cellStyle.event.past.allWeek;
+    if (isCurrentYear && isPast && weekday === "Tuesday")
+      return cellStyle.empty.past.sunday;
+    if (isCurrentYear && isPast) return cellStyle.empty.past.allWeek;
+    if (isToday && weekday === "Tuesday") return cellStyle.empty.now.sunday;
+    if (isToday) return cellStyle.empty.now.allWeek;
+    if (weekday === "Tuesday") return cellStyle.empty.future.sunday;
+    return cellStyle.empty.future.allWeek;
   };
 
   const tdStyle = getTDStyle();
