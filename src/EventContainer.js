@@ -36,6 +36,7 @@ function EventContainer({ events, onDeleteEvent }) {
       <EventsMenu
         events={sortedEvents}
         isDisplayed={currentPage !== "none"}
+        chosenEvent={chosenEvent}
         onChoosePage={choosePage}
       />
       {currentPage === "event" && (
@@ -50,13 +51,13 @@ function EventContainer({ events, onDeleteEvent }) {
   );
 }
 
-function EventsMenu({ events, isDisplayed, onChoosePage }) {
+function EventsMenu({ events, isDisplayed, onChoosePage, chosenEvent }) {
   return (
     <>
       {isDisplayed && (
         <div className="flex mb-10 space-x-2">
           <HorizontalMenu>
-            <MenuItem callBack={() => onChoosePage()}>
+            <MenuItem callBack={() => onChoosePage()} isSelected={!chosenEvent}>
               <i className="gg-list transform scale-90 mr-3"></i> Planning
             </MenuItem>
           </HorizontalMenu>
@@ -64,7 +65,11 @@ function EventsMenu({ events, isDisplayed, onChoosePage }) {
             {events.length > 0 && (
               <HorizontalMenu>
                 {events.map((event) => (
-                  <MenuItem key={event.id} callBack={() => onChoosePage(event)}>
+                  <MenuItem
+                    key={event.id}
+                    callBack={() => onChoosePage(event)}
+                    isSelected={event === chosenEvent}
+                  >
                     {event.time}
                   </MenuItem>
                 ))}
@@ -85,10 +90,12 @@ function HorizontalMenu({ children }) {
   );
 }
 
-function MenuItem({ children, callBack }) {
+function MenuItem({ children, isSelected, callBack }) {
   return (
     <li
-      className="flex px-4 pb-2 border-b-4 border-white hover:border-blue-600"
+      className={`flex px-4 pb-2 border-b-4 border-white ${
+        isSelected ? "border-blue-600" : ""
+      } hover:border-blue-600`}
       onClick={callBack}
     >
       {children}
