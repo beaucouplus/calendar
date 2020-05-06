@@ -4,7 +4,11 @@ import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
 import { range } from "./utils";
-import { createYearCalendarCells, dummyEvents } from "./calendar";
+import {
+  createYearCalendarCells,
+  dummyEvents,
+  calendarCellStyle,
+} from "./calendar";
 import DayModal from "./DayModal";
 dayjs.extend(LocalizedFormat);
 
@@ -120,26 +124,7 @@ function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
 
   const weekday = dayjs(date).format("dddd");
 
-  const getTDStyle = () => {
-    const today = dayjs().startOf("day");
-    const currentDate = dayjs(date).startOf("day");
-    const isCurrentYear = currentDate.year() === dayjs(new Date()).year();
-    const isPast = currentDate.isBefore(today);
-    const isToday = currentDate.isSame(today);
-
-    if (events.length > 0)
-      return `bg-orange-300 text-orange-800 hover:bg-orange-400 hover:text-white`;
-    if (isCurrentYear && isPast && weekday === "Sunday")
-      return `hover:bg-gray-200 text-red-300`;
-    if (isCurrentYear && isPast) return `hover:bg-gray-200 text-gray-500`;
-    if (isToday)
-      return `bg-blue-200 text-blue-600 hover:bg-blue-400 hover:text-white`;
-    if (weekday === "Sunday")
-      return `bg-red-300 text-red-600 hover:bg-red-400 hover:text-white`;
-    return `hover:bg-gray-200 text-gray-700`;
-  };
-
-  const tdStyle = getTDStyle();
+  const tdStyle = calendarCellStyle(date, events);
 
   return (
     <>
