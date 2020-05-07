@@ -14,6 +14,12 @@ function Modal({ children, showModal, onCloseModal }) {
 }
 
 function ModalContent({ children, onCloseModal }) {
+  const onKeyDown = (event) => {
+    if (event.keyCode === 27) {
+      onCloseModal();
+    }
+  };
+
   return ReactDOM.createPortal(
     <aside
       className="fixed top-0 left-0 w-screen h-screen flex items-center"
@@ -21,6 +27,7 @@ function ModalContent({ children, onCloseModal }) {
       role="dialog"
       aria-modal="true"
       tabIndex="-1"
+      onKeyDown={onKeyDown}
     >
       <div className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md">
         <div className="w-full flex items-center justify-end flex-wrap p-1">
