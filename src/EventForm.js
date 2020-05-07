@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import { Button, OutlineButton, BlueSubmitButton } from "./Button";
+import { Button, ModalButton, BlueSubmitButton } from "./Button";
 import { range } from "./utils";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
@@ -72,7 +72,13 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             <h3 className="leading-relaxed text-2xl tracking-wider text-blue-700 font-semibold">
               New Event
             </h3>
-            <OutlineButton callBack={close}>✕</OutlineButton>
+            <ModalButton
+              callBack={close}
+              ariaLabel="close form"
+              ariaLabelledBy="close-form"
+            >
+              ✕
+            </ModalButton>
           </div>
           <div className="mt-2">
             <EventLabel>Title</EventLabel>

@@ -1,13 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function Button({ children, callBack, css = "", value = "", type = "button" }) {
+function Button({
+  children,
+  callBack,
+  css = "",
+  value = "",
+  type = "button",
+  ariaLabel = "",
+  ariaLabelledBy = "",
+  autoFocus = false,
+}) {
   return (
     <button
       onClick={callBack}
-      className={`${css} focus:outline-none`}
+      className={`${css} focus:outline-none focus:shadow-outline`}
       value={value}
       type={type}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      autoFocus={autoFocus}
     >
       {children}
     </button>
@@ -19,20 +31,6 @@ Button.propTypes = {
   children: PropTypes.node.isRequired,
   css: PropTypes.string,
 };
-
-function OutlineButton({ children, callBack }) {
-  const outlineStyle = `bg-transparent hover:bg-blue-800
-                 text-xs text-blue-700 font-semibold hover:text-white
-                 py-1 px-2
-                 border border-blue-700 hover:border-transparent
-                 `;
-
-  return (
-    <Button callBack={callBack} css={outlineStyle}>
-      {children}
-    </Button>
-  );
-}
 
 function BlueButton({ children, callBack }) {
   const blueStyle = `
@@ -75,10 +73,36 @@ function OutlineSubmitButton({ value }) {
   return <SubmitButton value={value} css={outlineStyle} />;
 }
 
+function ModalButton({
+  children,
+  callBack,
+  ariaLabel,
+  ariaLabelledBy,
+  autoFocus,
+}) {
+  const outlineStyle = `bg-transparent hover:bg-blue-800
+                 text-xs text-blue-700 font-semibold hover:text-white
+                 py-1 px-2
+                 border border-blue-700 hover:border-transparent
+                 `;
+
+  return (
+    <Button
+      callBack={callBack}
+      css={outlineStyle}
+      ariaLabel={ariaLabel}
+      ariaLabelledBy={ariaLabelledBy}
+      autoFocus={autoFocus}
+    >
+      {children}
+    </Button>
+  );
+}
+
 export {
   Button,
-  OutlineButton,
   SubmitButton,
+  ModalButton,
   OutlineSubmitButton,
   BlueSubmitButton,
   BlueButton,

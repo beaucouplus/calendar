@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import { OutlineButton } from "./Button";
-
+import { ModalButton } from "./Button";
 function Modal({ children, showModal, onCloseModal }) {
   return (
     <>
@@ -19,10 +18,20 @@ function ModalContent({ children, onCloseModal }) {
     <aside
       className="fixed top-0 left-0 w-screen h-screen flex items-center"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
+      role="dialog"
+      aria-modal="true"
+      tabIndex="-1"
     >
       <div className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md">
         <div className="w-full flex items-center justify-end flex-wrap p-1">
-          <OutlineButton callBack={() => onCloseModal()}>✕</OutlineButton>
+          <ModalButton
+            callBack={() => onCloseModal()}
+            ariaLabel="Close modal"
+            ariaLabelledby="close-modal"
+            autoFocus={true}
+          >
+            ✕
+          </ModalButton>
         </div>
 
         <div className="h-full box-border overflow-auto flex flex-col justify-start mx-2 px-1 pt-1 pb-5">
@@ -33,4 +42,5 @@ function ModalContent({ children, onCloseModal }) {
     document.body
   );
 }
+
 export default Modal;
