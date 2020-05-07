@@ -1,11 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
+import useOnclickOutside from "react-cool-onclickoutside";
 import { ModalButton } from "./Button";
 function Modal({ children, showModal, onCloseModal }) {
+  const modalContent = useRef();
+
+  useOnclickOutside(modalContent, () => {
+    onCloseModal();
+  });
+
   return (
     <>
       {showModal ? (
-        <ModalContent onCloseModal={onCloseModal}>{children}</ModalContent>
+        <ModalContent
+          onCloseModal={onCloseModal}
+          modalContentRef={modalContent}
+        >
+          {children}
+        </ModalContent>
       ) : (
         <React.Fragment />
       )}
@@ -13,7 +25,7 @@ function Modal({ children, showModal, onCloseModal }) {
   );
 }
 
-function ModalContent({ children, onCloseModal }) {
+function ModalContent({ children, onCloseModal, modalContentRef }) {
   const onKeyDown = (event) => {
     if (event.keyCode === 27) {
       onCloseModal();
@@ -29,7 +41,10 @@ function ModalContent({ children, onCloseModal }) {
       tabIndex="-1"
       onKeyDown={onKeyDown}
     >
-      <div className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md">
+      <div
+        ref={modalContentRef}
+        className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md"
+      >
         <div className="w-full flex items-center justify-end flex-wrap p-1">
           <ModalButton
             callBack={() => onCloseModal()}
