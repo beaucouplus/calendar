@@ -14,7 +14,6 @@ dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
   const monthDays = range(1, 31);
-  const columns = range(1, 14);
   const css = { cellBorders: "border border-gray-500" };
 
   const [events, setEvents] = useState(dummyEvents);
@@ -30,18 +29,11 @@ function CalendarYearTable({ year }) {
   }
 
   return (
-    <table className="table-fixed w-full border text-xs bg-white">
+    <table className="table-fixed w-full h-full border text-xs bg-white">
       <thead className={`${css.cellBorders}`}>
         <MonthsRow css={css} />
       </thead>
       <tbody>
-        <tr>
-          {columns.map((x, id) => (
-            <td className={`${css.cellBorders} py-6`} key={id}>
-              &nbsp;
-            </td>
-          ))}
-        </tr>
         {monthDays.map((monthDay) => {
           return (
             <DaysRow
@@ -120,6 +112,7 @@ function EmptyCell({ css }) {
 
 function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
   const [showModal, setShowModal] = useState(false);
+  const [showDate, setShowDate] = useState(false);
   const closeModal = () => setShowModal(false);
 
   const weekday = dayjs(date).format("dddd");
@@ -131,8 +124,10 @@ function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
       <td
         className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
         onClick={() => setShowModal(true)}
+        onMouseEnter={() => setShowDate(true)}
+        onMouseLeave={() => setShowDate(false)}
       >
-        {weekday[0]}
+        {weekday[0]} <CellDate date={date} isShown={showDate} />
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
         <DayModal
@@ -151,5 +146,11 @@ DayCell.propTypes = {
   events: PropTypes.array,
   css: PropTypes.object,
 };
+
+function CellDate({ isShown, date }) {
+  return (
+    <>{isShown && <span className="px-1">{dayjs(date).format("D")}</span>}</>
+  );
+}
 
 export default CalendarYearTable;
