@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import { Button, ModalButton, BlueSubmitButton } from "./Button";
+import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import { range } from "./utils";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
@@ -17,8 +17,8 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   const twoDigitsMinutes = renderTwoDigits(eventMinutes);
 
   const styles = {
-    input: `bg-white appearance-none 
-      border-2 border-gray-400 
+    input: `bg-gray-100 appearance-none
+      border-2 border-gray-400 rounded
       w-full 
       py-2 px-4 
       text-gray-700 leading-tight 
@@ -46,6 +46,8 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     setMinutesPickerShown(false);
   };
 
+  const selectText = () => titleInput.current.select();
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -62,23 +64,13 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
       {display && (
         <form
           action=""
-          className="block absolute left-0 my-2 p-4 bg-gray-100 border border-blue-800 w-full min-w-full shadow-lg"
+          className="w-full bg-white p-10 rounded-lg"
           onSubmit={handleSubmit}
         >
-          <div
-            id="form-title"
-            className="flex items-center justify-between pb-2"
-          >
+          <div id="form-title" className="">
             <h3 className="leading-relaxed text-2xl tracking-wider text-blue-700 font-semibold">
               New Event
             </h3>
-            <ModalButton
-              callBack={close}
-              ariaLabel="close form"
-              ariaLabelledBy="close-form"
-            >
-              ✕
-            </ModalButton>
           </div>
           <div className="mt-2">
             <EventLabel>Title</EventLabel>
@@ -87,6 +79,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               className={styles.input}
               type="text"
               defaultValue="Add a title to your event"
+              onFocus={selectText}
             />
           </div>
           <div className="mt-2">
@@ -109,8 +102,15 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               display={minutesPickerShown}
             />
           </div>
-          <div className="mt-4">
+          <div className="mt-6 space-x-2">
             <BlueSubmitButton />
+            <OutlineButton
+              callBack={close}
+              ariaLabel="close form"
+              ariaLabelledBy="close-form"
+            >
+              Cancel
+            </OutlineButton>
           </div>
         </form>
       )}
@@ -161,10 +161,11 @@ function RangePicker({ selectedItem = "", callBack, collection }) {
   const style = `bg-transparent hover:bg-blue-500
                  text-sm text-gray-700 font-semibold hover:text-white
                  py-2 px-2
+                 rounded
                  `;
 
   return (
-    <div className="grid grid-cols-6 gap-2 mt-1 bg-white border-2 border-gray-400">
+    <div className="grid grid-cols-12 gap-2 mt-1 bg-white border-2 border-gray-400 rounded">
       {collection.map((item) => (
         <Button
           value={item}

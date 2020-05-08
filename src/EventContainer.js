@@ -3,15 +3,25 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Button } from "./Button";
+import EventForm from "./EventForm";
+
 dayjs.extend(isBetween);
 
-function EventContainer({ events, onDeleteEvent }) {
+function EventContainer({
+  events,
+  onDeleteEvent,
+  date,
+  onAddEvent,
+  displayForm,
+  onCloseForm,
+}) {
   const [chosenEvent, setChosenEvent] = useState(undefined);
 
   const choosePage = (calEvent) => {
     calEvent ? setChosenEvent(calEvent) : setChosenEvent(undefined);
   };
   function setCurrentPage() {
+    if (displayForm) return "form";
     if (chosenEvent) return "event";
     if (!chosenEvent && events.length > 0) return "eventList";
     return "none";
@@ -35,9 +45,16 @@ function EventContainer({ events, onDeleteEvent }) {
     <div className="bg-gray-200 p-10 my-5 rounded-lg shadow-inner">
       <EventsMenu
         events={sortedEvents}
-        isDisplayed={currentPage !== "none"}
+        isDisplayed={currentPage !== "none" && currentPage !== "form"}
         chosenEvent={chosenEvent}
         onChoosePage={choosePage}
+      />
+      <EventForm
+        events={events}
+        date={date}
+        display={currentPage === "form"}
+        onAddEvent={onAddEvent}
+        onClose={onCloseForm}
       />
       {currentPage === "event" && (
         <EventDetails event={chosenEvent} onDeleteEvent={handleDeleteEvent} />
