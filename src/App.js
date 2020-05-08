@@ -6,9 +6,11 @@ function App() {
   const [year, setYear] = useState(new Date().getFullYear());
 
   return (
-    <div className="px-2 w-screen h-screen">
+    <div className="px-2 w-screen h-screen flex flex-col">
       <Header year={year} onSetYear={setYear} />
-      <CalendarYearTable year={year} />
+      <div className="flex-grow">
+        <CalendarYearTable year={year} />
+      </div>
     </div>
   );
 }
