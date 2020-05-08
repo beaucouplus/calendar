@@ -47,19 +47,39 @@ function BlueButton({ children, callBack }) {
   );
 }
 
-function SubmitButton({ css, value = "Submit" }) {
-  return <input type="submit" value={value} className={css} />;
+function SubmitButton({
+  css,
+  value = "Submit",
+  ariaLabel = "submit",
+  ariaLabelledBy = "submit",
+}) {
+  return (
+    <input
+      type="submit"
+      value={value}
+      className={css}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    />
+  );
 }
 
-function BlueSubmitButton({ value }) {
-  const blueStyle = `w-1/3
-                 bg-blue-500 hover:bg-blue-800
-                 text-xs text-white font-semibold hover:text-white
-                 py-2 px-2
-                 border border-blue-700 hover:border-blue-800
-                 cursor-pointer`;
+function BlueSubmitButton({ value, ariaLabel, ariaLabelledBy }) {
+  const blueStyle = `bg-blue-500 hover:bg-blue-800
+                     text-xs text-white font-semibold hover:text-white
+                     py-2 px-10
+                     border border-blue-500 hover:border-blue-800 
+                     rounded
+                     cursor-pointer`;
 
-  return <SubmitButton value={value} css={blueStyle} />;
+  return (
+    <SubmitButton
+      value={value}
+      css={blueStyle}
+      ariaLabel={ariaLabel}
+      ariaLabelledBy={ariaLabelledBy}
+    />
+  );
 }
 
 function OutlineSubmitButton({ value }) {
@@ -83,7 +103,33 @@ function ModalButton({
   const outlineStyle = `bg-transparent hover:bg-blue-800
                  text-xs text-blue-700 font-semibold hover:text-white
                  py-1 px-2
-                 border border-blue-700 hover:border-transparent
+                 border border-blue-700 hover:border-transparent rounded
+                 `;
+
+  return (
+    <Button
+      callBack={callBack}
+      css={outlineStyle}
+      ariaLabel={ariaLabel}
+      ariaLabelledBy={ariaLabelledBy}
+      autoFocus={autoFocus}
+    >
+      {children}
+    </Button>
+  );
+}
+
+function OutlineButton({
+  children,
+  callBack,
+  ariaLabel,
+  ariaLabelledBy,
+  autoFocus,
+}) {
+  const outlineStyle = `bg-transparent hover:bg-blue-800
+                 text-xs text-blue-700 font-semibold hover:text-white
+                 py-2 px-4
+                 border border-blue-700 hover:border-transparent rounded
                  `;
 
   return (
@@ -103,6 +149,7 @@ export {
   Button,
   SubmitButton,
   ModalButton,
+  OutlineButton,
   OutlineSubmitButton,
   BlueSubmitButton,
   BlueButton,

@@ -3,13 +3,15 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Button } from "./Button";
-import EventForm from "./EventForm";
 import EventContainer from "./EventContainer";
 dayjs.extend(customParseFormat);
 
 function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
   const [displayForm, setDisplayForm] = useState(false);
 
+  const closeForm = () => {
+    setDisplayForm(false);
+  };
   return (
     <div className="h-full flex flex-col mx-8">
       <header className="flex flex-row items-center">
@@ -20,16 +22,16 @@ function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
           <HeaderButton callBack={() => setDisplayForm(true)}>
             <i className="gg-add-r h-full mr-3"></i>Add Event
           </HeaderButton>
-          <EventForm
-            events={events}
-            date={date}
-            display={displayForm}
-            onAddEvent={onAddEvent}
-            onClose={() => setDisplayForm(false)}
-          />
         </div>
       </header>
-      <EventContainer events={events} onDeleteEvent={onDeleteEvent} />
+      <EventContainer
+        events={events}
+        onDeleteEvent={onDeleteEvent}
+        date={date}
+        onAddEvent={onAddEvent}
+        displayForm={displayForm}
+        onCloseForm={closeForm}
+      />
     </div>
   );
 }
@@ -49,7 +51,12 @@ function HeaderButton({ children, callBack }) {
                  cursor-pointer`;
 
   return (
-    <Button callBack={callBack} css={style}>
+    <Button
+      callBack={callBack}
+      css={style}
+      ariaLabel="new event form"
+      ariaLabelledBy="new-event-form"
+    >
       {children}
     </Button>
   );
