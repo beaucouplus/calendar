@@ -18,7 +18,7 @@ function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
         <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
           {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
         </h2>
-        <div className="relative flex-grow">
+        <div className="flex-grow">
           <HeaderButton callBack={() => setDisplayForm(true)}>
             <i className="gg-add-r h-full mr-3"></i>Add Event
           </HeaderButton>

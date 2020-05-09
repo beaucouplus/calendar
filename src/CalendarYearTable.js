@@ -4,29 +4,15 @@ import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
 import { range } from "./utils";
-import {
-  createYearCalendarCells,
-  dummyEvents,
-  calendarCellStyle,
-} from "./calendar";
+import { createYearCalendarCells, calendarCellStyle } from "./calendar";
 import DayModal from "./DayModal";
 dayjs.extend(LocalizedFormat);
 
-function CalendarYearTable({ year }) {
+function CalendarYearTable({ year, events, onAddEvent, onDeleteEvent }) {
   const monthDays = range(1, 31);
   const css = { cellBorders: "border border-gray-500" };
 
-  const [events, setEvents] = useState(dummyEvents);
   const cells = createYearCalendarCells(year, events);
-
-  function addEvent(event) {
-    const newEvent = { ...event, id: events.length + 1 };
-    setEvents([...events, newEvent]);
-  }
-
-  function deleteEvent(event) {
-    setEvents(events.filter((e) => e.id !== event.id));
-  }
 
   return (
     <table className="table-fixed w-full h-full border text-xs bg-white">
@@ -40,8 +26,8 @@ function CalendarYearTable({ year }) {
               days={cells[monthDay]}
               key={monthDay}
               css={css}
-              onAddEvent={addEvent}
-              onDeleteEvent={deleteEvent}
+              onAddEvent={onAddEvent}
+              onDeleteEvent={onDeleteEvent}
             />
           );
         })}
