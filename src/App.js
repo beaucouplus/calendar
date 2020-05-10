@@ -22,15 +22,13 @@ function App() {
 }
 
 function Header({ year, onSetYear }) {
-  const { events, onAddEvent, onDeleteEvent } = useContext(EventContext);
+  const { events } = useContext(EventContext);
   const [showModal, setShowModal] = useState(false);
 
   const previousYear = () => onSetYear(year - 1);
   const nextYear = () => onSetYear(year + 1);
   const today = new Date(dayjs().startOf("day"));
-  const todayEvents = events.filter(
-    (event) => event.date === dayjs().startOf("day").format("YYYY-MM-DD")
-  );
+  const todayEvents = events[dayjs().startOf("day").format("YYYY-MM-DD")];
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -63,12 +61,7 @@ function Header({ year, onSetYear }) {
           <li>
             <OutlineButton callBack={openModal}>Today</OutlineButton>
             <Modal showModal={showModal} onCloseModal={closeModal}>
-              <DayModal
-                date={today}
-                events={todayEvents}
-                onAddEvent={onAddEvent}
-                onDeleteEvent={onDeleteEvent}
-              />
+              <DayModal date={today} events={todayEvents} />
             </Modal>
           </li>
         </ul>
