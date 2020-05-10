@@ -6,7 +6,7 @@ import { Button } from "./Button";
 import EventContainer from "./EventContainer";
 dayjs.extend(customParseFormat);
 
-function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
+function DayModal({ date, events }) {
   const [displayForm, setDisplayForm] = useState(false);
 
   const closeForm = () => {
@@ -18,7 +18,7 @@ function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
         <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
           {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
         </h2>
-        <div className="relative flex-grow">
+        <div className="flex-grow">
           <HeaderButton callBack={() => setDisplayForm(true)}>
             <i className="gg-add-r h-full mr-3"></i>Add Event
           </HeaderButton>
@@ -26,9 +26,7 @@ function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
       </header>
       <EventContainer
         events={events}
-        onDeleteEvent={onDeleteEvent}
         date={date}
-        onAddEvent={onAddEvent}
         displayForm={displayForm}
         onCloseForm={closeForm}
       />

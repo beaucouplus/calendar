@@ -1,32 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
 import { range } from "./utils";
-import {
-  createYearCalendarCells,
-  dummyEvents,
-  calendarCellStyle,
-} from "./calendar";
+import { createYearCalendarCells, calendarCellStyle } from "./calendar";
 import DayModal from "./DayModal";
+import { EventContext } from "./EventContext";
 dayjs.extend(LocalizedFormat);
 
 function CalendarYearTable({ year }) {
+  const { events } = useContext(EventContext);
+
   const monthDays = range(1, 31);
   const css = { cellBorders: "border border-gray-500" };
 
-  const [events, setEvents] = useState(dummyEvents);
   const cells = createYearCalendarCells(year, events);
-
-  function addEvent(event) {
-    const newEvent = { ...event, id: events.length + 1 };
-    setEvents([...events, newEvent]);
-  }
-
-  function deleteEvent(event) {
-    setEvents(events.filter((e) => e.id !== event.id));
-  }
 
   return (
     <table className="table-fixed w-full h-full border text-xs bg-white">
@@ -40,8 +29,6 @@ function CalendarYearTable({ year }) {
               days={cells[monthDay]}
               key={monthDay}
               css={css}
-              onAddEvent={addEvent}
-              onDeleteEvent={deleteEvent}
             />
           );
         })}
@@ -80,7 +67,7 @@ function MonthsRow({ css }) {
   );
 }
 
-function DaysRow({ days, css, onAddEvent, onDeleteEvent }) {
+function DaysRow({ days, css }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
 
@@ -94,8 +81,6 @@ function DaysRow({ days, css, onAddEvent, onDeleteEvent }) {
             events={day.events}
             css={css}
             key={id}
-            onAddEvent={onAddEvent}
-            onDeleteEvent={onDeleteEvent}
           />
         ) : (
           <EmptyCell css={css} key={id} />
@@ -110,7 +95,7 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
+function DayCell({ date, events, css }) {
   const [showModal, setShowModal] = useState(false);
   const [showDate, setShowDate] = useState(false);
   const closeModal = () => setShowModal(false);
@@ -133,8 +118,6 @@ function DayCell({ date, events, css, onAddEvent, onDeleteEvent }) {
         <DayModal
           date={date}
           events={events}
-          onAddEvent={onAddEvent}
-          onDeleteEvent={onDeleteEvent}
         />
       </Modal>
     </>
