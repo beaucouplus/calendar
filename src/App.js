@@ -1,49 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import CalendarYearTable from "./CalendarYearTable";
 import { Button, OutlineButton } from "./Button";
 import Modal from "./Modal";
 import DayModal from "./DayModal";
-import { dummyEvents } from "./calendar";
+import { EventContext, EventStore } from "./EventContext";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
 
-  const [events, setEvents] = useState(dummyEvents);
-
-  function addEvent(event) {
-    const newEvent = { ...event, id: events.length + 1 };
-    setEvents([...events, newEvent]);
-  }
-
-  function deleteEvent(event) {
-    setEvents(events.filter((e) => e.id !== event.id));
-  }
-
-  useEffect(() => console.log("prout"));
-
   return (
-    <div className="w-screen h-screen flex flex-col">
-      <Header
-        year={year}
-        onSetYear={setYear}
-        events={events}
-        onAddEvent={addEvent}
-        onDeleteEvent={deleteEvent}
-      />
-      <div className="flex-grow">
-        <CalendarYearTable
-          year={year}
-          events={events}
-          onAddEvent={addEvent}
-          onDeleteEvent={deleteEvent}
-        />
+    <EventStore>
+      <div className="w-screen h-screen flex flex-col">
+        <Header year={year} onSetYear={setYear} />
+        <div className="flex-grow">
+          <CalendarYearTable year={year} />
+        </div>
       </div>
-    </div>
+    </EventStore>
   );
 }
 
-function Header({ year, onSetYear, events, onAddEvent, onDeleteEvent }) {
+function Header({ year, onSetYear }) {
+  const { events, onAddEvent, onDeleteEvent } = useContext(EventContext);
   const [showModal, setShowModal] = useState(false);
 
   const previousYear = () => onSetYear(year - 1);
@@ -70,13 +49,12 @@ function Header({ year, onSetYear, events, onAddEvent, onDeleteEvent }) {
         <h2 className="text-xl tracking-wide">{year}</h2>
         <ul className="flex flex-row h-full items-center align-middle space-x-2 pr-10 border-r border-gray-500">
           <li>
-            <Button callBack={previousYear} css="flex items-center">
+            <Button callBack={previousYear}>
               <i className="gg-arrow-left-o "></i>
             </Button>
           </li>
           <li>
-            {" "}
-            <Button callBack={nextYear} css="flex items-center">
+            <Button callBack={nextYear}>
               <i className="gg-arrow-right-o"></i>
             </Button>
           </li>

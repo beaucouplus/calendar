@@ -14,7 +14,7 @@ function Button({
   return (
     <button
       onClick={callBack}
-      className={`${css} focus:outline-none focus:shadow-outline`}
+      className={`${css} flex items-center focus:outline-none focus:shadow-outline`}
       value={value}
       type={type}
       aria-label={ariaLabel}

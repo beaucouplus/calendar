@@ -72,7 +72,7 @@ const dummyEvents = [
 ];
 
 const theme = {
-  calendYearTable: {
+  calendarYearTable: {
     cellStyle: {
       event: {
         past: {
@@ -140,7 +140,7 @@ function getEventStatus(events) {
 }
 
 const calendarCellStyle = (date, events) => {
-  return theme.calendYearTable.cellStyle[getEventStatus(events)][
+  return theme.calendarYearTable.cellStyle[getEventStatus(events)][
     getDateStatus(date)
   ][getWeekday(date)];
 };

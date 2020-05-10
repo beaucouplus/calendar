@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Button } from "./Button";
 import EventForm from "./EventForm";
+import { EventContext } from "./EventContext";
 
 dayjs.extend(isBetween);
 
-function EventContainer({
-  events,
-  onDeleteEvent,
-  date,
-  onAddEvent,
-  displayForm,
-  onCloseForm,
-}) {
+function EventContainer({ events, date, displayForm, onCloseForm }) {
+  const { onAddEvent, onDeleteEvent } = useContext(EventContext);
+
   const [chosenEvent, setChosenEvent] = useState(undefined);
 
   const choosePage = (calEvent) => {

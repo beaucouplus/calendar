@@ -102,7 +102,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               display={minutesPickerShown}
             />
           </div>
-          <div className="mt-6 space-x-2">
+          <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
             <OutlineButton
               callBack={close}

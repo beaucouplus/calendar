@@ -6,7 +6,7 @@ import { Button } from "./Button";
 import EventContainer from "./EventContainer";
 dayjs.extend(customParseFormat);
 
-function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
+function DayModal({ date, events }) {
   const [displayForm, setDisplayForm] = useState(false);
 
   const closeForm = () => {
@@ -26,9 +26,7 @@ function DayModal({ date, events, onAddEvent, onDeleteEvent }) {
       </header>
       <EventContainer
         events={events}
-        onDeleteEvent={onDeleteEvent}
         date={date}
-        onAddEvent={onAddEvent}
         displayForm={displayForm}
         onCloseForm={closeForm}
       />
