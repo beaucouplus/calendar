@@ -9,7 +9,7 @@ import DayModal from "./DayModal";
 import { EventContext } from "./EventContext";
 dayjs.extend(LocalizedFormat);
 
-function CalendarYearTable({ year }) {
+function YearView({ year }) {
   const { events } = useContext(EventContext);
 
   const monthDays = range(1, 31);
@@ -122,4 +122,4 @@ function CellDate({ isShown, date }) {
   );
 }
 
-export default CalendarYearTable;
+export default YearView;

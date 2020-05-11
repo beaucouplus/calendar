@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
-import CalendarYearTable from "./CalendarYearTable";
+import YearView from "./YearView";
+import MonthView from "./MonthView";
 import { Button, OutlineButton } from "./Button";
 import Modal from "./Modal";
 import DayModal from "./DayModal";
@@ -8,20 +9,22 @@ import { EventContext, EventStore } from "./EventContext";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
+  const [currentView, setCurrentView] = useState("YearView");
 
+  function selectView(view) {
+    setCurrentView(view);
+  }
   return (
     <EventStore>
       <div className="w-screen h-screen flex flex-col">
-        <Header year={year} onSetYear={setYear} />
-        <div className="flex-grow">
-          <CalendarYearTable year={year} />
-        </div>
+        <Header year={year} onSetYear={setYear} onSelectView={selectView} />
+        <CalendarView view={currentView} year={year} />
       </div>
     </EventStore>
   );
 }
 
-function Header({ year, onSetYear }) {
+function Header({ year, onSetYear, onSelectView }) {
   const { events } = useContext(EventContext);
   const [showModal, setShowModal] = useState(false);
 
@@ -44,6 +47,14 @@ function Header({ year, onSetYear }) {
         </h1>
       </div>
       <div className="flex flex-row items-center px-10 space-x-5">
+        <ul className="flex flex-row h-full items-center align-middle space-x-2 pr-10 border-r border-gray-500">
+          <li>
+            <Button callBack={() => onSelectView("YearView")}>Y</Button>
+          </li>
+          <li>
+            <Button callBack={() => onSelectView("MonthView")}>M</Button>
+          </li>
+        </ul>
         <h2 className="text-xl tracking-wide">{year}</h2>
         <ul className="flex flex-row h-full items-center align-middle space-x-2 pr-10 border-r border-gray-500">
           <li>
@@ -66,6 +77,21 @@ function Header({ year, onSetYear }) {
           </li>
         </ul>
       </div>
+    </div>
+  );
+}
+
+function CalendarView({ view, year }) {
+  const views = {
+    YearView,
+    MonthView,
+  };
+
+  const CurrentView = views[view];
+
+  return (
+    <div className="flex-grow">
+      <CurrentView year={year} />
     </div>
   );
 }
