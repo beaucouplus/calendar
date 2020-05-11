@@ -24,13 +24,7 @@ function CalendarYearTable({ year }) {
       </thead>
       <tbody>
         {monthDays.map((monthDay) => {
-          return (
-            <DaysRow
-              days={cells[monthDay]}
-              key={monthDay}
-              css={css}
-            />
-          );
+          return <DaysRow days={cells[monthDay]} key={monthDay} css={css} />;
         })}
       </tbody>
     </table>
@@ -76,12 +70,7 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell
-            date={day.date}
-            events={day.events}
-            css={css}
-            key={id}
-          />
+          <DayCell date={day.date} events={day.events} css={css} key={id} />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -115,10 +104,7 @@ function DayCell({ date, events, css }) {
         {weekday[0]} <CellDate date={date} isShown={showDate} />
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal
-          date={date}
-          events={events}
-        />
+        <DayModal date={date} events={events} />
       </Modal>
     </>
   );

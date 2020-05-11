@@ -36,10 +36,7 @@ function createYearCalendarCells(year, events) {
         });
       } else {
         const date = new Date(year, month - 1, day, 0, 0, 0, 0);
-        const dailyEvents = events.filter(
-          (event) => event.date === dayjs(date).format("YYYY-MM-DD")
-        );
-
+        const dailyEvents = events[dayjs(date).format("YYYY-MM-DD")];
         daysInMonth[day].push({
           month: month,
           day: day,
@@ -52,24 +49,6 @@ function createYearCalendarCells(year, events) {
   });
   return daysInMonth;
 }
-
-const dummyEvents = [
-  { id: 1, date: "2020-04-13", time: "11:00", title: "go to the beach" },
-  {
-    id: 2,
-    date: "2020-04-13",
-    time: "17:00",
-    title: "play FF7 with Ryan and Simon",
-  },
-  {
-    id: 3,
-    date: "2020-04-13",
-    time: "21:00",
-    title: "Drinks with Natasha and Pepito at the hacienda near the cemetery.",
-  },
-  { id: 4, date: "2020-04-19", time: "15:00", title: "confinement" },
-  { id: 5, date: "2020-05-20", time: "15:00", title: "poule au pot" },
-];
 
 const theme = {
   calendarYearTable: {
@@ -135,7 +114,7 @@ function getWeekday(date) {
 }
 
 function getEventStatus(events) {
-  if (events.length > 0) return "event";
+  if (events) return "event";
   return "noEvent";
 }
 
@@ -145,4 +124,4 @@ const calendarCellStyle = (date, events) => {
   ][getWeekday(date)];
 };
 
-export { createYearCalendarCells, dummyEvents, calendarCellStyle };
+export { createYearCalendarCells, calendarCellStyle };

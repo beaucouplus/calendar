@@ -37,7 +37,6 @@ function DayModal({ date, events }) {
 DayModal.propTypes = {
   date: PropTypes.instanceOf(Date).isRequired,
   events: PropTypes.array,
-  onAddEvent: PropTypes.func.isRequired,
 };
 
 function HeaderButton({ children, callBack }) {

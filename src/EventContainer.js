@@ -19,7 +19,7 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
   function setCurrentPage() {
     if (displayForm) return "form";
     if (chosenEvent) return "event";
-    if (!chosenEvent && events.length > 0) return "eventList";
+    if (!chosenEvent && events) return "eventList";
     return "none";
   }
 
@@ -82,7 +82,7 @@ function EventsMenu({ events, isDisplayed, onChoosePage, chosenEvent }) {
             </MenuItem>
           </HorizontalMenu>
           <>
-            {events.length > 0 && (
+            {events && (
               <HorizontalMenu>
                 {events.map((event) => (
                   <MenuItem
@@ -184,8 +184,7 @@ EventList.propTypes = {
 };
 
 function EventCol({ events, title, onChooseEvent }) {
-  const titleTextColor =
-    events && events.length > 0 ? "text-blue-800" : "text-gray-600";
+  const titleTextColor = events ? "text-blue-800" : "text-gray-600";
 
   return (
     <div className="">
