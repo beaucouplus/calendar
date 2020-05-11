@@ -8,17 +8,26 @@ import DayModal from "./DayModal";
 import { EventContext, EventStore } from "./EventContext";
 
 function App() {
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [currentView, setCurrentView] = useState("YearView");
+  const currentDate = new Date();
+
+  const [year, setYear] = useState(currentDate.getFullYear());
+  const monthStart = dayjs(currentDate).startOf("month").format("YYYY-MM-DD");
+  const [startOfMonth, setStartOfMonth] = useState(monthStart);
+  const [currentView, setCurrentView] = useState("MonthView");
 
   function selectView(view) {
     setCurrentView(view);
   }
+
   return (
     <EventStore>
       <div className="w-screen h-screen flex flex-col">
         <Header year={year} onSetYear={setYear} onSelectView={selectView} />
-        <CalendarView view={currentView} year={year} />
+        <CalendarView
+          view={currentView}
+          year={year}
+          startOfMonth={startOfMonth}
+        />
       </div>
     </EventStore>
   );
@@ -81,7 +90,7 @@ function Header({ year, onSetYear, onSelectView }) {
   );
 }
 
-function CalendarView({ view, year }) {
+function CalendarView({ view, year, startOfMonth }) {
   const views = {
     YearView,
     MonthView,
@@ -91,7 +100,7 @@ function CalendarView({ view, year }) {
 
   return (
     <div className="flex-grow">
-      <CurrentView year={year} />
+      <CurrentView year={year} startOfMonth={startOfMonth} />
     </div>
   );
 }
