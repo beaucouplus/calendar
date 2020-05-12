@@ -68,8 +68,7 @@ function monthViewDays(startOfMonth, events) {
 
   while (viewStart.isBefore(viewEnd)) {
     const dailyEvents = events[viewStart.format("YYYY-MM-DD")];
-    const currentDate = viewStart.toDate();
-    daysInMonth[currentDate] = dailyEvents;
+    daysInMonth[viewStart.format("YYYY-MM-DD")] = dailyEvents;
     viewStart = viewStart.add(1, "day");
   }
 

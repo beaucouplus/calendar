@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import { monthViewDays } from "./calendar";
 import Modal from "./Modal";
@@ -19,23 +21,25 @@ function MonthView({ startOfMonth }) {
     "Sunday",
   ];
 
-  useEffect(() => console.log(daysInView));
   return (
     <div className="flex flex-col flex-grow h-full border-t border-gray-500">
       <div className="grid grid-cols-7 divide-x divide-gray-300 border-b border-gray-300">
         {weekDays.map((wDay) => (
-          <div className="px-2 py-2 text-md font-semibold text-gray-800">
+          <div
+            className="px-2 py-2 text-md font-semibold text-gray-800"
+            key={wDay}
+          >
             {wDay}
           </div>
         ))}
       </div>
       <div className="grid grid-cols-7 h-full divide-x divide-gray-300">
         {Object.keys(daysInView).map((date) => (
-          <Day
-            date={date}
+          <MonthDay
+            date={dayjs(date, "YYYY-MM-DD").toDate()}
             month={currentMonth}
             events={daysInView[date]}
-            key={dayjs(date).format("YYYY-MM-DD")}
+            key={date}
           />
         ))}
       </div>
@@ -43,7 +47,11 @@ function MonthView({ startOfMonth }) {
   );
 }
 
-function Day({ date, month, events }) {
+MonthView.propTypes = exact({
+  startOfMonth: PropTypes.instanceOf(Date).isRequired,
+});
+
+function MonthDay({ date, month, events }) {
   const [showModal, setShowModal] = useState(false);
   const monthDay = dayjs(date).date();
 
@@ -62,8 +70,6 @@ function Day({ date, month, events }) {
     future: "text-gray-700",
   };
 
-  useEffect(() => console.log(events));
-
   const closeModal = () => setShowModal(false);
   return (
     <>
@@ -81,5 +87,10 @@ function Day({ date, month, events }) {
     </>
   );
 }
+MonthDay.propTypes = exact({
+  date: PropTypes.instanceOf(Date).isRequired,
+  month: PropTypes.string.isRequired,
+  events: PropTypes.array.isRequired,
+});
 
 export default MonthView;

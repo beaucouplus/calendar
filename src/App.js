@@ -96,11 +96,16 @@ function CalendarView({ view, year, startOfMonth }) {
     MonthView,
   };
 
+  const props = {
+    YearView: { year },
+    MonthView: { startOfMonth },
+  };
+
   const CurrentView = views[view];
 
   return (
     <div className="flex-grow">
-      <CurrentView year={year} startOfMonth={startOfMonth} />
+      <CurrentView {...props[view]} />
     </div>
   );
 }
