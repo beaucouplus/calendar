@@ -21,6 +21,8 @@ function MonthView({ startOfMonth }) {
     "Sunday",
   ];
 
+  useEffect(() => console.log(Object.keys(daysInView).length));
+
   return (
     <div className="flex flex-col flex-grow h-full border-t border-gray-500">
       <div className="grid grid-cols-7 divide-x divide-gray-300 border-b border-gray-300">
@@ -74,12 +76,20 @@ function MonthDay({ date, month, events }) {
   return (
     <>
       <div
-        className={`p-2 text-md font-semibold ${
+        className={`h-1/5 overflow-hidden ${
           styles[chooseStyle()]
-        } border-b border-b-500 cursor-pointer`}
+        } p-2  border-b border-b-500 cursor-pointer`}
         onClick={() => setShowModal(true)}
       >
-        {monthDay}
+        <div className={`text-md font-semibold`}>{monthDay}</div>
+        <ul className="text-xs text-gray-700 divide-y">
+          {events &&
+            events.map((event) => (
+              <li className="py-1 ">
+                {event.time} {event.title}
+              </li>
+            ))}
+        </ul>
       </div>
       <Modal showModal={showModal} onCloseModal={closeModal}>
         <DayModal date={date} events={events} />
