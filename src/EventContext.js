@@ -1,69 +1,83 @@
 import React, { useState } from "react";
 
 const dummyEvents = {
-  "2020-05-13": [
-    { id: 1, date: "2020-05-13", time: "11:00", title: "go to the beach" },
+  "2020-05-01": [
+    { id: 1, date: "2020-05-01", time: "11:00", title: "go to the beach" },
     {
       id: 2,
-      date: "2020-05-13",
+      date: "2020-05-01",
       time: "17:00",
       title: "play FF7 with Ryan and Simon",
     },
     {
       id: 3,
-      date: "2020-05-13",
+      date: "2020-05-01",
       time: "21:00",
       title:
         "Drinks with Natasha and Pepito at the hacienda near the cemetery.",
     },
   ],
-  "2020-05-06": [
-    { id: 4, date: "2020-05-06", time: "13:00", title: "work from home" },
+  "2020-05-08": [
+    { id: 4, date: "2020-05-08", time: "13:00", title: "work from home" },
     {
       id: 5,
-      date: "2020-05-06",
+      date: "2020-05-08",
       time: "15:00",
       title: "summer party with the cascados",
     },
   ],
-  "2020-05-20": [
+  "2020-05-15": [
     {
       id: 6,
-      date: "2020-05-20",
+      date: "2020-05-15",
       time: "15:00",
       title: "hamburgers with Daniel",
     },
     {
       id: 7,
-      date: "2020-05-20",
+      date: "2020-05-15",
       time: "18:00",
       title: "Night out at the Hacienda as usual",
     },
   ],
-  "2020-05-27": [
+  "2020-05-22": [
     {
       id: 8,
-      date: "2020-05-27",
+      date: "2020-05-22",
       time: "18:00",
       title: "Chill at home",
     },
     {
       id: 9,
-      date: "2020-05-27",
+      date: "2020-05-22",
       time: "21:00",
       title: "Double chill at home, netflix night",
     },
     {
       id: 10,
-      date: "2020-05-27",
+      date: "2020-05-22",
       time: "22:00",
       title: "Toilet time",
     },
     {
       id: 11,
-      date: "2020-05-27",
+      date: "2020-05-22",
       time: "23:30",
       title: "Should I sleep?",
+    },
+  ],
+  "2020-05-29": [
+    {
+      id: 6,
+      date: "2020-05-29",
+      time: "10:00",
+      title: "coffee at la pata negra",
+    },
+    {
+      id: 7,
+      date: "2020-05-29",
+      time: "16:00",
+      title: "Another coffee. Love coffee",
     },
   ],
 };

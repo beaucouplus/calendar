@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useContext,
+  useRef,
+} from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
@@ -9,6 +15,9 @@ import { EventContext } from "./EventContext";
 
 function MonthView({ startOfMonth }) {
   const { events } = useContext(EventContext);
+  const [maxItemHeight, setMaxItemHeight] = useState(0);
+  const monthDaysContainerRef = useRef();
+
   const daysInView = monthViewDays(startOfMonth, events);
   const currentMonth = dayjs(startOfMonth).month();
   const weekDays = [
@@ -21,7 +30,12 @@ function MonthView({ startOfMonth }) {
     "Sunday",
   ];
 
-  useEffect(() => console.log(Object.keys(daysInView).length));
+  useLayoutEffect(() => {
+    const maxHeight =
+      monthDaysContainerRef.current.offsetHeight /
+      Math.ceil(Object.keys(daysInView).length / 7);
+    setMaxItemHeight(maxHeight);
+  }, []);
 
   return (
     <div className="flex flex-col flex-grow h-full border-t border-gray-500">
@@ -35,12 +49,16 @@ function MonthView({ startOfMonth }) {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 h-full divide-x divide-gray-300">
+      <div
+        className="grid grid-cols-7 h-full divide-x divide-gray-300"
+        ref={monthDaysContainerRef}
+      >
         {Object.keys(daysInView).map((date) => (
           <MonthDay
             date={dayjs(date, "YYYY-MM-DD").toDate()}
             month={currentMonth}
             events={daysInView[date]}
+            maxHeight={maxItemHeight}
             key={date}
           />
         ))}
@@ -53,8 +71,11 @@ MonthView.propTypes = exact({
   startOfMonth: PropTypes.instanceOf(Date).isRequired,
 });
 
-function MonthDay({ date, month, events }) {
+function MonthDay({ date, month, events, maxHeight }) {
   const [showModal, setShowModal] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const titleRef = useRef();
+
   const monthDay = dayjs(date).date();
 
   const chooseStyle = () => {
@@ -72,20 +93,30 @@ function MonthDay({ date, month, events }) {
     future: "text-gray-700",
   };
 
+  useLayoutEffect(() => {
+    const finalHeight = maxHeight - titleRef.current.offsetHeight - 20;
+    setContentHeight(finalHeight);
+  });
+
   const closeModal = () => setShowModal(false);
   return (
     <>
       <div
-        className={`h-1/5 overflow-hidden ${
+        className={`${
           styles[chooseStyle()]
         } p-2  border-b border-b-500 cursor-pointer`}
         onClick={() => setShowModal(true)}
       >
-        <div className={`text-md font-semibold`}>{monthDay}</div>
-        <ul className="text-xs text-gray-700 divide-y">
+        <div className={`text-md font-semibold`} ref={titleRef}>
+          {monthDay}
+        </div>
+        <ul
+          className={`block overflow-hidden text-xs text-gray-700`}
+          style={{ height: `${contentHeight}px` }}
+        >
           {events &&
             events.map((event) => (
-              <li className="py-1 ">
+              <li className="truncate">
                 {event.time} {event.title}
               </li>
             ))}
@@ -101,6 +132,7 @@ MonthDay.propTypes = exact({
   date: PropTypes.instanceOf(Date).isRequired,
   month: PropTypes.string.isRequired,
   events: PropTypes.array.isRequired,
+  maxHeight: PropTypes.number.isRequired,
 });
 
 export default MonthView;
