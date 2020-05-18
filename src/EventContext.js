@@ -68,13 +68,13 @@ const dummyEvents = {
   ],
   "2020-05-29": [
     {
-      id: 6,
+      id: 12,
       date: "2020-05-29",
       time: "10:00",
       title: "coffee at la pata negra",
     },
     {
-      id: 7,
+      id: 13,
       date: "2020-05-29",
       time: "16:00",
       title: "Another coffee. Love coffee",
@@ -86,10 +86,10 @@ const EventContext = React.createContext();
 
 function EventStore({ children }) {
   const [events, setEvents] = useState(dummyEvents);
-  const [eventID, setEventID] = useState(11);
+  const [eventID, setEventID] = useState(13);
 
   function addEvent(event) {
-    setEventID(events.length + 1);
+    setEventID(eventID + 1);
     const newEvent = { ...event, id: eventID };
     const eventsList = events[event.date];
     const newEventsList = eventsList ? [...eventsList, newEvent] : [newEvent];

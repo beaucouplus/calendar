@@ -1,7 +1,6 @@
 import React, {
   useState,
   useEffect,
-  useLayoutEffect,
   useContext,
   useRef,
 } from "react";
@@ -30,7 +29,7 @@ function MonthView({ startOfMonth }) {
     "Sunday",
   ];
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const maxHeight =
       monthDaysContainerRef.current.offsetHeight /
       Math.ceil(Object.keys(daysInView).length / 7);
@@ -88,30 +87,32 @@ function MonthDay({ date, month, events, maxHeight }) {
   };
 
   const styles = {
-    past: "text-gray-500",
-    today: "bg-blue-100 text-blue-600",
-    future: "text-gray-700",
+    past: { typo: "text-gray-500" },
+    today: { typo: "text-blue-600", background: "bg-blue-100" },
+    future: { typo: "text-gray-700" } ,
   };
 
-  useLayoutEffect(() => {
+  const currentStyle = styles[chooseStyle()]
+
+  useEffect(() => {
     const finalHeight = maxHeight - titleRef.current.offsetHeight - 20;
     setContentHeight(finalHeight);
-  });
+  }, [maxHeight]);
 
   const closeModal = () => setShowModal(false);
   return (
     <>
       <div
         className={`${
-          styles[chooseStyle()]
-        } p-2  border-b border-b-500 cursor-pointer`}
+          currentStyle["typo"]
+        } ${currentStyle["background"]} p-2  border-b border-b-500 cursor-pointer hover:bg-gray-100 hover:text-gray-800`}
         onClick={() => setShowModal(true)}
       >
         <div className={`text-md font-semibold`} ref={titleRef}>
           {monthDay}
         </div>
         <ul
-          className={`block overflow-hidden text-xs text-gray-700`}
+          className={`block overflow-hidden text-xs ${currentStyle["typo"]}`}
           style={{ height: `${contentHeight}px` }}
         >
           {events &&
