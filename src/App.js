@@ -1,5 +1,5 @@
 // packages
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 
 // local files
@@ -28,6 +28,8 @@ function App() {
           onSetYear={setYear}
           currentView={currentView}
           onSelectView={selectView}
+          startOfMonth={startOfMonth}
+          onSetStartOfMonth={setStartOfMonth}
         />
         <CalendarView
           view={currentView}
@@ -45,7 +47,7 @@ function CalendarView({ view, year, startOfMonth }) {
     MonthView,
   };
 
-  const props = {
+  const viewProps = {
     YearView: { year },
     MonthView: { startOfMonth },
   };
@@ -54,7 +56,7 @@ function CalendarView({ view, year, startOfMonth }) {
 
   return (
     <div className="flex-grow">
-      <CurrentView {...props[view]} />
+      <CurrentView {...viewProps[view]} />
     </div>
   );
 }
