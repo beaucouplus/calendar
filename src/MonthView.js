@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
@@ -87,12 +82,12 @@ function MonthDay({ date, month, events, maxHeight }) {
   };
 
   const styles = {
-    past: { typo: "text-gray-500" },
-    today: { typo: "text-blue-600", background: "bg-blue-100" },
-    future: { typo: "text-gray-700" } ,
+    past: "text-gray-500 hover:text-gray-700 hover:bg-gray-100",
+    today: "text-blue-600 bg-blue-100 hover:bg-blue-200 hover:bg-opacity-50",
+    future: "text-gray-700 hover:bg-gray-100",
   };
 
-  const currentStyle = styles[chooseStyle()]
+  const currentStyle = styles[chooseStyle()];
 
   useEffect(() => {
     const finalHeight = maxHeight - titleRef.current.offsetHeight - 20;
@@ -103,16 +98,14 @@ function MonthDay({ date, month, events, maxHeight }) {
   return (
     <>
       <div
-        className={`${
-          currentStyle["typo"]
-        } ${currentStyle["background"]} p-2  border-b border-b-500 cursor-pointer hover:bg-gray-100 hover:text-gray-800`}
+        className={`${currentStyle} p-2  border-b border-b-500 cursor-pointer`}
         onClick={() => setShowModal(true)}
       >
         <div className={`text-md font-semibold`} ref={titleRef}>
           {monthDay}
         </div>
         <ul
-          className={`block overflow-hidden text-xs ${currentStyle["typo"]}`}
+          className={`block overflow-hidden text-xs`}
           style={{ height: `${contentHeight}px` }}
         >
           {events &&
