@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import Modal from "./Modal";
@@ -30,6 +31,10 @@ function YearView({ year }) {
     </table>
   );
 }
+
+YearView.propTypes = exact({
+  year: PropTypes.number.isRequired,
+});
 
 function MonthsRow({ css }) {
   const months = [
@@ -110,11 +115,11 @@ function DayCell({ date, events, css }) {
   );
 }
 
-DayCell.propTypes = {
+DayCell.propTypes = exact({
   date: PropTypes.instanceOf(Date).isRequired,
   events: PropTypes.array,
   css: PropTypes.object,
-};
+});
 
 function CellDate({ isShown, date }) {
   return (

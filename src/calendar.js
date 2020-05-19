@@ -50,6 +50,31 @@ function createYearCalendarCells(year, events) {
   return daysInMonth;
 }
 
+function monthViewDays(startOfMonth, events) {
+  let viewStart = dayjs(startOfMonth);
+
+  if (viewStart.format("dddd") !== "Monday") {
+    while (viewStart.format("dddd") !== "Monday") {
+      viewStart = viewStart.subtract(1, "day");
+    }
+  }
+  let viewEnd = dayjs(startOfMonth).endOf("month");
+  if (viewEnd.format("dddd") !== "Sunday") {
+    while (viewEnd.format("dddd") !== "Sunday") {
+      viewEnd = viewEnd.add(1, "day");
+    }
+  }
+  const daysInMonth = {};
+
+  while (viewStart.isBefore(viewEnd)) {
+    const dailyEvents = events[viewStart.format("YYYY-MM-DD")];
+    daysInMonth[viewStart.format("YYYY-MM-DD")] = dailyEvents;
+    viewStart = viewStart.add(1, "day");
+  }
+
+  return daysInMonth;
+}
+
 const theme = {
   calendarYearTable: {
     cellStyle: {
@@ -124,4 +149,4 @@ const calendarCellStyle = (date, events) => {
   ][getWeekday(date)];
 };
 
-export { createYearCalendarCells, calendarCellStyle };
+export { createYearCalendarCells, monthViewDays, calendarCellStyle };
