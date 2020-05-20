@@ -40,12 +40,22 @@ function Header({
         </h1>
       </div>
       <div className="flex flex-row items-center px-10 space-x-5">
-        <ul className="flex flex-row h-full items-center align-middle space-x-2 pr-10 border-r border-gray-500">
+        <ul className="flex flex-row h-full items-center align-middle pr-10 border-r border-gray-500">
           <li>
-            <Button callBack={() => onSelectView("YearView")}>Y</Button>
+            <Button
+              callBack={() => onSelectView("YearView")}
+              css="w-16 justify-center font-semibold border-l border-t border-b border-gray-500 rounded-l py-1 hover:bg-blue-800 hover:text-white"
+            >
+              Y
+            </Button>
           </li>
           <li>
-            <Button callBack={() => onSelectView("MonthView")}>M</Button>
+            <Button
+              callBack={() => onSelectView("MonthView")}
+              css="w-16 justify-center font-semibold border border-gray-500 rounded-r py-1 hover:bg-blue-800 hover:text-white"
+            >
+              M
+            </Button>
           </li>
         </ul>
 
