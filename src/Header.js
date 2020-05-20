@@ -48,14 +48,7 @@ function Header({
             <Button callBack={() => onSelectView("MonthView")}>M</Button>
           </li>
         </ul>
-        <ul className="flex flex-row h-full items-center align-middle pr-5 ">
-          <li>
-            <OutlineButton callBack={openModal}>Today</OutlineButton>
-            <Modal showModal={showModal} onCloseModal={closeModal}>
-              <DayModal date={today} events={todayEvents} />
-            </Modal>
-          </li>
-        </ul>
+
         <CurrentViewMenu
           currentView={currentView}
           year={year}
@@ -65,6 +58,16 @@ function Header({
           onPreviousMonth={previousMonth}
           onNextMonth={nextMonth}
         />
+      </div>
+      <div className="flex flex-grow">
+        <ul className="flex flex-row h-full items-center align-middle pr-5 ">
+          <li>
+            <OutlineButton callBack={openModal}>Today</OutlineButton>
+            <Modal showModal={showModal} onCloseModal={closeModal}>
+              <DayModal date={today} events={todayEvents} />
+            </Modal>
+          </li>
+        </ul>
       </div>
     </div>
   );
@@ -93,7 +96,7 @@ function CurrentViewMenu({
 
 function ViewMenu({ period, previous, next }) {
   return (
-    <div className="flex space-x-6 h-full items-center align-middle">
+    <div className="flex space-x-6 px-5 h-full items-center align-middle border-r border-gray-500">
       <ul className="flex flex-row space-x-3">
         <li>
           <Button callBack={previous}>
@@ -106,7 +109,7 @@ function ViewMenu({ period, previous, next }) {
           </Button>
         </li>
       </ul>
-      <h2 className="text-xl tracking-wide">{period}</h2>
+      <h2 className="w-48 text-xl tracking-wide ">{period}</h2>
     </div>
   );
 }
