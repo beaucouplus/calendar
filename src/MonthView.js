@@ -9,8 +9,9 @@ import { EventContext } from "./EventContext";
 
 function MonthView({ startOfMonth }) {
   const { events } = useContext(EventContext);
-  const [maxItemHeight, setMaxItemHeight] = useState(0);
   const monthDaysContainerRef = useRef();
+  const [maxItemHeight, setMaxItemHeight] = useState(0);
+  const [maxNumberOfEvents, setMaxNumberOfEvents] = useState(0);
 
   const daysInView = monthViewDays(startOfMonth, events);
   const currentMonth = dayjs(startOfMonth).month();
@@ -24,14 +25,17 @@ function MonthView({ startOfMonth }) {
     "Sunday",
   ];
 
+  const daysListSize = Object.keys(daysInView).length;
+
   useEffect(() => {
-    const maxHeight =
-      monthDaysContainerRef.current.offsetHeight /
-      (Object.keys(daysInView).length / 7);
-    setMaxItemHeight(maxHeight);
-    console.log(maxHeight);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startOfMonth]);
+    const maxHeight = Math.round(
+      monthDaysContainerRef.current.offsetHeight / (daysListSize / 7)
+    );
+    setMaxItemHeight((x) => maxHeight);
+    const eventHeight = 22; // size of an event. Should be enough to define the max number of events to displey each day.
+    const maxEventsSize = Math.floor(maxHeight / eventHeight) - 1;
+    setMaxNumberOfEvents((x) => maxEventsSize);
+  }, [startOfMonth, daysListSize]);
 
   return (
     <div className="flex flex-col flex-grow h-full border-t border-gray-500">
@@ -55,6 +59,7 @@ function MonthView({ startOfMonth }) {
             month={currentMonth}
             events={daysInView[date]}
             maxHeight={maxItemHeight}
+            maxNumberOfEvents={maxNumberOfEvents}
             key={date}
           />
         ))}
