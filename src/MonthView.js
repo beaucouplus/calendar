@@ -27,9 +27,11 @@ function MonthView({ startOfMonth }) {
   useEffect(() => {
     const maxHeight =
       monthDaysContainerRef.current.offsetHeight /
-      Math.ceil(Object.keys(daysInView).length / 7);
+      (Object.keys(daysInView).length / 7);
     setMaxItemHeight(maxHeight);
-  }, []);
+    console.log(maxHeight);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startOfMonth]);
 
   return (
     <div className="flex flex-col flex-grow h-full border-t border-gray-500">
