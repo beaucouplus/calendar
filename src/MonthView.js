@@ -72,7 +72,7 @@ MonthView.propTypes = exact({
   startOfMonth: PropTypes.instanceOf(Date).isRequired,
 });
 
-function MonthDay({ date, month, events, maxHeight }) {
+function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
   const [showModal, setShowModal] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const titleRef = useRef();
@@ -116,8 +116,8 @@ function MonthDay({ date, month, events, maxHeight }) {
           style={{ height: `${contentHeight}px` }}
         >
           {events &&
-            events.map((event) => (
-              <li className="truncate">
+            events.slice(0, maxNumberOfEvents).map((event) => (
+              <li className="truncate" key={event.id}>
                 {event.time} {event.title}
               </li>
             ))}
@@ -134,6 +134,7 @@ MonthDay.propTypes = exact({
   month: PropTypes.string.isRequired,
   events: PropTypes.array.isRequired,
   maxHeight: PropTypes.number.isRequired,
+  maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
 export default MonthView;
