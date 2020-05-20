@@ -20,7 +20,7 @@ function DayModal({ date, events }) {
         </h2>
         <div className="flex-grow">
           <HeaderButton callBack={() => setDisplayForm(true)}>
-            <i className="gg-add-r h-full mr-3"></i>Add Event
+            <i className="gg-add-r mr-3"></i>Add Event
           </HeaderButton>
         </div>
       </header>
@@ -41,7 +41,7 @@ DayModal.propTypes = {
 
 function HeaderButton({ children, callBack }) {
   const style = `flex flex-row items-center
-                 bg-blue-700 hover:bg-blue-500
+                 bg-blue-500 hover:bg-blue-800
                  text-xs text-white font-semibold align-middle hover:text-white
                  py-2 px-4
                  rounded
