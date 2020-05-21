@@ -44,37 +44,55 @@ const dummyEvents = {
     {
       id: 8,
       date: "2020-05-22",
-      time: "18:00",
+      time: "15:00",
       title: "Chill at home",
     },
     {
       id: 9,
       date: "2020-05-22",
-      time: "21:00",
+      time: "17:00",
       title: "Double chill at home, netflix night",
     },
     {
       id: 10,
       date: "2020-05-22",
-      time: "22:00",
+      time: "18:00",
       title: "Toilet time",
     },
     {
       id: 11,
       date: "2020-05-22",
-      time: "23:30",
+      time: "19:00",
+      title: "Nap time",
+    },
+    {
+      id: 12,
+      date: "2020-05-22",
+      time: "20:00",
+      title: "Eat",
+    },
+    {
+      id: 13,
+      date: "2020-05-22",
+      time: "21:00",
+      title: "Netflix",
+    },
+    {
+      id: 14,
+      date: "2020-05-22",
+      time: "22:00",
       title: "Should I sleep?",
     },
   ],
   "2020-05-29": [
     {
-      id: 12,
+      id: 15,
       date: "2020-05-29",
       time: "10:00",
       title: "coffee at la pata negra",
     },
     {
-      id: 13,
+      id: 16,
       date: "2020-05-29",
       time: "16:00",
       title: "Another coffee. Love coffee",
@@ -86,7 +104,7 @@ const EventContext = React.createContext();
 
 function EventStore({ children }) {
   const [events, setEvents] = useState(dummyEvents);
-  const [eventID, setEventID] = useState(13);
+  const [eventID, setEventID] = useState(17);
 
   function addEvent(event) {
     setEventID(eventID + 1);
