@@ -76,8 +76,12 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
   const [showModal, setShowModal] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const titleRef = useRef();
-
   const monthDay = dayjs(date).date();
+
+  const remainingEventsNumber =
+    events && maxNumberOfEvents < events.length
+      ? events.length - maxNumberOfEvents
+      : undefined;
 
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
@@ -105,7 +109,7 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
   return (
     <>
       <div
-        className={`${currentStyle} p-2  border-b border-b-500 cursor-pointer`}
+        className={`${currentStyle} relative p-2 border-b border-b-500 cursor-pointer`}
         onClick={() => setShowModal(true)}
       >
         <div className={`text-md font-semibold`} ref={titleRef}>
@@ -122,6 +126,10 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
               </li>
             ))}
         </ul>
+        <RemainingEventsNumber
+          remainingEventsNumber={remainingEventsNumber}
+          isShown={!!remainingEventsNumber}
+        />
       </div>
       <Modal showModal={showModal} onCloseModal={closeModal}>
         <DayModal date={date} events={events} />
@@ -135,6 +143,23 @@ MonthDay.propTypes = exact({
   events: PropTypes.array.isRequired,
   maxHeight: PropTypes.number.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
+});
+
+function RemainingEventsNumber({ remainingEventsNumber, isShown }) {
+  return (
+    <>
+      {isShown && (
+        <div className="absolute bottom-0 left-0 flex w-full justify-end text-xs font-semibold text-gray-600 py-1 px-2">
+          + {remainingEventsNumber}
+        </div>
+      )}
+    </>
+  );
+}
+
+RemainingEventsNumber.propTypes = exact({
+  remainingEventsNumber: PropTypes.number,
+  isShown: PropTypes.bool.isRequired,
 });
 
 export default MonthView;
