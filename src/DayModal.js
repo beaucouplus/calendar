@@ -13,8 +13,8 @@ function DayModal({ date, events }) {
     setDisplayForm(false);
   };
   return (
-    <div className="h-full flex flex-col mx-8">
-      <header className="flex flex-row items-center">
+    <div className="h-full flex flex-col">
+      <header className="flex flex-row items-center px-8 pb-2">
         <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
           {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
         </h2>
