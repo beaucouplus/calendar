@@ -38,7 +38,7 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
       return aTime - bTime;
     });
   return (
-    <div className="bg-gray-200 p-10 my-5 rounded-lg shadow-inner">
+    <div className="h-full bg-gray-200 pt-4 px-8 shadow-inner">
       <EventsMenu
         events={sortedEvents}
         isDisplayed={currentPage !== "none" && currentPage !== "form"}
@@ -158,21 +158,24 @@ function EventList({ events, onChooseEvent }) {
   const eveningEvents = filterEventsBetween(events, "19:00", "23:59");
 
   return (
-    <div className="grid grid-cols-3 gap-8 w-full">
+    <div className="grid grid-rows w-full gap-2">
       <EventCol
         events={morningEvents}
         onChooseEvent={onChooseEvent}
         title="Morning"
+        isShown={morningEvents.length > 0}
       />
       <EventCol
         events={afternoonEvents}
         onChooseEvent={onChooseEvent}
         title="Afternoon"
+        isShown={afternoonEvents.length > 0}
       />
       <EventCol
         events={eveningEvents}
         onChooseEvent={onChooseEvent}
         title="Evening"
+        isShown={eveningEvents.length > 0}
       />
     </div>
   );
@@ -183,23 +186,28 @@ EventList.propTypes = {
   onChooseEvent: PropTypes.func.isRequired,
 };
 
-function EventCol({ events, title, onChooseEvent }) {
-  const titleTextColor = events ? "text-blue-800" : "text-gray-600";
-
+function EventCol({ events, title, onChooseEvent, isShown }) {
   return (
-    <div className="">
-      <div className="py-2">
-        <h2 className={`text-xl font-medium ${titleTextColor}`}>{title}</h2>
-      </div>
-      <div className="h-auto flex self-stretch mt-4 mb-6 pb-6">
-        <ul className="block w-full list-inside list-disc text-gray-800">
-          {events &&
-            events.map((event, idx) => (
-              <Event key={idx} event={event} onChooseEvent={onChooseEvent} />
-            ))}
-        </ul>
-      </div>
-    </div>
+    <>
+      {isShown && (
+        <div className="grid grid-cols-4 gap-6 mb-2">
+          <div className="py-4 align-middle text-right"></div>
+          <div className="h-auto col-span-3 flex self-stretch">
+            <ul className="block w-full space-y-2">
+              <h2 className="pl-4 text-md text-blue-700">{title}</h2>
+              {events &&
+                events.map((event, idx) => (
+                  <Event
+                    key={idx}
+                    event={event}
+                    onChooseEvent={onChooseEvent}
+                  />
+                ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -210,11 +218,12 @@ EventCol.propTypes = {
 };
 
 function Event({ event, onChooseEvent }) {
-  const style = `block w-full h-auto 
-    mb-4 p-4
+  const style = `flex items-center 
+    w-full h-auto 
+    py-2 px-4
     bg-white 
-    border-2 border-transparent rounded-lg hover:border-blue-600 shadow-md
-    text-lg text-gray-800
+    border-2 border-transparent rounded-lg hover:border-blue-600 shadow-sm
+    text-md text-gray-800
     cursor-pointer`;
 
   const chooseEvent = (event) => {
@@ -223,10 +232,10 @@ function Event({ event, onChooseEvent }) {
 
   return (
     <li className={style} onClick={() => chooseEvent(event)}>
-      <div className="h-auto py-1 text-blue-700 font-bold tracking-wider border-b-2 border-gray-300">
+      <div className="w-1/8 py-1 text-blue-700 font-semibold tracking-wider text-right">
         {event.time}
       </div>
-      <div className="mt-2">{event.title}</div>
+      <div className="pl-4">{event.title}</div>
     </li>
   );
 }
