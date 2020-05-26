@@ -18,7 +18,6 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
   };
   function setCurrentPage() {
     if (displayForm) return "form";
-    if (chosenEvent) return "event";
     if (!chosenEvent && events) return "eventList";
     return "none";
   }
@@ -38,13 +37,7 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
       return aTime - bTime;
     });
   return (
-    <div className="h-full bg-gray-200 pt-4 px-8 shadow-inner">
-      <EventsMenu
-        events={sortedEvents}
-        isDisplayed={currentPage !== "none" && currentPage !== "form"}
-        chosenEvent={chosenEvent}
-        onChoosePage={choosePage}
-      />
+    <div className="flex flex-col flex-grow bg-gray-200 px-8 shadow-inner">
       <EventForm
         events={events}
         date={date}
@@ -71,74 +64,6 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
   );
 }
 
-function EventsMenu({ events, isDisplayed, onChoosePage, chosenEvent }) {
-  return (
-    <>
-      {isDisplayed && (
-        <div className="flex mb-10 space-x-2">
-          <HorizontalMenu>
-            <MenuItem callBack={() => onChoosePage()} isSelected={!chosenEvent}>
-              <i className="gg-list mr-3"></i> Planning
-            </MenuItem>
-          </HorizontalMenu>
-          <>
-            {events && (
-              <HorizontalMenu>
-                {events.map((event) => (
-                  <MenuItem
-                    key={event.id}
-                    callBack={() => onChoosePage(event)}
-                    isSelected={event === chosenEvent}
-                  >
-                    {event.time}
-                  </MenuItem>
-                ))}
-              </HorizontalMenu>
-            )}
-          </>
-        </div>
-      )}
-    </>
-  );
-}
-
-function HorizontalMenu({ children }) {
-  return (
-    <ul className="bg-white flex flex-row text-sm rounded px-3 pt-3 items-center">
-      {children}
-    </ul>
-  );
-}
-
-function MenuItem({ children, isSelected, callBack }) {
-  const style = `flex px-4 pb-2 border-b-4 border-white hover:border-blue-600 cursor-pointer`;
-  const selectedStyle = isSelected ? "border-blue-600" : "";
-
-  return (
-    <li className={`${style} ${selectedStyle}`} onClick={callBack}>
-      {children}
-    </li>
-  );
-}
-
-function EventDetails({ event, onDeleteEvent }) {
-  return (
-    <div className="flex flex-row justify between w-full space-x-5 p-10 bg-white text-gray-800 rounded-lg">
-      <div className="font-bold text-2xl text-blue-700 tracking-wider pr-4 border-r-2 border-gray-300">
-        {event.time}
-      </div>
-      <div className="flex flex-grow">
-        <div className="flex-grow text-2xl">{event.title}</div>
-      </div>
-      <div className="justify-end">
-        <DeleteButton callBack={() => onDeleteEvent(event)}>
-          <i className="gg-trash mr-3"></i> Delete
-        </DeleteButton>
-      </div>
-    </div>
-  );
-}
-
 function EventList({ events, onChooseEvent }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
     if (!eventList) return false;
@@ -158,7 +83,7 @@ function EventList({ events, onChooseEvent }) {
   const eveningEvents = filterEventsBetween(events, "19:00", "23:59");
 
   return (
-    <div className="grid grid-rows w-full gap-2">
+    <div className="grid grid-rows mt-10 mb-20">
       <EventCol
         events={morningEvents}
         onChooseEvent={onChooseEvent}
@@ -190,9 +115,8 @@ function EventCol({ events, title, onChooseEvent, isShown }) {
   return (
     <>
       {isShown && (
-        <div className="grid grid-cols-4 gap-6 mb-2">
-          <div className="py-4 align-middle text-right"></div>
-          <div className="h-auto col-span-3 flex self-stretch">
+        <div className="mb-2">
+          <div className="h-auto flex self-stretch">
             <ul className="block w-full space-y-2">
               <h2 className="pl-4 text-md text-blue-700">{title}</h2>
               {events &&
@@ -217,25 +141,35 @@ EventCol.propTypes = {
   onChooseEvent: PropTypes.func.isRequired,
 };
 
-function Event({ event, onChooseEvent }) {
-  const style = `flex items-center 
-    w-full h-auto 
-    py-2 px-4
-    bg-white 
-    border-2 border-transparent rounded-lg hover:border-blue-600 shadow-sm
-    text-md text-gray-800
-    cursor-pointer`;
+function Event({ event, onDeleteEvent }) {
+  const [showDetails, setShowDetails] = useState(false);
 
-  const chooseEvent = (event) => {
-    onChooseEvent(event);
-  };
+  const eventTitleStyle = `flex items-center 
+                 w-full h-auto 
+                 py-2 px-4
+                 rounded-lg
+                 text-md text-gray-800
+                 border-2 border-transparent 
+                 hover:border-blue-600
+                 cursor-pointer`;
 
   return (
-    <li className={style} onClick={() => chooseEvent(event)}>
-      <div className="w-1/8 py-1 text-blue-700 font-semibold tracking-wider text-right">
-        {event.time}
+    <li className="block bg-white rounded-lg shadow-sm">
+      <div
+        className={eventTitleStyle}
+        onClick={() => setShowDetails(!showDetails)}
+      >
+        <div className="w-1/8 py-1 text-blue-700 font-semibold tracking-wider text-right">
+          {event.time}
+        </div>
+        <div className="pl-4">{event.title}</div>
+        <div className="flex flex-grow justify-end text-gray-400 hover:text-blue-600">
+          <i class="gg-chevron-down"></i>
+        </div>
       </div>
-      <div className="pl-4">{event.title}</div>
+      {showDetails && (
+        <EventDetails event={event} onDeleteEvent={onDeleteEvent} />
+      )}
     </li>
   );
 }
@@ -244,6 +178,16 @@ Event.propTypes = {
   event: PropTypes.object.isRequired,
   onChooseEvent: PropTypes.func.isRequired,
 };
+
+function EventDetails({ event, onDeleteEvent }) {
+  return (
+    <div className="m-2 flex flex-row justify-end pt-5 border-t border-gray-300 ">
+      <DeleteButton callBack={() => onDeleteEvent(event)}>
+        <i className="gg-trash"></i>
+      </DeleteButton>
+    </div>
+  );
+}
 
 function DeleteButton({ children, callBack }) {
   const outlineStyle = `flex flex-row items-center
