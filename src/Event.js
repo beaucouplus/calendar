@@ -10,17 +10,22 @@ function Event({ event, onDeleteEvent }) {
     onDeleteEvent(event);
   };
 
-  const eventTitleStyle = `flex 
+  const buttonStyle = `flex 
                    w-full h-auto 
+                   py-2 px-4
                    rounded-lg
                    text-md text-gray-800
+                   focus:outline-none
+                   border-2 border-transparent
+                   focus:border-blue-600
                    cursor-pointer`;
 
   return (
-    <li className="block bg-white rounded-lg shadow-sm border-2 border-transparent hover:border-blue-600 py-2 px-4">
-      <div
-        className={eventTitleStyle}
-        onClick={() => setShowDetails(!showDetails)}
+    <li className="block bg-white rounded-lg shadow-sm">
+      <Button
+        css={buttonStyle}
+        callBack={() => setShowDetails(!showDetails)}
+        withFocus={false}
       >
         <div className="w-1/8 text-blue-700 align-baseline font-semibold tracking-wider text-right">
           {event.time}
@@ -29,7 +34,7 @@ function Event({ event, onDeleteEvent }) {
         <div className="flex flex-grow justify-end text-gray-400 hover:text-blue-600">
           <i className="gg-chevron-down"></i>
         </div>
-      </div>
+      </Button>
       {showDetails && (
         <EventDetails event={event} onDeleteEvent={handleDeleteEvent} />
       )}
@@ -44,7 +49,7 @@ Event.propTypes = {
 
 function EventDetails({ event, onDeleteEvent }) {
   return (
-    <div className="text-gray-700 text-sm">
+    <div className="text-gray-700 text-sm pb-2 px-4">
       <div className="mt-2" id="event-description">
         This event will take place somewhere, on the edge of the Earth. Might be
         useful to take something with me, such as a bottle of water or some
@@ -52,7 +57,7 @@ function EventDetails({ event, onDeleteEvent }) {
         probably be very warm.
       </div>
       <div
-        className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded"
+        className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded"
         id="event-location"
       >
         <h3 className="font-semibold">Where?</h3>

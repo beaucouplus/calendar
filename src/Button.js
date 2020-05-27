@@ -10,11 +10,14 @@ function Button({
   ariaLabel = "",
   ariaLabelledBy = "",
   autoFocus = false,
+  withFocus = true,
 }) {
+  const focus = withFocus ? "focus:outline-none focus:shadow-outline" : "";
+
   return (
     <button
       onClick={callBack}
-      className={`${css} flex items-center focus:outline-none focus:shadow-outline`}
+      className={`${css} flex items-center ${focus}`}
       value={value}
       type={type}
       aria-label={ariaLabel}
