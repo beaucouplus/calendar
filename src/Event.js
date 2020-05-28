@@ -10,27 +10,28 @@ function Event({ event, onDeleteEvent }) {
     onDeleteEvent(event);
   };
 
-  const buttonStyle = `group flex
+  const handleClick = () => {
+    setShowDetails(!showDetails);
+  };
+
+  const buttonStyle = `group flex items-start
                    w-full h-auto 
                    py-2 px-4
                    rounded-lg
                    text-md text-gray-800
                    focus:outline-none
-                   hover:bg-blue-600 focus:bg-blue-600 focus:text-white hover:text-white
                    cursor-pointer`;
 
   return (
-    <li className="block bg-white rounded-lg shadow-sm">
-      <Button
-        css={buttonStyle}
-        callBack={() => setShowDetails(!showDetails)}
-        withFocus={false}
-      >
-        <div className="w-1/8 text-blue-700 group-hover:text-white group-focus:text-white align-baseline font-semibold tracking-wider text-right">
+    <li
+      className={`block bg-white rounded-lg shadow-sm border-2 hover:border-blue-600 border-transparent focus-within:border-blue-600`}
+    >
+      <Button css={buttonStyle} callBack={handleClick} withFocus={false}>
+        <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
           {event.time}
         </div>
         <div className="pl-4 text-left">{event.title}</div>
-        <div className="flex flex-grow justify-end text-gray-400 group-focus:text-white group-hover:text-white">
+        <div className="flex flex-grow justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
           <i className="gg-chevron-down"></i>
         </div>
       </Button>
@@ -76,11 +77,11 @@ function DeleteButton({ children, callBack }) {
                    bg-transparent rounded
                    text-xs text-red-700 align-middle 
                    py-2 px-3
-                   hover:bg-red-700 hover:text-white
+                   hover:bg-red-700 hover:text-white focus:outline-none focus:bg-red-700  focus:text-white
                    `;
 
   return (
-    <Button callBack={callBack} css={outlineStyle}>
+    <Button callBack={callBack} css={outlineStyle} withFocus={false}>
       {children}
     </Button>
   );
