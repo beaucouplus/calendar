@@ -17,7 +17,7 @@ function Event({ event, onDeleteEvent }) {
                    text-md text-gray-800
                    focus:outline-none
                    border-2 border-transparent
-                   focus:border-blue-600
+                   focus:border-blue-300 hover:border-blue-600
                    cursor-pointer`;
 
   return (

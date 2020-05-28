@@ -51,7 +51,7 @@ function EventContainer({ events, date, displayForm, onCloseForm }) {
       </>
       <>
         {currentPage === "none" && (
-          <div className="text-blue-700 text-2xl tracking-wider">
+          <div className="mt-10 text-blue-700 text-2xl tracking-wider">
             No events today.
           </div>
         )}

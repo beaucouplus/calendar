@@ -64,7 +64,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
       {display && (
         <form
           action=""
-          className="w-full bg-white p-10 rounded-lg"
+          className="mt-10 w-full bg-white p-10 rounded-lg"
           onSubmit={handleSubmit}
         >
           <div id="form-title" className="">
