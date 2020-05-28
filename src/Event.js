@@ -10,14 +10,13 @@ function Event({ event, onDeleteEvent }) {
     onDeleteEvent(event);
   };
 
-  const buttonStyle = `flex 
+  const buttonStyle = `group flex
                    w-full h-auto 
                    py-2 px-4
                    rounded-lg
                    text-md text-gray-800
                    focus:outline-none
-                   border-2 border-transparent
-                   focus:border-blue-300 hover:border-blue-600
+                   hover:bg-blue-600 focus:bg-blue-600 focus:text-white hover:text-white
                    cursor-pointer`;
 
   return (
@@ -27,11 +26,11 @@ function Event({ event, onDeleteEvent }) {
         callBack={() => setShowDetails(!showDetails)}
         withFocus={false}
       >
-        <div className="w-1/8 text-blue-700 align-baseline font-semibold tracking-wider text-right">
+        <div className="w-1/8 text-blue-700 group-hover:text-white group-focus:text-white align-baseline font-semibold tracking-wider text-right">
           {event.time}
         </div>
         <div className="pl-4">{event.title}</div>
-        <div className="flex flex-grow justify-end text-gray-400 hover:text-blue-600">
+        <div className="flex flex-grow justify-end text-gray-400 group-focus:text-white group-hover:text-white">
           <i className="gg-chevron-down"></i>
         </div>
       </Button>
