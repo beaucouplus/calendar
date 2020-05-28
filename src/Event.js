@@ -29,7 +29,7 @@ function Event({ event, onDeleteEvent }) {
         <div className="w-1/8 text-blue-700 group-hover:text-white group-focus:text-white align-baseline font-semibold tracking-wider text-right">
           {event.time}
         </div>
-        <div className="pl-4">{event.title}</div>
+        <div className="pl-4 text-left">{event.title}</div>
         <div className="flex flex-grow justify-end text-gray-400 group-focus:text-white group-hover:text-white">
           <i className="gg-chevron-down"></i>
         </div>
