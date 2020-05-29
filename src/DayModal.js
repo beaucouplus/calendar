@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import DayView from "./DayView";
 import { Button } from "./Button";
-import EventContainer from "./EventContainer";
+
 dayjs.extend(customParseFormat);
 
 function DayModal({ date, events }) {
@@ -12,19 +13,20 @@ function DayModal({ date, events }) {
   const closeForm = () => {
     setDisplayForm(false);
   };
+
+  const triggerForm = () => {
+    setDisplayForm(!displayForm);
+  };
+
   return (
-    <div className="h-full flex flex-col mx-8">
-      <header className="flex flex-row items-center">
-        <h2 className="inline-block text-3xl font-medium text-gray-800 leading-loose mr-4">
+    <div className="mt-8 h-full flex flex-col">
+      <header className="flex items-center justify-between pl-6 px-3 pb-3">
+        <h2 className="inline-block text-2xl  text-gray-800 leading-loose">
           {dayjs(date).format("dddd")} {dayjs(date).format("LL")}
         </h2>
-        <div className="flex-grow">
-          <HeaderButton callBack={() => setDisplayForm(true)}>
-            <i className="gg-add-r mr-3"></i>Add Event
-          </HeaderButton>
-        </div>
+        <AddEventButton callBack={() => triggerForm()} />
       </header>
-      <EventContainer
+      <DayView
         events={events}
         date={date}
         displayForm={displayForm}
@@ -39,11 +41,13 @@ DayModal.propTypes = {
   events: PropTypes.array,
 };
 
-function HeaderButton({ children, callBack }) {
-  const style = `flex flex-row items-center
-                 bg-blue-500 hover:bg-blue-800
-                 text-xs text-white font-semibold align-middle hover:text-white
-                 py-2 px-4
+function AddEventButton({ callBack }) {
+  const style = `flex items-center
+                 bg-blue-600
+                 text-xs text-white font-semibold align-middle
+                 hover:bg-blue-800 hover:text-white
+                 ml-4
+                 py-2 px-6
                  rounded
                  cursor-pointer`;
 
@@ -54,7 +58,7 @@ function HeaderButton({ children, callBack }) {
       ariaLabel="new event form"
       ariaLabelledBy="new-event-form"
     >
-      {children}
+      <i className="gg-add-r mr-3"></i>New
     </Button>
   );
 }

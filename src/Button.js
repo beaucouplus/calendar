@@ -1,25 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function Button({
-  children,
-  callBack,
-  css = "",
-  value = "",
-  type = "button",
-  ariaLabel = "",
-  ariaLabelledBy = "",
-  autoFocus = false,
-}) {
+function Button(
+  {
+    children,
+    callBack,
+    css = "",
+    value = "",
+    type = "button",
+    ariaLabel = "",
+    ariaLabelledBy = "",
+    autoFocus = false,
+    withFocus = true,
+  },
+  props
+) {
+  const focus = withFocus ? "focus:outline-none focus:shadow-outline" : "";
+
   return (
     <button
       onClick={callBack}
-      className={`${css} flex items-center focus:outline-none focus:shadow-outline`}
+      className={`${css} ${focus}`}
       value={value}
       type={type}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       autoFocus={autoFocus}
+      {...props}
     >
       {children}
     </button>

@@ -46,9 +46,9 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
       >
         <div
           ref={modalContentRef}
-          className="static box-border top-0 right-0 h-screen w-3/4 max-w-3/4 p-2 bg-white border shadow-md"
+          className="static box-border top-0 right-0 h-screen w-5/12 max-w-5/12 bg-white border shadow-md"
         >
-          <div className="w-full flex items-center justify-end flex-wrap p-1">
+          <div className="w-full flex items-center justify-end flex-wrap pt-3 pr-3">
             <ModalButton
               callBack={() => onCloseModal()}
               ariaLabel="Close modal"
@@ -59,7 +59,7 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
             </ModalButton>
           </div>
 
-          <div className="h-full box-border overflow-auto flex flex-col justify-start mx-2 px-1 pt-1 pb-5">
+          <div className="h-full box-border overflow-auto flex flex-col justify-start">
             {children}
           </div>
         </div>
