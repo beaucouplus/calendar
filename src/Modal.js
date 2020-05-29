@@ -46,7 +46,7 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
       >
         <div
           ref={modalContentRef}
-          className="static box-border top-0 right-0 h-screen w-2/5 max-w-2/5 bg-white border shadow-md"
+          className="static box-border top-0 right-0 h-screen w-5/12 max-w-5/12 bg-white border shadow-md"
         >
           <div className="w-full flex items-center justify-end flex-wrap pt-3 pr-3">
             <ModalButton

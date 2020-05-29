@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import { Button } from "./Button";
+import { EventContext } from "./EventContext";
 
-function Event({ event, onDeleteEvent }) {
+function Event({ event }) {
+  const { onDeleteEvent } = useContext(EventContext);
   const [showDetails, setShowDetails] = useState(false);
 
   const handleDeleteEvent = (event) => {
@@ -42,10 +45,9 @@ function Event({ event, onDeleteEvent }) {
   );
 }
 
-Event.propTypes = {
+Event.propTypes = exact({
   event: PropTypes.object.isRequired,
-  onChooseEvent: PropTypes.func.isRequired,
-};
+});
 
 function EventDetails({ event, onDeleteEvent }) {
   return (
@@ -71,6 +73,10 @@ function EventDetails({ event, onDeleteEvent }) {
     </div>
   );
 }
+EventDetails.propTypes = exact({
+  event: PropTypes.object.isRequired,
+  onDeleteEvent: PropTypes.func.isRequired,
+});
 
 function DeleteButton({ children, callBack }) {
   const outlineStyle = `flex flex-row items-center

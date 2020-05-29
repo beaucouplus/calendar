@@ -123,6 +123,7 @@ EventForm.propTypes = {
   display: PropTypes.bool.isRequired,
   onAddEvent: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  events: PropTypes.array,
 };
 
 function HourPicker({ eventHour, onChooseHour, display }) {
