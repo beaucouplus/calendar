@@ -72,10 +72,10 @@ function SubmitButton({
 }
 
 function BlueSubmitButton({ value, ariaLabel, ariaLabelledBy }) {
-  const blueStyle = `bg-blue-500 hover:bg-blue-800
+  const blueStyle = `focus:outline-none focus:shadow-outline
+                     bg-blue-500 hover:bg-blue-800 focus:bg-blue-800
                      text-xs text-white font-semibold hover:text-white
                      py-2 px-10
-                     border border-blue-500 hover:border-blue-800 
                      rounded
                      cursor-pointer`;
 
@@ -90,10 +90,10 @@ function BlueSubmitButton({ value, ariaLabel, ariaLabelledBy }) {
 }
 
 function OutlineSubmitButton({ value }) {
-  const outlineStyle = `bg-transparent hover:bg-blue-700
-                 text-sm text-blue-700 font-semibold hover:text-white
+  const outlineStyle = `bg-transparent hover:bg-blue-700 focus:bg-blue-700
+                 text-sm text-blue-700 font-semibold hover:text-white focus:text-white
                  py-2 px-2
-                 border border-blue-700 hover:border-transparent 
+                 border border-blue-700 hover:border-transparent focus:border-transparent
                  rounded
                  `;
 
@@ -133,8 +133,8 @@ function OutlineButton({
   ariaLabelledBy,
   autoFocus,
 }) {
-  const outlineStyle = `bg-transparent hover:bg-blue-800
-                 text-xs text-blue-700 font-semibold hover:text-white
+  const outlineStyle = `bg-transparent hover:bg-blue-800 focus:bg-blue-800
+                 text-xs text-blue-700 font-semibold hover:text-white focus:text-white
                  py-2 px-4
                  border border-blue-700 hover:border-transparent rounded
                  `;
