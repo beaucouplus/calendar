@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import { range } from "./utils";
@@ -112,7 +113,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           </div>
           <div className="mt-2">
             <EventLabel>Start time</EventLabel>
-            <div className="flex group">
+            <div className="flex group relative">
               <input
                 className={styles.inputInGroup}
                 type="text"
@@ -126,14 +127,14 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               >
                 <i className="gg-chevron-down"></i>
               </Button>
+              <TimePicker
+                eventHour={eventHour}
+                eventMinutes={eventMinutes}
+                onchooseHour={(event) => chooseHour(event)}
+                onChooseMinutes={(event) => chooseMinutes(event)}
+                display={timePickerShown}
+              />
             </div>
-            <TimePicker
-              eventHour={eventHour}
-              eventMinutes={eventMinutes}
-              onchooseHour={(event) => chooseHour(event)}
-              onChooseMinutes={(event) => chooseMinutes(event)}
-              display={timePickerShown}
-            />
           </div>
           <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
@@ -169,25 +170,31 @@ function TimePicker({
   return (
     <>
       {display && (
-        <div className="grid grid-cols-2">
-          <div className="">
-            <HourPicker
-              eventHour={eventHour}
-              onChooseHour={onChooseHour}
-              display={true}
-            />
-          </div>
+        <div className="absolute top-0 left-0 mt-12 p-4 bg-white border-2 rounded shadow-sm space-y-5 ">
+          <HourPicker
+            eventHour={eventHour}
+            onChooseHour={onChooseHour}
+            display={true}
+            columns={12}
+          />
           <MinutesPicker
             eventMinutes={eventMinutes}
             onChooseMinutes={onChooseMinutes}
             display={true}
-            columns={1}
+            columns={12}
           />
         </div>
       )}
     </>
   );
 }
+TimePicker.propTypes = exact({
+  eventHour: PropTypes.number.isRequired,
+  eventMinutes: PropTypes.number.isRequired,
+  display: PropTypes.bool.isRequired,
+  onChooseHour: PropTypes.func.isRequired,
+  onChooseMinutes: PropTypes.func.isRequired,
+});
 
 function HourPicker({ eventHour, onChooseHour, display, columns }) {
   const hours_range = range(0, 23);
@@ -225,14 +232,15 @@ function MinutesPicker({ eventMinutes, onChooseMinutes, display, columns }) {
 
 function RangePicker({ selectedItem = "", callBack, collection, columns = 6 }) {
   const style = `bg-transparent hover:bg-blue-500
-                 text-sm text-gray-700 font-semibold hover:text-white
+                 text-sm text-gray-700 hover:text-white
                  py-2 px-2
+                 flex justify-center
                  rounded
                  `;
 
   return (
     <div
-      className={`grid grid-cols-${columns} gap-2 mt-1 bg-white border-2 border-gray-400 rounded`}
+      className={`grid grid-cols-${columns} gap-2 last:pt-5 last:border-t-2 last:border-gray-300 bg-white`}
     >
       {collection.map((item) => (
         <Button
