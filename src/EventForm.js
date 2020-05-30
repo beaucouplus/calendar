@@ -8,10 +8,8 @@ import { range } from "./utils";
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
 
-  const [manualTimeInput, setManualTimeInput] = useState("12:00");
+  const [timeInput, setTimeInput] = useState("12:00");
   const [valid, validate] = useState(false);
-  const [eventHour, setEventHour] = useState(12);
-  const [eventMinutes, setEventMinutes] = useState(0);
   const [timePickerShown, setTimePickerShown] = useState(false);
 
   const styles = {
@@ -40,36 +38,37 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                   focus:outline-none focus:bg-blue-800 focus:border-blue-800 focus:text-white`,
   };
 
+  const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
+
   const toggleTimePicker = () => {
     setTimePickerShown(!timePickerShown);
   };
 
   const close = () => {
-    // setMinutesPickerShown(false);
-    // setHourPickerShown(false);
+    setTimePickerShown(false);
     onClose();
   };
 
+  const [hours, minutes] = timeInput.split(":");
+
   const chooseHour = (event) => {
-    setEventHour(Number(event.target.value));
-    // setHourPickerShown(false);
-    // setMinutesPickerShown(true);
+    setTimeInput(`${renderTwoDigits(event.currentTarget.value)}:${minutes}`);
   };
 
   const chooseMinutes = (event) => {
-    setEventMinutes(Number(event.target.value));
-    // setMinutesPickerShown(false);
+    setTimeInput(`${hours}:${renderTwoDigits(event.currentTarget.value)}`);
+    toggleTimePicker();
   };
 
   const selectText = () => titleInput.current.select();
 
   const handleChange = (event) => {
-    setManualTimeInput(event.target.value);
+    setTimeInput(event.target.value);
 
-    console.log(manualTimeInput);
-    if (manualTimeInput.length >= 5) {
+    console.log(timeInput);
+    if (timeInput.length === 5) {
       validate(true);
-      // const [hours, minutes] = manualTimeInput.split(":");
+      // const [hours, minutes] = timeInput.split(":");
       // console.log("hours", hours, "minutes", minutes);
       // setEventHour(Number(hours));
       // setEventMinutes(Number(minutes));
@@ -82,7 +81,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
 
     onAddEvent({
       date: dayjs(date).format("YYYY-MM-DD"),
-      time: manualTimeInput,
+      time: timeInput,
       title: titleInput.current.value,
     });
     onClose();
@@ -117,7 +116,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               <input
                 className={styles.inputInGroup}
                 type="text"
-                value={manualTimeInput}
+                value={timeInput}
                 onChange={(e) => handleChange(e)}
               />
               <Button
@@ -128,9 +127,9 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                 <i className="gg-chevron-down"></i>
               </Button>
               <TimePicker
-                eventHour={eventHour}
-                eventMinutes={eventMinutes}
-                onchooseHour={(event) => chooseHour(event)}
+                eventHour={hours}
+                eventMinutes={minutes}
+                onChooseHour={(event) => chooseHour(event)}
                 onChooseMinutes={(event) => chooseMinutes(event)}
                 display={timePickerShown}
               />
