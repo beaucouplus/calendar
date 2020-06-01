@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
-import { range } from "./utils";
+import TimePicker from "./TimePicker";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
@@ -129,7 +129,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           </div>
           <div className="mt-2">
             <EventLabel>Start time</EventLabel>
-            <div className="flex group relative">
+            <div className="flex group">
               <input
                 className={`${styles.inputInGroup} ${timeInputStyle}`}
                 type="text"
@@ -143,14 +143,14 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               >
                 <i className="gg-chevron-down"></i>
               </Button>
-              <TimePicker
-                eventHour={Number(hours)}
-                eventMinutes={Number(minutes)}
-                onChooseHour={(event) => chooseHour(event)}
-                onChooseMinutes={(event) => chooseMinutes(event)}
-                display={timePickerShown}
-              />
             </div>
+            <TimePicker
+              eventHour={Number(hours)}
+              eventMinutes={Number(minutes)}
+              onChooseHour={(event) => chooseHour(event)}
+              onChooseMinutes={(event) => chooseMinutes(event)}
+              display={timePickerShown}
+            />
           </div>
           <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
@@ -168,72 +168,12 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   );
 }
 
-EventForm.propTypes = {
+EventForm.propTypes = exact({
   date: PropTypes.instanceOf(Date).isRequired,
   display: PropTypes.bool.isRequired,
   onAddEvent: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   events: PropTypes.array,
-};
-
-function TimePicker({
-  eventHour,
-  eventMinutes,
-  onChooseHour,
-  onChooseMinutes,
-  display,
-}) {
-  const hours_range = range(0, 23);
-  const minutes_range = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-  return (
-    <>
-      {display && (
-        <div className="absolute top-0 left-0 mt-12 w-full p-4 bg-white border-2 rounded shadow-sm grid grid-cols-2 gap-2">
-          <SelectInput currentValue={eventHour} handleChange={onChooseHour}>
-            {hours_range.map((hour) => (
-              <option value={hour} key={hour}>
-                {hour} h
-              </option>
-            ))}
-          </SelectInput>
-          <SelectInput
-            currentValue={eventMinutes}
-            handleChange={onChooseMinutes}
-          >
-            {minutes_range.map((minute) => (
-              <option value={minute} key={minute}>
-                {minute} minutes
-              </option>
-            ))}
-          </SelectInput>
-        </div>
-      )}
-    </>
-  );
-}
-TimePicker.propTypes = exact({
-  eventHour: PropTypes.number.isRequired,
-  eventMinutes: PropTypes.number.isRequired,
-  display: PropTypes.bool.isRequired,
-  onChooseHour: PropTypes.func.isRequired,
-  onChooseMinutes: PropTypes.func.isRequired,
-});
-
-function SelectInput({ currentValue, handleChange, children }) {
-  return (
-    <select
-      className="block bg-white border border-gray-400 rounded hover:bg-blue-100 hover:border-blue-800 p-2 focus:outline-none focus:shadow-outline"
-      value={currentValue}
-      onChange={handleChange}
-    >
-      {children}
-    </select>
-  );
-}
-SelectInput.propTypes = exact({
-  currentValue: PropTypes.number.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
 });
 
 function EventLabel({ children }) {
