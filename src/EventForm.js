@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
@@ -8,11 +8,11 @@ import { range } from "./utils";
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
 
-  const [timeInput, setTimeInput] = useState("12:00");
-  const [valid, validate] = useState(false);
-  const [timePickerShown, setTimePickerShown] = useState(false);
-
   const styles = {
+    valid:
+      "focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800",
+    invalid:
+      "focus:outline-none focus:text-red-700 focus:bg-red-100 focus:border-red-800",
     input: `bg-gray-100 appearance-none
             border-2 border-gray-400 rounded
             w-full
@@ -27,7 +27,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                  border-2 border-gray-400
                  rounded-l rounded-r-none
                  hover:bg-blue-100 hover:text-blue-700 hover:border-blue-800
-                 focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
+                 `,
     inputButton: `flex justify-center bg-gray-400
                   py-2 px-4
                   border-r-2 border-b-2 border-t-2 border-gray-400
@@ -38,18 +38,21 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                   focus:outline-none focus:bg-blue-800 focus:border-blue-800 focus:text-white`,
   };
 
+  const [timeInput, setTimeInput] = useState("12:00");
+  const [timeInputStyle, setTimeInputStyle] = useState(styles.valid);
+  const [hours, minutes] = timeInput.split(":");
+
+  const [valid, validate] = useState(false);
+  const [timePickerShown, setTimePickerShown] = useState(false);
+
   const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
 
-  const toggleTimePicker = () => {
-    setTimePickerShown(!timePickerShown);
-  };
+  const toggleTimePicker = () => setTimePickerShown(!timePickerShown);
 
   const close = () => {
     setTimePickerShown(false);
     onClose();
   };
-
-  const [hours, minutes] = timeInput.split(":");
 
   const chooseHour = (event) => {
     setTimeInput(`${renderTwoDigits(event.currentTarget.value)}:${minutes}`);
@@ -62,22 +65,36 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
 
   const selectText = () => titleInput.current.select();
 
-  const handleChange = (event) => {
-    setTimeInput(event.target.value);
+  const validateInput = (input) => {
+    const [currentHours, currentMinutes] = input.split(":");
 
-    console.log(timeInput);
-    if (timeInput.length === 5) {
+    const hoursNum = Number(currentHours);
+    const minutesNum = Number(currentMinutes);
+    console.log(input.length, hoursNum, minutesNum);
+    if (
+      input.length === 5 &&
+      hoursNum >= 0 &&
+      hoursNum < 24 &&
+      minutesNum >= 0 &&
+      minutesNum <= 55
+    ) {
       validate(true);
-      // const [hours, minutes] = timeInput.split(":");
-      // console.log("hours", hours, "minutes", minutes);
-      // setEventHour(Number(hours));
-      // setEventMinutes(Number(minutes));
+      setTimeInputStyle(styles.valid);
+    } else {
+      validate(false);
+      setTimeInputStyle(styles.invalid);
     }
   };
 
+  const handleChange = (event) => {
+    setTimeInput(event.target.value);
+  };
+
+  useEffect(() => validateInput(timeInput));
+
   const handleSubmit = (event) => {
-    if (!valid) return;
     event.preventDefault();
+    if (!valid) return;
 
     onAddEvent({
       date: dayjs(date).format("YYYY-MM-DD"),
@@ -114,7 +131,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             <EventLabel>Start time</EventLabel>
             <div className="flex group relative">
               <input
-                className={styles.inputInGroup}
+                className={`${styles.inputInGroup} ${timeInputStyle}`}
                 type="text"
                 value={timeInput}
                 onChange={(e) => handleChange(e)}
