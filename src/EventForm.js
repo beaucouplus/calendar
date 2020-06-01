@@ -9,10 +9,9 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
 
   const styles = {
-    valid:
-      "focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800",
+    valid: "focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800",
     invalid:
-      "focus:outline-none focus:text-red-700 focus:bg-red-100 focus:border-red-800",
+      "bg-red-100 border-red-800 focus:text-red-700 focus:bg-red-100 focus:border-red-800",
     input: `bg-gray-100 appearance-none
             border-2 border-gray-400 rounded
             w-full
@@ -27,6 +26,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                  border-2 border-gray-400
                  rounded-l rounded-r-none
                  hover:bg-blue-100 hover:text-blue-700 hover:border-blue-800
+                 focus:outline-none
                  `,
     inputButton: `flex justify-center bg-gray-400
                   py-2 px-4
@@ -65,32 +65,32 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
 
   const selectText = () => titleInput.current.select();
 
-  const validateInput = (input) => {
-    const [currentHours, currentMinutes] = input.split(":");
-
-    const hoursNum = Number(currentHours);
-    const minutesNum = Number(currentMinutes);
-    console.log(input.length, hoursNum, minutesNum);
-    if (
-      input.length === 5 &&
-      hoursNum >= 0 &&
-      hoursNum < 24 &&
-      minutesNum >= 0 &&
-      minutesNum <= 55
-    ) {
-      validate(true);
-      setTimeInputStyle(styles.valid);
-    } else {
-      validate(false);
-      setTimeInputStyle(styles.invalid);
-    }
-  };
-
   const handleChange = (event) => {
     setTimeInput(event.target.value);
   };
 
-  useEffect(() => validateInput(timeInput));
+  useEffect(() => {
+    const validateInput = (input) => {
+      const [currentHours, currentMinutes] = input.split(":");
+
+      const hoursNum = Number(currentHours);
+      const minutesNum = Number(currentMinutes);
+      if (
+        input.length === 5 &&
+        hoursNum >= 0 &&
+        hoursNum < 24 &&
+        minutesNum >= 0 &&
+        minutesNum <= 55
+      ) {
+        validate(true);
+        setTimeInputStyle(styles.valid);
+      } else {
+        validate(false);
+        setTimeInputStyle(styles.invalid);
+      }
+    };
+    validateInput(timeInput);
+  }, [timeInput, styles.invalid, styles.valid]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -144,8 +144,8 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                 <i className="gg-chevron-down"></i>
               </Button>
               <TimePicker
-                eventHour={hours}
-                eventMinutes={minutes}
+                eventHour={Number(hours)}
+                eventMinutes={Number(minutes)}
                 onChooseHour={(event) => chooseHour(event)}
                 onChooseMinutes={(event) => chooseMinutes(event)}
                 display={timePickerShown}
@@ -178,27 +178,34 @@ EventForm.propTypes = {
 
 function TimePicker({
   eventHour,
-  onChooseHour,
   eventMinutes,
+  onChooseHour,
   onChooseMinutes,
   display,
 }) {
+  const hours_range = range(0, 23);
+  const minutes_range = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
   return (
     <>
       {display && (
-        <div className="absolute top-0 left-0 mt-12 p-4 bg-white border-2 rounded shadow-sm space-y-5 ">
-          <HourPicker
-            eventHour={eventHour}
-            onChooseHour={onChooseHour}
-            display={true}
-            columns={12}
-          />
-          <MinutesPicker
-            eventMinutes={eventMinutes}
-            onChooseMinutes={onChooseMinutes}
-            display={true}
-            columns={12}
-          />
+        <div className="absolute top-0 left-0 mt-12 w-full p-4 bg-white border-2 rounded shadow-sm grid grid-cols-2 gap-2">
+          <SelectInput currentValue={eventHour} handleChange={onChooseHour}>
+            {hours_range.map((hour) => (
+              <option value={hour} key={hour}>
+                {hour} h
+              </option>
+            ))}
+          </SelectInput>
+          <SelectInput
+            currentValue={eventMinutes}
+            handleChange={onChooseMinutes}
+          >
+            {minutes_range.map((minute) => (
+              <option value={minute} key={minute}>
+                {minute} minutes
+              </option>
+            ))}
+          </SelectInput>
         </div>
       )}
     </>
@@ -212,72 +219,22 @@ TimePicker.propTypes = exact({
   onChooseMinutes: PropTypes.func.isRequired,
 });
 
-function HourPicker({ eventHour, onChooseHour, display, columns }) {
-  const hours_range = range(0, 23);
-
+function SelectInput({ currentValue, handleChange, children }) {
   return (
-    <>
-      {display && (
-        <RangePicker
-          selectedItem={eventHour}
-          callBack={onChooseHour}
-          collection={hours_range}
-          columns={columns}
-        />
-      )}
-    </>
-  );
-}
-
-function MinutesPicker({ eventMinutes, onChooseMinutes, display, columns }) {
-  const minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-
-  return (
-    <>
-      {display && (
-        <RangePicker
-          selectedItem={eventMinutes}
-          callBack={onChooseMinutes}
-          collection={minutes}
-          columns={columns}
-        />
-      )}
-    </>
-  );
-}
-
-function RangePicker({ selectedItem = "", callBack, collection, columns = 6 }) {
-  const style = `bg-transparent hover:bg-blue-500
-                 text-sm text-gray-700 hover:text-white
-                 py-2 px-2
-                 flex justify-center
-                 rounded
-                 `;
-
-  return (
-    <div
-      className={`grid grid-cols-${columns} gap-2 last:pt-5 last:border-t-2 last:border-gray-300 bg-white`}
+    <select
+      className="block bg-white border border-gray-400 rounded hover:bg-blue-100 hover:border-blue-800 p-2 focus:outline-none focus:shadow-outline"
+      value={currentValue}
+      onChange={handleChange}
     >
-      {collection.map((item) => (
-        <Button
-          value={item}
-          css={`
-            ${style} ${item === selectedItem ? "border border-blue-500" : ""}
-          `}
-          callBack={callBack}
-          key={item}
-        >{`${item}`}</Button>
-      ))}
-    </div>
+      {children}
+    </select>
   );
 }
-
-RangePicker.propTypes = {
-  selectedItem: PropTypes.number.isRequired,
-  callBack: PropTypes.func.isRequired,
-  collection: PropTypes.array.isRequired,
-  columns: PropTypes.number,
-};
+SelectInput.propTypes = exact({
+  currentValue: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+});
 
 function EventLabel({ children }) {
   return (
