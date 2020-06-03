@@ -13,6 +13,7 @@ module.exports = {
       "group-focus",
       "active",
     ],
+    borderWidth: ["responsive", "last"],
     borderColor: [
       "responsive",
       "hover",
@@ -20,7 +21,9 @@ module.exports = {
       "group-hover",
       "group-focus",
       "focus-within",
+      "last",
     ],
+    padding: ["responsive", "last"],
   },
   plugins: [],
 };

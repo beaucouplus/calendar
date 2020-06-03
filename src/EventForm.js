@@ -1,59 +1,51 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
-import { range } from "./utils";
+import TimePicker from "./TimePicker";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
 
-  const [eventHour, setEventHour] = useState(12);
-  const [eventMinutes, setEventMinutes] = useState(0);
-  const [hourPickerShown, setHourPickerShown] = useState(false);
-  const [minutesPickerShown, setMinutesPickerShown] = useState(false);
-
-  const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
-  const twoDigitsHour = renderTwoDigits(eventHour);
-  const twoDigitsMinutes = renderTwoDigits(eventMinutes);
-
   const styles = {
     input: `bg-gray-100 appearance-none
-      border-2 border-gray-400 rounded
-      w-full 
-      py-2 px-4 
-      text-gray-700 leading-tight 
-      focus:outline-none focus:bg-white focus:border-blue-300`,
-  };
-  const displayTimePickers = () => {
-    setMinutesPickerShown(false);
-    setHourPickerShown(true);
+            border-2 border-gray-400 rounded
+            w-full
+            py-2 px-4
+            text-gray-700 leading-tight
+            hover:border-blue-800 hover:bg-blue-100 hover:text-blue-700
+            focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
   };
 
-  const close = () => {
-    setMinutesPickerShown(false);
-    setHourPickerShown(false);
-    onClose();
-  };
+  const [timeInput, setTimeInput] = useState("12:00");
+  const [hours, minutes] = timeInput.split(":");
+
+  const [valid, validate] = useState(false);
+
+  const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
 
   const chooseHour = (event) => {
-    setEventHour(Number(event.target.value));
-    setHourPickerShown(false);
-    setMinutesPickerShown(true);
+    setTimeInput(`${renderTwoDigits(event.currentTarget.value)}:${minutes}`);
   };
 
   const chooseMinutes = (event) => {
-    setEventMinutes(Number(event.target.value));
-    setMinutesPickerShown(false);
+    setTimeInput(`${hours}:${renderTwoDigits(event.currentTarget.value)}`);
+  };
+
+  const handleChange = (event) => {
+    setTimeInput(event.target.value);
   };
 
   const selectText = () => titleInput.current.select();
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!valid) return;
 
     onAddEvent({
       date: dayjs(date).format("YYYY-MM-DD"),
-      time: `${twoDigitsHour}:${twoDigitsMinutes}`,
+      time: timeInput,
       title: titleInput.current.value,
     });
     onClose();
@@ -82,30 +74,21 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               onFocus={selectText}
             />
           </div>
-          <div className="mt-2">
-            <EventLabel>Start time</EventLabel>
-            <input
-              className={styles.input}
-              type="text"
-              value={`${twoDigitsHour}:${twoDigitsMinutes}`}
-              onClick={() => displayTimePickers()}
-              readOnly
-            />
-            <HourPicker
-              eventHour={eventHour}
-              onChooseHour={(event) => chooseHour(event)}
-              display={hourPickerShown}
-            />
-            <MinutesPicker
-              eventMinutes={eventMinutes}
-              onChooseMinutes={(event) => chooseMinutes(event)}
-              display={minutesPickerShown}
-            />
-          </div>
+          <TimeInput
+            timeInput={timeInput}
+            onChooseHour={(event) => chooseHour(event)}
+            onChooseMinutes={(event) => chooseMinutes(event)}
+            hours={hours}
+            minutes={minutes}
+            onHandleChange={(e) => handleChange(e)}
+            onValidate={() => validate(true)}
+            onInvalidate={() => validate(false)}
+          />
+
           <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
             <OutlineButton
-              callBack={close}
+              callBack={onClose}
               ariaLabel="close form"
               ariaLabelledBy="close-form"
             >
@@ -118,74 +101,108 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   );
 }
 
-EventForm.propTypes = {
+EventForm.propTypes = exact({
   date: PropTypes.instanceOf(Date).isRequired,
   display: PropTypes.bool.isRequired,
   onAddEvent: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   events: PropTypes.array,
-};
+});
 
-function HourPicker({ eventHour, onChooseHour, display }) {
-  const hours_range = range(0, 23);
+function TimeInput({
+  timeInput,
+  onHandleChange,
+  hours,
+  minutes,
+  onChooseHour,
+  onChooseMinutes,
+  onValidate,
+  onInvalidate,
+}) {
+  const [timePickerShown, setTimePickerShown] = useState(false);
+  const toggleTimePicker = () => setTimePickerShown(!timePickerShown);
+
+  const styles = {
+    timeInput: `flex flex-grow
+                 bg-gray-100 appearance-none
+                 py-2 px-4
+                 text-gray-700 leading-tight
+                 border-2 border-gray-400
+                 rounded-l rounded-r-none
+                 hover:bg-blue-100 hover:text-blue-700 hover:border-blue-800
+                 focus:outline-none
+                 `,
+    timePickerToggle: `flex justify-center bg-gray-400
+                  py-2 px-4
+                  border-r-2 border-b-2 border-t-2 border-gray-400
+                  rounded-r rounded-l-none
+                  text-gray-800 text-center
+                  group-hover:bg-blue-800 group-hover:border-blue-800 group-hover:text-white
+                  hover:bg-blue-800 hover:border-blue-800
+                  focus:outline-none focus:bg-blue-800 focus:border-blue-800 focus:text-white`,
+    valid: "focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800",
+    invalid:
+      "bg-red-100 border-red-800 focus:text-red-700 focus:bg-red-100 focus:border-red-800",
+  };
+
+  const [timeInputStyle, setTimeInputStyle] = useState(styles.valid);
+
+  useEffect(() => {
+    const validateInput = (timeInput) => {
+      const [currentHours, currentMinutes] = timeInput.split(":");
+
+      const hoursNum = Number(currentHours);
+      const minutesNum = Number(currentMinutes);
+      if (
+        timeInput.length === 5 &&
+        hoursNum >= 0 &&
+        hoursNum < 24 &&
+        minutesNum >= 0 &&
+        minutesNum <= 59
+      ) {
+        onValidate();
+        setTimeInputStyle(styles.valid);
+      } else {
+        onInvalidate();
+        setTimeInputStyle(styles.invalid);
+      }
+    };
+    validateInput(timeInput);
+  }, [timeInput, styles.invalid, styles.valid, onValidate, onInvalidate]);
+
+  const chooseMinutes = (event) => {
+    onChooseMinutes(event);
+    toggleTimePicker();
+  };
 
   return (
-    <>
-      {display && (
-        <RangePicker
-          selectedItem={eventHour}
-          callBack={onChooseHour}
-          collection={hours_range}
+    <div className="mt-2">
+      <EventLabel>Start time</EventLabel>
+      <div className="flex group">
+        <input
+          className={`${styles.timeInput} ${timeInputStyle}`}
+          type="text"
+          value={timeInput}
+          onChange={onHandleChange}
         />
-      )}
-    </>
-  );
-}
-
-function MinutesPicker({ eventMinutes, onChooseMinutes, display }) {
-  const minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
-
-  return (
-    <>
-      {display && (
-        <RangePicker
-          selectedItem={eventMinutes}
-          callBack={onChooseMinutes}
-          collection={minutes}
-        />
-      )}
-    </>
-  );
-}
-
-function RangePicker({ selectedItem = "", callBack, collection }) {
-  const style = `bg-transparent hover:bg-blue-500
-                 text-sm text-gray-700 font-semibold hover:text-white
-                 py-2 px-2
-                 rounded
-                 `;
-
-  return (
-    <div className="grid grid-cols-12 gap-2 mt-1 bg-white border-2 border-gray-400 rounded">
-      {collection.map((item) => (
         <Button
-          value={item}
-          css={`
-            ${style} ${item === selectedItem ? "border border-blue-500" : ""}
-          `}
-          callBack={callBack}
-          key={item}
-        >{`${item}`}</Button>
-      ))}
+          callBack={() => toggleTimePicker()}
+          css={styles.timePickerToggle}
+          withFocus={false}
+        >
+          <i className="gg-chevron-down"></i>
+        </Button>
+      </div>
+      <TimePicker
+        eventHour={Number(hours)}
+        eventMinutes={Number(minutes)}
+        onChooseHour={onChooseHour}
+        onChooseMinutes={(event) => chooseMinutes(event)}
+        display={timePickerShown}
+      />
     </div>
   );
 }
-
-RangePicker.propTypes = {
-  selectedItem: PropTypes.number.isRequired,
-  callBack: PropTypes.func.isRequired,
-  collection: PropTypes.array.isRequired,
-};
 
 function EventLabel({ children }) {
   return (
