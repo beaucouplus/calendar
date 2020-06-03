@@ -33,11 +33,11 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     setTimeInput(`${hours}:${renderTwoDigits(event.currentTarget.value)}`);
   };
 
-  const selectText = () => titleInput.current.select();
-
   const handleChange = (event) => {
     setTimeInput(event.target.value);
   };
+
+  const selectText = () => titleInput.current.select();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -123,7 +123,7 @@ function TimeInput({
   const toggleTimePicker = () => setTimePickerShown(!timePickerShown);
 
   const styles = {
-    inputInGroup: `flex flex-grow
+    timeInput: `flex flex-grow
                  bg-gray-100 appearance-none
                  py-2 px-4
                  text-gray-700 leading-tight
@@ -132,7 +132,7 @@ function TimeInput({
                  hover:bg-blue-100 hover:text-blue-700 hover:border-blue-800
                  focus:outline-none
                  `,
-    inputButton: `flex justify-center bg-gray-400
+    timePickerToggle: `flex justify-center bg-gray-400
                   py-2 px-4
                   border-r-2 border-b-2 border-t-2 border-gray-400
                   rounded-r rounded-l-none
@@ -180,14 +180,14 @@ function TimeInput({
       <EventLabel>Start time</EventLabel>
       <div className="flex group">
         <input
-          className={`${styles.inputInGroup} ${timeInputStyle}`}
+          className={`${styles.timeInput} ${timeInputStyle}`}
           type="text"
           value={timeInput}
           onChange={onHandleChange}
         />
         <Button
           callBack={() => toggleTimePicker()}
-          css={styles.inputButton}
+          css={styles.timePickerToggle}
           withFocus={false}
         >
           <i className="gg-chevron-down"></i>
