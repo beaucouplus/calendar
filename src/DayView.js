@@ -61,7 +61,7 @@ function DayPlanning({ events }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
     if (!eventList) return false;
     return eventList.filter((event) => {
-      const eventTime = dayjs(event.time, "HH:mm");
+      const eventTime = dayjs(event.start.datetime, "HH:mm");
       return eventTime.isBetween(
         dayjs(lowerLimit, "HH:mm"),
         dayjs(upperLimit, "HH:mm"),

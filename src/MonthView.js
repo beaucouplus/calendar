@@ -134,7 +134,7 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
         />
       </div>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} events={events} />
+        <DayModal date={date} events={sortedEvents} />
       </Modal>
     </>
   );
