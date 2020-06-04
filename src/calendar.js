@@ -3,6 +3,18 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { range } from "./utils";
 dayjs.extend(isLeapYear);
 
+function groupEventsByDate(events) {
+  const groupedEvents = {};
+
+  events.forEach((event) => {
+    const currentDate = groupedEvents[event.date];
+    currentDate
+      ? currentDate.push(event)
+      : (groupedEvents[event.date] = [event]);
+  });
+  return groupedEvents;
+}
+
 function createYearCalendarCells(year, events) {
   const months = range(1, 12);
   const monthDays = range(1, 31);
@@ -149,4 +161,9 @@ const calendarCellStyle = (date, events) => {
   ][getWeekday(date)];
 };
 
-export { createYearCalendarCells, monthViewDays, calendarCellStyle };
+export {
+  groupEventsByDate,
+  createYearCalendarCells,
+  monthViewDays,
+  calendarCellStyle,
+};
