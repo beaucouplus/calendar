@@ -70,13 +70,19 @@ function DayPlanning({ events }) {
       );
     });
   };
-
-  const morningEvents = filterEventsBetween(events, "00:00", "11:59");
-  const afternoonEvents = filterEventsBetween(events, "12:00", "18:59");
-  const eveningEvents = filterEventsBetween(events, "19:00", "23:59");
+  const timedEvents = events.filter((e) => !e.allDay);
+  const allDayevents = events.filter((e) => e.allDay);
+  const morningEvents = filterEventsBetween(timedEvents, "00:00", "11:59");
+  const afternoonEvents = filterEventsBetween(timedEvents, "12:00", "18:59");
+  const eveningEvents = filterEventsBetween(timedEvents, "19:00", "23:59");
 
   return (
     <div className="grid grid-rows mt-10 mb-20">
+      <EventList
+        events={allDayevents}
+        title="All Day"
+        isShown={allDayevents.length > 0}
+      />
       <EventList
         events={morningEvents}
         title="Morning"

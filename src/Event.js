@@ -32,7 +32,10 @@ function Event({ event }) {
     >
       <Button css={buttonStyle} callBack={handleClick} withFocus={false}>
         <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
-          {dayjs(event.start.datetime).format("HH:mm")}
+          {/* will need a proper component to handle the difference between all day and timed */}
+          {event.allDay
+            ? `Day ${event.position}`
+            : dayjs(event.start.datetime).format("HH:mm")}
         </div>
         <div className="pl-4 text-left">{event.title}</div>
         <div className="flex flex-grow justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
