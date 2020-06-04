@@ -86,16 +86,13 @@ const dummyEvents = [
 const EventContext = React.createContext();
 
 function EventStore({ children }) {
-  const [events, setEvents] = useState(groupEventsByDate(dummyEvents));
+  const [events, setEvents] = useState(dummyEvents);
   const [eventID, setEventID] = useState(dummyEvents.length);
 
   function addEvent(event) {
     setEventID(eventID + 1);
     const newEvent = { ...event, id: eventID };
-    const eventsList = events[event.date];
-    const newEventsList = eventsList ? [...eventsList, newEvent] : [newEvent];
-    const newEventListAtEventDate = { [event.date]: newEventsList };
-    const newEvents = { ...events, ...newEventListAtEventDate };
+    const newEvents = [...events, newEvent];
     setEvents(newEvents);
   }
 

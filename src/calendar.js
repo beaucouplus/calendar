@@ -30,6 +30,7 @@ const sortEvents = (events) =>
   });
 
 function createYearCalendarCells(year, events) {
+  const groupedEvents = groupEventsByDate(events);
   const months = range(1, 12);
   const monthDays = range(1, 31);
 
@@ -62,7 +63,7 @@ function createYearCalendarCells(year, events) {
         });
       } else {
         const date = new Date(year, month - 1, day, 0, 0, 0, 0);
-        const dailyEvents = events[dayjs(date).format("YYYY-MM-DD")];
+        const dailyEvents = groupedEvents[dayjs(date).format("YYYY-MM-DD")];
         daysInMonth[day].push({
           month: month,
           day: day,
@@ -77,6 +78,7 @@ function createYearCalendarCells(year, events) {
 }
 
 function monthViewDays(startOfMonth, events) {
+  const groupedEvents = groupEventsByDate(events);
   let viewStart = dayjs(startOfMonth);
 
   if (viewStart.format("dddd") !== "Monday") {
@@ -93,7 +95,7 @@ function monthViewDays(startOfMonth, events) {
   const daysInMonth = {};
 
   while (viewStart.isBefore(viewEnd)) {
-    const dailyEvents = events[viewStart.format("YYYY-MM-DD")];
+    const dailyEvents = groupedEvents[viewStart.format("YYYY-MM-DD")];
     daysInMonth[viewStart.format("YYYY-MM-DD")] = dailyEvents;
     viewStart = viewStart.add(1, "day");
   }
