@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import EventForm from "./EventForm";
 import Event from "./Event";
+import { sortEvents } from "./calendar";
 import { EventContext } from "./EventContext";
 
 dayjs.extend(isBetween);
@@ -19,14 +20,7 @@ function DayView({ events, date, displayForm, onCloseForm }) {
   }
 
   const currentView = setCurrentView();
-  const sortedEvents =
-    events &&
-    events.sort((a, b) => {
-      const aTime = dayjs(a.time, "HH:mm");
-      const bTime = dayjs(b.time, "HH:mm");
-
-      return aTime - bTime;
-    });
+  const sortedEvents = sortEvents(events);
 
   const views = { EventForm, DayPlanning, EmptyPlanning };
 
@@ -67,7 +61,7 @@ function DayPlanning({ events }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
     if (!eventList) return false;
     return eventList.filter((event) => {
-      const eventTime = dayjs(event.time, "HH:mm");
+      const eventTime = dayjs(event.start.datetime, "HH:mm");
       return eventTime.isBetween(
         dayjs(lowerLimit, "HH:mm"),
         dayjs(upperLimit, "HH:mm"),

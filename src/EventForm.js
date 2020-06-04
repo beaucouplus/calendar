@@ -43,9 +43,17 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     event.preventDefault();
     if (!valid) return;
 
+    const timeFormat = `YYYY-MM-DDT${timeInput}:00+02:00`;
+    const eventTime = dayjs(date).format(timeFormat);
     onAddEvent({
-      date: dayjs(date).format("YYYY-MM-DD"),
-      time: timeInput,
+      start: {
+        date: null,
+        datetime: eventTime,
+      },
+      end: {
+        date: null,
+        datetime: dayjs(eventTime).add(1, "hour").format(timeFormat),
+      },
       title: titleInput.current.value,
     });
     onClose();

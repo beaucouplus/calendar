@@ -3,7 +3,34 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { range } from "./utils";
 dayjs.extend(isLeapYear);
 
+function groupEventsByDate(events) {
+  const groupedEvents = {};
+
+  events.forEach((event) => {
+    // TODO when updating to multi days events, check start and end date to make sure that the event is between the boundaries.
+    // Else, only use the datetime
+    const eventDate = event.start.date
+      ? event.start.date
+      : dayjs(event.start.datetime).format("YYYY-MM-DD");
+    const currentDate = groupedEvents[eventDate];
+    currentDate
+      ? currentDate.push(event)
+      : (groupedEvents[eventDate] = [event]);
+  });
+  return groupedEvents;
+}
+
+const sortEvents = (events) =>
+  events &&
+  events.sort((a, b) => {
+    const aTime = dayjs(a.start.datetime);
+    const bTime = dayjs(b.start.datetime);
+
+    return aTime - bTime;
+  });
+
 function createYearCalendarCells(year, events) {
+  const groupedEvents = groupEventsByDate(events);
   const months = range(1, 12);
   const monthDays = range(1, 31);
 
@@ -36,7 +63,7 @@ function createYearCalendarCells(year, events) {
         });
       } else {
         const date = new Date(year, month - 1, day, 0, 0, 0, 0);
-        const dailyEvents = events[dayjs(date).format("YYYY-MM-DD")];
+        const dailyEvents = groupedEvents[dayjs(date).format("YYYY-MM-DD")];
         daysInMonth[day].push({
           month: month,
           day: day,
@@ -51,6 +78,7 @@ function createYearCalendarCells(year, events) {
 }
 
 function monthViewDays(startOfMonth, events) {
+  const groupedEvents = groupEventsByDate(events);
   let viewStart = dayjs(startOfMonth);
 
   if (viewStart.format("dddd") !== "Monday") {
@@ -67,7 +95,7 @@ function monthViewDays(startOfMonth, events) {
   const daysInMonth = {};
 
   while (viewStart.isBefore(viewEnd)) {
-    const dailyEvents = events[viewStart.format("YYYY-MM-DD")];
+    const dailyEvents = groupedEvents[viewStart.format("YYYY-MM-DD")];
     daysInMonth[viewStart.format("YYYY-MM-DD")] = dailyEvents;
     viewStart = viewStart.add(1, "day");
   }
@@ -149,4 +177,10 @@ const calendarCellStyle = (date, events) => {
   ][getWeekday(date)];
 };
 
-export { createYearCalendarCells, monthViewDays, calendarCellStyle };
+export {
+  groupEventsByDate,
+  sortEvents,
+  createYearCalendarCells,
+  monthViewDays,
+  calendarCellStyle,
+};
