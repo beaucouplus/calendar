@@ -97,18 +97,10 @@ function EventStore({ children }) {
   }
 
   function deleteEvent(event) {
-    const eventsList = events[event.date];
-    const remainingEvents = eventsList.filter((e) => e.id !== event.id);
-
-    if (remainingEvents.length > 0) {
-      const newEventListAtEventDate = { [event.date]: remainingEvents };
-      const newEvents = { ...events, ...newEventListAtEventDate };
-      setEvents(newEvents);
-    } else {
-      const { [event.date]: _, ...newEvents } = events;
-      setEvents(newEvents);
-    }
+    const remainingEvents = events.filter((e) => e.id !== event.id);
+    setEvents(remainingEvents);
   }
+
   return (
     <EventContext.Provider
       value={{
