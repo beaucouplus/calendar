@@ -161,7 +161,7 @@ function TimedEvent({ event }) {
 
 function AllDayEvent({ event }) {
   return (
-    <li className="truncate bg-blue-200 py-1 px-2 rounded" key={event.id}>
+    <li className="truncate bg-blue-200 py-1 px-2 mb-1 rounded" key={event.id}>
       {event.title} {event.position} duration: {event.duration}
     </li>
   );

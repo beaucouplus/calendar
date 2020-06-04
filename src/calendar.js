@@ -46,11 +46,12 @@ function updateEventList(eventList, event, date) {
   existingDate ? existingDate.push(event) : (eventList[date] = [event]);
 }
 
+// will probably need to update the sorting behavior when implementing the grid
 const sortEvents = (events) =>
   events &&
   events.sort((a, b) => {
-    const firstDate = a.start.date ? a.start.date : a.start.datetime;
-    const secondDate = b.start.date ? b.start.date : a.start.datetime;
+    const firstDate = a.start.date ? b.start.date : a.start.datetime;
+    const secondDate = b.start.date ? b.start.date : b.start.datetime;
     const aTime = dayjs(firstDate);
     const bTime = dayjs(secondDate);
 

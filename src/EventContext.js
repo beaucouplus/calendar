@@ -86,6 +86,12 @@ const dummyEvents = [
     end: { date: "2020-07-06", datetime: null },
     title: "MultiDay Event",
   },
+  {
+    id: 14,
+    start: { date: "2020-07-06", datetime: null },
+    end: { date: "2020-07-10", datetime: null },
+    title: "Another MultiDay Event",
+  },
 ];
 
 const EventContext = React.createContext();
