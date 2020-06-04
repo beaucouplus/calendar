@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
-import { monthViewDays } from "./calendar";
+import { sortEvents, monthViewDays } from "./calendar";
 import Modal from "./Modal";
 import DayModal from "./DayModal";
 import { EventContext } from "./EventContext";
@@ -83,6 +83,8 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
       ? events.length - maxNumberOfEvents
       : undefined;
 
+  const sortedEvents = sortEvents(events);
+
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
     const currentDate = dayjs(date).startOf("day");
@@ -119,10 +121,10 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
           className={`block overflow-hidden text-xs`}
           style={{ height: `${contentHeight}px` }}
         >
-          {events &&
-            events.slice(0, maxNumberOfEvents).map((event) => (
+          {sortedEvents &&
+            sortedEvents.slice(0, maxNumberOfEvents).map((event) => (
               <li className="truncate" key={event.id}>
-                {event.time} {event.title}
+                {dayjs(event.start.datetime).format("HH:mm")} {event.title}
               </li>
             ))}
         </ul>

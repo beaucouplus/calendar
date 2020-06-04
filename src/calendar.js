@@ -20,6 +20,15 @@ function groupEventsByDate(events) {
   return groupedEvents;
 }
 
+const sortEvents = (events) =>
+  events &&
+  events.sort((a, b) => {
+    const aTime = dayjs(a.start.datetime);
+    const bTime = dayjs(b.start.datetime);
+
+    return aTime - bTime;
+  });
+
 function createYearCalendarCells(year, events) {
   const months = range(1, 12);
   const monthDays = range(1, 31);
@@ -168,6 +177,7 @@ const calendarCellStyle = (date, events) => {
 
 export {
   groupEventsByDate,
+  sortEvents,
   createYearCalendarCells,
   monthViewDays,
   calendarCellStyle,
