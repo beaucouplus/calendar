@@ -7,10 +7,15 @@ function groupEventsByDate(events) {
   const groupedEvents = {};
 
   events.forEach((event) => {
-    const currentDate = groupedEvents[event.date];
+    // TODO when updating to multi days events, check start and end date to make sure that the event is between the boundaries.
+    // Else, only use the datetime
+    const eventDate = event.start.date
+      ? event.start.date
+      : dayjs(event.start.datetime).format("YYYY-MM-DD");
+    const currentDate = groupedEvents[eventDate];
     currentDate
       ? currentDate.push(event)
-      : (groupedEvents[event.date] = [event]);
+      : (groupedEvents[eventDate] = [event]);
   });
   return groupedEvents;
 }
