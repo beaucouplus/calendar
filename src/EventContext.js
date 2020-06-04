@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { groupEventsByDate } from "./calendar";
 
 const dummyEvents = [
   {
@@ -80,6 +79,12 @@ const dummyEvents = [
     start: { date: null, datetime: "2020-07-30T16:00:00+02:00" },
     end: { date: null, datetime: "2020-07-30T17:30:00+02:00" },
     title: "Another coffee. Love coffee",
+  },
+  {
+    id: 14,
+    start: { date: "2020-07-04", datetime: null },
+    end: { date: "2020-07-06", datetime: null },
+    title: "MultiDay Event",
   },
 ];
 

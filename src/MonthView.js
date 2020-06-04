@@ -122,11 +122,15 @@ function MonthDay({ date, month, events, maxHeight, maxNumberOfEvents }) {
           style={{ height: `${contentHeight}px` }}
         >
           {sortedEvents &&
-            sortedEvents.slice(0, maxNumberOfEvents).map((event) => (
-              <li className="truncate" key={event.id}>
-                {dayjs(event.start.datetime).format("HH:mm")} {event.title}
-              </li>
-            ))}
+            sortedEvents
+              .slice(0, maxNumberOfEvents)
+              .map((event) =>
+                event.allDay ? (
+                  <AllDayEvent event={event} key={event.id} />
+                ) : (
+                  <TimedEvent event={event} key={event.id} />
+                )
+              )}
         </ul>
         <RemainingEventsNumber
           remainingEventsNumber={remainingEventsNumber}
@@ -146,6 +150,22 @@ MonthDay.propTypes = exact({
   maxHeight: PropTypes.number.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
+
+function TimedEvent({ event }) {
+  return (
+    <li className="truncate" key={event.id}>
+      {dayjs(event.start.datetime).format("HH:mm")} {event.title}
+    </li>
+  );
+}
+
+function AllDayEvent({ event }) {
+  return (
+    <li className="truncate bg-blue-200 py-1 px-2 rounded" key={event.id}>
+      {event.title} {event.position} duration: {event.duration}
+    </li>
+  );
+}
 
 function RemainingEventsNumber({ remainingEventsNumber, isShown }) {
   return (
