@@ -84,13 +84,26 @@ const dummyEvents = [
     id: 14,
     start: { date: "2020-07-04", datetime: null },
     end: { date: "2020-07-06", datetime: null },
-    title: "MultiDay Event",
+    title:
+      "MultiDay Event with the longest name in the world. Maybe this name could be Anticonstitutionnellement",
   },
   {
     id: 15,
     start: { date: "2020-07-06", datetime: null },
     end: { date: "2020-07-10", datetime: null },
     title: "Another MultiDay Event",
+  },
+  {
+    id: 16,
+    start: { date: "2020-07-13", datetime: null },
+    end: { date: "2020-07-24", datetime: null },
+    title: "Holidays at Alençon city",
+  },
+  {
+    id: 17,
+    start: { date: "2020-07-17", datetime: null },
+    end: { date: "2020-07-20", datetime: null },
+    title: "Golf with Forrest",
   },
 ];
 

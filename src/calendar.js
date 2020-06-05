@@ -50,6 +50,7 @@ function updateEventList(eventList, event, date) {
 const sortEvents = (events) =>
   events &&
   events.sort((a, b) => {
+    if (a.allDay && !b.allDay) return -1;
     const firstDate = a.start.date ? b.start.date : a.start.datetime;
     const secondDate = b.start.date ? b.start.date : b.start.datetime;
     const aTime = dayjs(firstDate);
