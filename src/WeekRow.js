@@ -23,6 +23,16 @@ function WeekRow({ daysInView, week, month, maxHeight, maxNumberOfEvents }) {
       className="grid grid-cols-7 content-start row-gap-1 relative pt-8 grid-flow-col-dense"
       ref={titleRef}
     >
+      <>
+        {week.map((date) => (
+          <DailyEventList
+            date={date}
+            events={daysInView[date]}
+            maxNumberOfEvents={maxNumberOfEvents}
+            key={date}
+          />
+        ))}
+      </>
       <WeekDays
         week={week}
         month={month}
@@ -30,24 +40,11 @@ function WeekRow({ daysInView, week, month, maxHeight, maxNumberOfEvents }) {
         maxNumberOfEvents={maxNumberOfEvents}
         maxHeight={contentHeight}
       />
-      <>
-        {week.map((date, idx) => (
-          <DailyEventList
-            date={date}
-            events={daysInView[date]}
-            gridPosition={idx + 1}
-            maxNumberOfEvents={maxNumberOfEvents}
-            key={date}
-          />
-        ))}
-      </>
     </div>
   );
 }
 
 function WeekDays({ week, month, daysInView, maxNumberOfEvents, maxHeight }) {
-  useEffect(() => console.log(maxHeight));
-
   return (
     <div className="absolute top-0 h-full left-0 grid grid-cols-7 w-full divide-x divide-gray-300">
       {week.map((weekDay) => (
@@ -78,7 +75,10 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
     const currentDate = dayjs(day).startOf("day");
-    if (month !== currentDate.month() || currentDate.isBefore(today))
+    if (
+      month !== currentDate.month() ||
+      (currentDate.isBefore(today) && month === today.month())
+    )
       return "past";
     if (currentDate.isSame(today)) return "today";
     return "future";
@@ -86,10 +86,11 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
 
   const styles = {
     past:
-      "text-gray-500 hover:text-gray-700 hover:bg-yellow-300 hover:bg-opacity-50",
+      "text-gray-500 bg-gray-400 bg-opacity-25 hover:text-gray-700 hover:bg-gray-500 hover:bg-opacity-25",
     today:
-      "text-blue-600 bg-blue-200 bg-opacity-50 hover:bg-blue-200 hover:bg-opacity-50",
-    future: "text-gray-700 hover:bg-yellow-300 hover:bg-opacity-50",
+      "text-blue-600 bg-blue-300 bg-opacity-25 hover:bg-blue-400 hover:bg-opacity-25",
+    future:
+      "bg-white bg-opacity-25 text-gray-700 hover:bg-gray-300 hover:bg-opacity-25 hover:text-black",
   };
 
   const currentStyle = styles[chooseStyle()];
@@ -135,7 +136,7 @@ RemainingEventsNumber.propTypes = exact({
   isShown: PropTypes.bool.isRequired,
 });
 
-function DailyEventList({ date, events, maxNumberOfEvents, gridPosition }) {
+function DailyEventList({ date, events, maxNumberOfEvents }) {
   const sortedEvents = sortEvents(events);
 
   return (
@@ -144,14 +145,18 @@ function DailyEventList({ date, events, maxNumberOfEvents, gridPosition }) {
         date={date}
         events={sortedEvents}
         maxNumberOfEvents={maxNumberOfEvents}
-        gridPosition={gridPosition}
       />
     </div>
   );
 }
 
-function EventList({ date, events, maxNumberOfEvents, gridPosition }) {
-  useEffect(() => console.log(events));
+function EventList({ date, events, maxNumberOfEvents }) {
+  // note: works because Sunday is the first day of the week and Monday has index 1
+  const gridPosition = dayjs(date).day();
+  const eventStyle = `col-start-${gridPosition} mx-2 py-1 px-2 border rounded truncate cursor-pointer`;
+
+  const shouldDisplay = (event) =>
+    event.position === 1 || dayjs(date).format("dddd") === "Monday";
 
   return (
     <>
@@ -163,17 +168,15 @@ function EventList({ date, events, maxNumberOfEvents, gridPosition }) {
               <AllDayEvent
                 event={event}
                 key={event.id}
-                gridPosition={gridPosition}
-                display={
-                  event.position === 1 ||
-                  dayjs(date).format("dddd") === "Monday"
-                }
+                display={shouldDisplay(event)}
+                css={eventStyle}
               />
             ) : (
               <TimedEvent
+                date={date}
                 event={event}
                 key={event.id}
-                gridPosition={gridPosition}
+                css={eventStyle}
               />
             )
           )}
@@ -181,10 +184,20 @@ function EventList({ date, events, maxNumberOfEvents, gridPosition }) {
   );
 }
 
-function TimedEvent({ event, gridPosition }) {
+function TimedEvent({ date, event, css }) {
+  const chooseStyle = () => {
+    const today = dayjs().startOf("day");
+    const currentDate = dayjs(date).startOf("day");
+    if (currentDate.isSame(today)) return "today";
+    return "future";
+  };
+
+  const eventStyle = { today: `border-blue-300 bg-blue-200` };
+
+  const currentColors = eventStyle[chooseStyle()];
   return (
     <div
-      className={`mx-2 py-1 px-2 bg-white border border-gray-300 rounded col-start-${gridPosition} col-span-1 truncate z-10 cursor-pointer`}
+      className={`${css} col-span-1 border-gray-400 ${currentColors}`}
       key={event.id}
     >
       {dayjs(event.start.datetime).format("HH:mm")} {event.title}
@@ -192,13 +205,14 @@ function TimedEvent({ event, gridPosition }) {
   );
 }
 
-function AllDayEvent({ event, gridPosition, display }) {
-  const remainingDuration = event.duration - event.position;
+function AllDayEvent({ event, display, css }) {
+  const remainingDuration = event.duration - event.position + 1;
+
   return (
     <>
       {display && (
         <div
-          className={`mx-2 py-1 px-2 col-start-${gridPosition} col-span-${remainingDuration} truncate bg-gray-200 border border-gray-400 rounded z-10 cursor-pointer`}
+          className={`${css} col-span-${remainingDuration} bg-indigo-100 border-indigo-200`}
           key={event.id}
         >
           {event.title}

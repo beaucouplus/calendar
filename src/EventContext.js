@@ -97,7 +97,7 @@ const dummyEvents = [
     id: 16,
     start: { date: "2020-07-13", datetime: null },
     end: { date: "2020-07-24", datetime: null },
-    title: "Holidays at Alençon city",
+    title: "🏝 Holidays at Alençon city",
   },
   {
     id: 17,
