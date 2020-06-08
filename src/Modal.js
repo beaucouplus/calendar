@@ -37,7 +37,7 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
   return ReactDOM.createPortal(
     <FocusTrap>
       <aside
-        className="fixed top-0 left-0 w-screen h-screen flex items-center"
+        className="fixed top-0 left-0 w-screen h-screen flex items-center z-50"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
         role="dialog"
         aria-modal="true"

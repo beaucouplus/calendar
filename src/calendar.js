@@ -1,36 +1,65 @@
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import { range } from "./utils";
 dayjs.extend(isLeapYear);
+dayjs.extend(isSameOrBefore);
 
-function groupEventsByDate(events) {
+function groupEventsByDateAndType(events) {
   const groupedEvents = {};
 
   events.forEach((event) => {
-    // TODO when updating to multi days events, check start and end date to make sure that the event is between the boundaries.
-    // Else, only use the datetime
-    const eventDate = event.start.date
-      ? event.start.date
-      : dayjs(event.start.datetime).format("YYYY-MM-DD");
-    const currentDate = groupedEvents[eventDate];
-    currentDate
-      ? currentDate.push(event)
-      : (groupedEvents[eventDate] = [event]);
+    if (event.start.date) {
+      const duration =
+        dayjs(event.end.date).diff(dayjs(event.start.date), "d") + 1;
+      const datesToUpdate = [];
+      let currentDate = dayjs(event.start.date);
+      let position = 1;
+
+      while (currentDate.isSameOrBefore(dayjs(event.end.date))) {
+        datesToUpdate.push({
+          date: currentDate.format("YYYY-MM-DD"),
+          event: {
+            ...event,
+            allDay: true,
+            position: position,
+            duration: duration,
+          },
+        });
+        currentDate = currentDate.add(1, "day");
+        position = position + 1;
+      }
+
+      datesToUpdate.forEach((date) => {
+        updateEventList(groupedEvents, date.event, date.date);
+      });
+    } else {
+      const eventDate = dayjs(event.start.datetime).format("YYYY-MM-DD");
+      const eventToAdd = { ...event, allDay: false };
+      updateEventList(groupedEvents, eventToAdd, eventDate);
+    }
   });
   return groupedEvents;
+}
+function updateEventList(eventList, event, date) {
+  const existingDate = eventList[date];
+  existingDate ? existingDate.push(event) : (eventList[date] = [event]);
 }
 
 const sortEvents = (events) =>
   events &&
   events.sort((a, b) => {
-    const aTime = dayjs(a.start.datetime);
-    const bTime = dayjs(b.start.datetime);
+    if (a.allDay && !b.allDay) return -1;
+    const firstDate = a.start.date ? b.start.date : a.start.datetime;
+    const secondDate = b.start.date ? b.start.date : b.start.datetime;
+    const aTime = dayjs(firstDate);
+    const bTime = dayjs(secondDate);
 
     return aTime - bTime;
   });
 
 function createYearCalendarCells(year, events) {
-  const groupedEvents = groupEventsByDate(events);
+  const groupedEvents = groupEventsByDateAndType(events);
   const months = range(1, 12);
   const monthDays = range(1, 31);
 
@@ -78,7 +107,7 @@ function createYearCalendarCells(year, events) {
 }
 
 function monthViewDays(startOfMonth, events) {
-  const groupedEvents = groupEventsByDate(events);
+  const groupedEvents = groupEventsByDateAndType(events);
   let viewStart = dayjs(startOfMonth);
 
   if (viewStart.format("dddd") !== "Monday") {
@@ -178,7 +207,6 @@ const calendarCellStyle = (date, events) => {
 };
 
 export {
-  groupEventsByDate,
   sortEvents,
   createYearCalendarCells,
   monthViewDays,
