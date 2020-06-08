@@ -9,25 +9,14 @@ import { sortEvents } from "./calendar";
 import Modal from "./Modal";
 import DayModal from "./DayModal";
 
-function WeekRow({ daysInView, week, month, maxHeight, maxNumberOfEvents }) {
-  const titleRef = useRef();
-  const [contentHeight, setContentHeight] = useState(0);
-
-  useEffect(() => {
-    const finalHeight = maxHeight - titleRef.current.offsetHeight - 20;
-    setContentHeight(finalHeight);
-  }, [maxHeight]);
-
+function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
   return (
-    <div
-      className="grid grid-cols-7 content-start row-gap-1 relative pt-8 grid-flow-col-dense"
-      ref={titleRef}
-    >
+    <div className="grid grid-cols-7 content-start row-gap-1 relative pt-8 grid-flow-col-dense">
       <>
         {week.map((date) => (
           <DailyEventList
             date={date}
-            events={daysInView[date]}
+            events={eventsPerDay[date]}
             maxNumberOfEvents={maxNumberOfEvents}
             key={date}
           />
@@ -36,24 +25,22 @@ function WeekRow({ daysInView, week, month, maxHeight, maxNumberOfEvents }) {
       <WeekDays
         week={week}
         month={month}
-        daysInView={daysInView}
+        eventsPerDay={eventsPerDay}
         maxNumberOfEvents={maxNumberOfEvents}
-        maxHeight={contentHeight}
       />
     </div>
   );
 }
 
-function WeekDays({ week, month, daysInView, maxNumberOfEvents, maxHeight }) {
+function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
   return (
     <div className="absolute top-0 h-full left-0 grid grid-cols-7 w-full divide-x divide-gray-300">
       {week.map((weekDay) => (
         <WeekDay
           day={weekDay}
-          events={daysInView[weekDay]}
+          events={eventsPerDay[weekDay]}
           month={month}
           maxNumberOfEvents={maxNumberOfEvents}
-          maxHeight={maxHeight}
           key={weekDay}
         />
       ))}
@@ -139,18 +126,6 @@ RemainingEventsNumber.propTypes = exact({
 function DailyEventList({ date, events, maxNumberOfEvents }) {
   const sortedEvents = sortEvents(events);
 
-  return (
-    <div className="contents text-xs">
-      <EventList
-        date={date}
-        events={sortedEvents}
-        maxNumberOfEvents={maxNumberOfEvents}
-      />
-    </div>
-  );
-}
-
-function EventList({ date, events, maxNumberOfEvents }) {
   // note: works because Sunday is the first day of the week and Monday has index 1
   const gridPosition = dayjs(date).day();
   const eventStyle = `col-start-${gridPosition} mx-2 py-1 px-2 border rounded truncate cursor-pointer`;
@@ -159,9 +134,9 @@ function EventList({ date, events, maxNumberOfEvents }) {
     event.position === 1 || dayjs(date).format("dddd") === "Monday";
 
   return (
-    <>
-      {events &&
-        events
+    <div className="contents text-xs">
+      {sortedEvents &&
+        sortedEvents
           .slice(0, maxNumberOfEvents)
           .map((event) =>
             event.allDay ? (
@@ -180,7 +155,7 @@ function EventList({ date, events, maxNumberOfEvents }) {
               />
             )
           )}
-    </>
+    </div>
   );
 }
 

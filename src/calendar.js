@@ -46,7 +46,6 @@ function updateEventList(eventList, event, date) {
   existingDate ? existingDate.push(event) : (eventList[date] = [event]);
 }
 
-// will probably need to update the sorting behavior when implementing the grid
 const sortEvents = (events) =>
   events &&
   events.sort((a, b) => {
