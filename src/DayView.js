@@ -10,7 +10,7 @@ import { EventContext } from "./EventContext";
 
 dayjs.extend(isBetween);
 
-function DayView({ events, date, displayForm, onCloseForm }) {
+function DayView({ events, chosenEventId, date, displayForm, onCloseForm }) {
   const { onAddEvent } = useContext(EventContext);
 
   function setCurrentView() {
@@ -32,7 +32,7 @@ function DayView({ events, date, displayForm, onCloseForm }) {
       display: true,
       onClose: onCloseForm,
     },
-    DayPlanning: { events: sortedEvents },
+    DayPlanning: { events: sortedEvents, chosenEventId },
     EmptyPlanning: {},
   };
   const CurrentDayPlanningView = views[currentView];
@@ -46,6 +46,7 @@ function DayView({ events, date, displayForm, onCloseForm }) {
 
 DayView.propTypes = exact({
   events: PropTypes.array,
+  chosenEventId: PropTypes.number,
   date: PropTypes.instanceOf(Date).isRequired,
   displayForm: PropTypes.bool.isRequired,
   onCloseForm: PropTypes.func.isRequired,
@@ -57,7 +58,7 @@ const EmptyPlanning = () => (
   </div>
 );
 
-function DayPlanning({ events }) {
+function DayPlanning({ events, chosenEventId }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
     if (!eventList) return false;
     return eventList.filter((event) => {
@@ -82,21 +83,25 @@ function DayPlanning({ events }) {
         events={allDayevents}
         title="All Day"
         isShown={allDayevents.length > 0}
+        chosenEventId={chosenEventId}
       />
       <EventList
         events={morningEvents}
         title="Morning"
         isShown={morningEvents.length > 0}
+        chosenEventId={chosenEventId}
       />
       <EventList
         events={afternoonEvents}
         title="Afternoon"
         isShown={afternoonEvents.length > 0}
+        chosenEventId={chosenEventId}
       />
       <EventList
         events={eveningEvents}
         title="Evening"
         isShown={eveningEvents.length > 0}
+        chosenEventId={chosenEventId}
       />
     </div>
   );
@@ -104,9 +109,10 @@ function DayPlanning({ events }) {
 
 DayPlanning.propTypes = exact({
   events: PropTypes.array,
+  chosenEventId: PropTypes.number,
 });
 
-function EventList({ events, title, isShown }) {
+function EventList({ events, chosenEventId, title, isShown }) {
   return (
     <>
       {isShown && (
@@ -115,7 +121,13 @@ function EventList({ events, title, isShown }) {
             <ul className="block w-full space-y-2">
               <h2 className="pl-4 text-md text-blue-700">{title}</h2>
               {events &&
-                events.map((event) => <Event key={event.id} event={event} />)}
+                events.map((event) => (
+                  <Event
+                    key={event.id}
+                    event={event}
+                    chosenEventId={chosenEventId}
+                  />
+                ))}
             </ul>
           </div>
         </div>
@@ -126,6 +138,7 @@ function EventList({ events, title, isShown }) {
 
 EventList.propTypes = exact({
   events: PropTypes.array.isRequired,
+  chosenEventId: PropTypes.number,
   title: PropTypes.string.isRequired,
   isShown: PropTypes.bool.isRequired,
 });

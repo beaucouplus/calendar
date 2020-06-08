@@ -5,9 +5,10 @@ import { Button } from "./Button";
 import { EventContext } from "./EventContext";
 import dayjs from "dayjs";
 
-function Event({ event }) {
+function Event({ event, chosenEventId }) {
+  const isShown = event.id === chosenEventId;
   const { onDeleteEvent } = useContext(EventContext);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(isShown);
 
   const handleDeleteEvent = (event) => {
     setShowDetails(false);

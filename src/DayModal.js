@@ -7,16 +7,10 @@ import { Button } from "./Button";
 
 dayjs.extend(customParseFormat);
 
-function DayModal({ date, events }) {
+function DayModal({ date, events, chosenEventId }) {
   const [displayForm, setDisplayForm] = useState(false);
-
-  const closeForm = () => {
-    setDisplayForm(false);
-  };
-
-  const triggerForm = () => {
-    setDisplayForm(!displayForm);
-  };
+  const closeForm = () => setDisplayForm(false);
+  const triggerForm = () => setDisplayForm(!displayForm);
 
   return (
     <div className="mt-8 h-full flex flex-col">
@@ -28,6 +22,7 @@ function DayModal({ date, events }) {
       </header>
       <DayView
         events={events}
+        chosenEventId={chosenEventId}
         date={date}
         displayForm={displayForm}
         onCloseForm={closeForm}
