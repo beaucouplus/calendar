@@ -106,6 +106,12 @@ const dummyEvents = [
     end: { date: "2020-07-20", datetime: null },
     title: "Golf with Forrest",
   },
+  {
+    id: 18,
+    start: { date: "2020-08-09", datetime: null },
+    end: { date: "2020-08-30", datetime: null },
+    title: "All alone in Paris",
+  },
 ];
 
 const EventContext = React.createContext();

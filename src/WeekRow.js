@@ -17,7 +17,7 @@ function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
         {week.map((date) => (
           <DailyEventList
             date={date}
-            eventsPerDay={eventsPerDay}
+            events={eventsPerDay[date]}
             maxNumberOfEvents={maxNumberOfEvents}
             key={date}
           />
@@ -123,10 +123,12 @@ RemainingEventsNumber.propTypes = exact({
   isShown: PropTypes.bool.isRequired,
 });
 
-function DailyEventList({ date, eventsPerDay, maxNumberOfEvents }) {
-  const sortedEvents = sortEvents(eventsPerDay[date]);
-  // note: works because Sunday is the first day of the week and Monday has index 1
-  const gridPosition = dayjs(date).day();
+function DailyEventList({ date, events, maxNumberOfEvents }) {
+  const sortedEvents = sortEvents(events);
+
+  const weekDay = dayjs(date).day();
+  const gridPosition = weekDay === 0 ? 7 : weekDay;
+
   const eventStyle = `col-start-${gridPosition} mx-2 py-1 px-2 border rounded truncate cursor-pointer z-10 hover:bg-orange-300 hover:border-orange-400`;
 
   return (
@@ -193,14 +195,14 @@ function TimedEvent({ date, event, css }) {
   );
 }
 
-function AllDayEvent({ date, event, events, display, css }) {
-  const remainingDuration = event.duration - event.position + 1;
+function AllDayEvent({ date, event, display, css }) {
+  const remainingDuration = event.duration - event.position;
 
   const currentWeekDayIndex = dayjs(date).day();
   const remainingDaysUntilEndOfWeek =
     currentWeekDayIndex + remainingDuration > 7
       ? 7 - currentWeekDayIndex + 1
-      : remainingDuration;
+      : remainingDuration + 1;
 
   const weeklyRemainingDays = range(0, remainingDaysUntilEndOfWeek - 1).map(
     (daysNumber) => {
@@ -217,19 +219,14 @@ function AllDayEvent({ date, event, events, display, css }) {
       {display && (
         <>
           <div
-            className={`${css} col-span-${remainingDuration} bg-indigo-100 border-indigo-200 relative`}
+            className={`${css} col-span-${remainingDaysUntilEndOfWeek} bg-indigo-100 border-indigo-200 relative`}
             key={event.id}
           >
             <div
               className={`absolute gap-2 top-0 left-0  grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}
             >
               {weeklyRemainingDays.map((day) => (
-                <AllDayEventPart
-                  day={day}
-                  events={events}
-                  event={event}
-                  key={day.date}
-                />
+                <AllDayEventPart day={day} event={event} key={day.date} />
               ))}
             </div>
             {event.title}
