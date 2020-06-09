@@ -13,18 +13,22 @@ function Header({
   currentView,
   onSelectView,
 }) {
-  const { events } = useContext(EventContext);
   const [showModal, setShowModal] = useState(false);
 
   const previousYear = () => onSetYear(year - 1);
   const nextYear = () => onSetYear(year + 1);
 
   const previousMonth = () =>
-    onSetStartOfMonth(dayjs(startOfMonth).subtract(1, "month"));
+    onSetStartOfMonth(
+      dayjs(startOfMonth, "YYYY-MM-DD")
+        .subtract(1, "month")
+        .format("YYYY-MM-DD")
+    );
   const nextMonth = () =>
-    onSetStartOfMonth(dayjs(startOfMonth).add(1, "month"));
-  const today = new Date(dayjs().startOf("day"));
-  const todayEvents = events[dayjs().startOf("day").format("YYYY-MM-DD")];
+    onSetStartOfMonth(
+      dayjs(startOfMonth, "YYYY-MM-DD").add(1, "month").format("YYYY-MM-DD")
+    );
+  const today = dayjs().startOf("day").format("YYYY-MM-DD");
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -74,7 +78,7 @@ function Header({
           <li>
             <OutlineButton callBack={openModal}>Today</OutlineButton>
             <Modal showModal={showModal} onCloseModal={closeModal}>
-              <DayModal date={today} events={todayEvents} />
+              <DayModal date={today} />
             </Modal>
           </li>
         </ul>

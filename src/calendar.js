@@ -24,6 +24,8 @@ function groupEventsByDateAndType(events) {
             allDay: true,
             position: position,
             duration: duration,
+            displayed:
+              currentDate.format("dddd") === "Monday" || position === 1,
           },
         });
         currentDate = currentDate.add(1, "day");
@@ -46,20 +48,23 @@ function updateEventList(eventList, event, date) {
   existingDate ? existingDate.push(event) : (eventList[date] = [event]);
 }
 
-const sortEvents = (events) =>
-  events &&
-  events.sort((a, b) => {
-    if (a.allDay && !b.allDay) return -1;
-    const firstDate = a.start.date ? b.start.date : a.start.datetime;
-    const secondDate = b.start.date ? b.start.date : b.start.datetime;
-    const aTime = dayjs(firstDate);
-    const bTime = dayjs(secondDate);
+const sortEvents = (events) => {
+  if (events) {
+    return events.sort((a, b) => {
+      if (a.allDay && !b.allDay) return -1;
+      const firstDate = a.start.date ? b.start.date : a.start.datetime;
+      const secondDate = b.start.date ? b.start.date : b.start.datetime;
+      const aTime = dayjs(firstDate);
+      const bTime = dayjs(secondDate);
 
-    return aTime - bTime;
-  });
+      return aTime - bTime;
+    });
+  } else {
+    return [];
+  }
+};
 
-function createYearCalendarCells(year, events) {
-  const groupedEvents = groupEventsByDateAndType(events);
+function createYearCalendarCells(year, eventsByDate) {
   const months = range(1, 12);
   const monthDays = range(1, 31);
 
@@ -92,13 +97,14 @@ function createYearCalendarCells(year, events) {
         });
       } else {
         const date = new Date(year, month - 1, day, 0, 0, 0, 0);
-        const dailyEvents = groupedEvents[dayjs(date).format("YYYY-MM-DD")];
+        const dailyEvents = eventsByDate[dayjs(date).format("YYYY-MM-DD")];
         daysInMonth[day].push({
           month: month,
           day: day,
           hasDate: true,
-          date: date,
+          date: dayjs(date).format("YYYY-MM-DD"),
           events: dailyEvents,
+          hasEvents: dailyEvents && dailyEvents.length > 0,
         });
       }
     });
@@ -106,8 +112,7 @@ function createYearCalendarCells(year, events) {
   return daysInMonth;
 }
 
-function monthViewDays(startOfMonth, events) {
-  const groupedEvents = groupEventsByDateAndType(events);
+function monthViewDays(startOfMonth, eventsByDate) {
   let viewStart = dayjs(startOfMonth);
 
   if (viewStart.format("dddd") !== "Monday") {
@@ -124,7 +129,7 @@ function monthViewDays(startOfMonth, events) {
   const daysInMonth = {};
 
   while (viewStart.isBefore(viewEnd)) {
-    const dailyEvents = groupedEvents[viewStart.format("YYYY-MM-DD")];
+    const dailyEvents = eventsByDate[viewStart.format("YYYY-MM-DD")];
     daysInMonth[viewStart.format("YYYY-MM-DD")] = dailyEvents;
     viewStart = viewStart.add(1, "day");
   }
@@ -207,6 +212,7 @@ const calendarCellStyle = (date, events) => {
 };
 
 export {
+  groupEventsByDateAndType,
   sortEvents,
   createYearCalendarCells,
   monthViewDays,

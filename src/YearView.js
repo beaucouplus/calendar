@@ -11,12 +11,12 @@ import { EventContext } from "./EventContext";
 dayjs.extend(LocalizedFormat);
 
 function YearView({ year }) {
-  const { events } = useContext(EventContext);
+  const { eventsByDate } = useContext(EventContext);
 
   const monthDays = range(1, 31);
   const css = { cellBorders: "border border-gray-500" };
 
-  const cells = createYearCalendarCells(year, events);
+  const cells = createYearCalendarCells(year, eventsByDate);
 
   return (
     <table className="table-fixed w-full h-full border text-xs bg-white">
@@ -75,7 +75,12 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell date={day.date} events={day.events} css={css} key={id} />
+          <DayCell
+            date={day.date}
+            hasEvents={day.hasEvents}
+            css={css}
+            key={id}
+          />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -89,14 +94,14 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css }) {
+function DayCell({ date, hasEvents, css }) {
   const [showModal, setShowModal] = useState(false);
   const [showDate, setShowDate] = useState(false);
   const closeModal = () => setShowModal(false);
 
   const weekday = dayjs(date).format("dddd");
 
-  const tdStyle = calendarCellStyle(date, events);
+  const tdStyle = calendarCellStyle(date, hasEvents);
 
   return (
     <>
@@ -109,15 +114,15 @@ function DayCell({ date, events, css }) {
         {weekday[0]} <CellDate date={date} isShown={showDate} />
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} events={events} />
+        <DayModal date={date} />
       </Modal>
     </>
   );
 }
 
 DayCell.propTypes = exact({
-  date: PropTypes.instanceOf(Date).isRequired,
-  events: PropTypes.array,
+  date: PropTypes.string.isRequired,
+  hasEvents: PropTypes.bool,
   css: PropTypes.object,
 });
 

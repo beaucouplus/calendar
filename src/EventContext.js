@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { groupEventsByDateAndType } from "./calendar";
 
 const dummyEvents = [
   {
@@ -76,8 +77,8 @@ const dummyEvents = [
   },
   {
     id: 13,
-    start: { date: null, datetime: "2020-07-30T16:00:00+02:00" },
-    end: { date: null, datetime: "2020-07-30T17:30:00+02:00" },
+    start: { date: null, datetime: "2020-08-02T16:00:00+02:00" },
+    end: { date: null, datetime: "2020-08-02T17:30:00+02:00" },
     title: "Another coffee. Love coffee",
   },
   {
@@ -105,6 +106,12 @@ const dummyEvents = [
     end: { date: "2020-07-20", datetime: null },
     title: "Golf with Forrest",
   },
+  {
+    id: 18,
+    start: { date: "2020-08-09", datetime: null },
+    end: { date: "2020-08-30", datetime: null },
+    title: "All alone in Paris",
+  },
 ];
 
 const EventContext = React.createContext();
@@ -112,6 +119,7 @@ const EventContext = React.createContext();
 function EventStore({ children }) {
   const [events, setEvents] = useState(dummyEvents);
   const [eventID, setEventID] = useState(dummyEvents.length);
+  const eventsByDate = groupEventsByDateAndType(events);
 
   function addEvent(event) {
     setEventID(eventID + 1);
@@ -131,6 +139,7 @@ function EventStore({ children }) {
         events: events,
         onAddEvent: addEvent,
         onDeleteEvent: deleteEvent,
+        eventsByDate: eventsByDate,
       }}
     >
       {children}
