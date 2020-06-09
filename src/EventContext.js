@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { groupEventsByDateAndType } from "./calendar";
 
 const dummyEvents = [
   {
@@ -112,6 +113,7 @@ const EventContext = React.createContext();
 function EventStore({ children }) {
   const [events, setEvents] = useState(dummyEvents);
   const [eventID, setEventID] = useState(dummyEvents.length);
+  const eventsByDate = groupEventsByDateAndType(events);
 
   function addEvent(event) {
     setEventID(eventID + 1);
@@ -131,6 +133,7 @@ function EventStore({ children }) {
         events: events,
         onAddEvent: addEvent,
         onDeleteEvent: deleteEvent,
+        eventsByDate: eventsByDate,
       }}
     >
       {children}

@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { EventContext } from "./EventContext";
 import DayView from "./DayView";
 import { Button } from "./Button";
 
 dayjs.extend(customParseFormat);
 
-function DayModal({ date, events, chosenEventId }) {
+function DayModal({ date, chosenEventId }) {
   const [displayForm, setDisplayForm] = useState(false);
   const closeForm = () => setDisplayForm(false);
   const triggerForm = () => setDisplayForm(!displayForm);
 
+  const { eventsByDate } = useContext(EventContext);
+  const events = eventsByDate[date];
   return (
     <div className="mt-8 h-full flex flex-col">
       <header className="flex items-center justify-between pl-6 px-3 pb-3">

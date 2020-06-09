@@ -11,12 +11,12 @@ import { EventContext } from "./EventContext";
 dayjs.extend(LocalizedFormat);
 
 function YearView({ year }) {
-  const { events } = useContext(EventContext);
+  const { eventsByDate } = useContext(EventContext);
 
   const monthDays = range(1, 31);
   const css = { cellBorders: "border border-gray-500" };
 
-  const cells = createYearCalendarCells(year, events);
+  const cells = createYearCalendarCells(year, eventsByDate);
 
   return (
     <table className="table-fixed w-full h-full border text-xs bg-white">

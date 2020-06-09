@@ -17,7 +17,7 @@ function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
         {week.map((date) => (
           <DailyEventList
             date={date}
-            events={eventsPerDay[date]}
+            eventsPerDay={eventsPerDay}
             maxNumberOfEvents={maxNumberOfEvents}
             key={date}
           />
@@ -83,7 +83,6 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
 
   const currentStyle = styles[chooseStyle()];
 
-  const sortedEvents = sortEvents(events);
   return (
     <>
       <div
@@ -99,7 +98,7 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
         />
       </div>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={day} events={sortedEvents} />
+        <DayModal date={day} />
       </Modal>
     </>
   );
@@ -124,23 +123,11 @@ RemainingEventsNumber.propTypes = exact({
   isShown: PropTypes.bool.isRequired,
 });
 
-function DailyEventList({ date, events, maxNumberOfEvents }) {
-  const sortedEvents = sortEvents(events);
-  const [showModal, setShowModal] = useState(false);
-  const [chosenEventId, setChosenEventId] = useState(undefined);
-  const [chosenDate, setChosenDate] = useState(date);
-  const closeModal = () => setShowModal(false);
+function DailyEventList({ date, eventsPerDay, maxNumberOfEvents }) {
+  const sortedEvents = sortEvents(eventsPerDay[date]);
   // note: works because Sunday is the first day of the week and Monday has index 1
   const gridPosition = dayjs(date).day();
   const eventStyle = `col-start-${gridPosition} mx-2 py-1 px-2 border rounded truncate cursor-pointer z-10 hover:bg-orange-300 hover:border-orange-400`;
-
-  const shouldDisplay = (event) =>
-    event.position === 1 || dayjs(date).format("dddd") === "Monday";
-
-  const handleChosenDate = (date) => {
-    console.log(date);
-    setChosenDate(date);
-  };
 
   return (
     <>
@@ -152,40 +139,30 @@ function DailyEventList({ date, events, maxNumberOfEvents }) {
               event.allDay ? (
                 <AllDayEvent
                   date={date}
-                  events={sortedEvents}
                   event={event}
                   key={event.id}
-                  display={shouldDisplay(event)}
+                  display={event.displayed}
                   css={eventStyle}
-                  onShowModal={() => setShowModal(true)}
-                  onChooseEvent={setChosenEventId}
-                  onChooseDate={handleChosenDate}
                 />
               ) : (
                 <TimedEvent
                   date={date}
-                  events={sortedEvents}
                   event={event}
                   key={event.id}
                   css={eventStyle}
-                  onShowModal={() => setShowModal(true)}
-                  onChooseEvent={setChosenEventId}
                 />
               )
             )}
       </div>
-      <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal
-          date={chosenDate}
-          events={events}
-          chosenEventId={chosenEventId}
-        />
-      </Modal>
     </>
   );
 }
 
-function TimedEvent({ date, event, css, onShowModal, onChooseEvent }) {
+function TimedEvent({ date, event, css }) {
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => setShowModal(false);
+  const [chosenEventId, setChosenEventId] = useState(undefined);
+
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
     const currentDate = dayjs(date).startOf("day");
@@ -196,8 +173,8 @@ function TimedEvent({ date, event, css, onShowModal, onChooseEvent }) {
   const eventStyle = { today: `border-blue-300 bg-blue-200` };
   const currentColors = eventStyle[chooseStyle()];
   const handleClick = () => {
-    onShowModal();
-    onChooseEvent(event.id);
+    setShowModal(true);
+    setChosenEventId(event.id);
   };
 
   return (
@@ -209,20 +186,14 @@ function TimedEvent({ date, event, css, onShowModal, onChooseEvent }) {
       >
         {dayjs(event.start.datetime).format("HH:mm")} {event.title}
       </div>
+      <Modal showModal={showModal} onCloseModal={closeModal}>
+        <DayModal date={date} chosenEventId={chosenEventId} />
+      </Modal>
     </>
   );
 }
 
-function AllDayEvent({
-  date,
-  event,
-  display,
-  css,
-  onShowModal,
-  onChooseEvent,
-  onChooseDate,
-}) {
-  const [textDisplayed, displayText] = useState(true);
+function AllDayEvent({ date, event, events, display, css }) {
   const remainingDuration = event.duration - event.position + 1;
 
   const currentWeekDayIndex = dayjs(date).day();
@@ -241,12 +212,6 @@ function AllDayEvent({
     }
   );
 
-  const handleClick = (date) => {
-    onShowModal();
-    onChooseEvent(event.id);
-    onChooseDate(date);
-  };
-
   return (
     <>
       {display && (
@@ -259,20 +224,38 @@ function AllDayEvent({
               className={`absolute top-0 left-0 gap-2 grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}
             >
               {weeklyRemainingDays.map((day) => (
-                <div
-                  className={`border-b-4 border-transparent hover:border-orange-400`}
-                  onClick={() => handleClick(day.date)}
-                  onMouseEnter={() => displayText(true)}
-                  onMouseLeave={() => displayText(true)}
-                >
-                  &nbsp;
-                </div>
+                <AllDayEventPart day={day} events={events} event={event} />
               ))}
             </div>
-            {textDisplayed ? event.title : <span>&nbsp;</span>}
+            {event.title}
           </div>
         </>
       )}
+    </>
+  );
+}
+
+function AllDayEventPart({ day, event }) {
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => setShowModal(false);
+  const [chosenEventId, setChosenEventId] = useState(undefined);
+
+  const handleClick = () => {
+    setShowModal(true);
+    setChosenEventId(event.id);
+  };
+
+  return (
+    <>
+      <div
+        className={`border-b-4 border-transparent hover:border-orange-400`}
+        onClick={() => handleClick()}
+      >
+        &nbsp;
+      </div>
+      <Modal showModal={showModal} onCloseModal={closeModal}>
+        <DayModal date={day.date} chosenEventId={chosenEventId} />
+      </Modal>
     </>
   );
 }

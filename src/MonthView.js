@@ -8,11 +8,11 @@ import { chunk } from "./utils";
 import { EventContext } from "./EventContext";
 
 function MonthView({ startOfMonth }) {
-  const { events } = useContext(EventContext);
+  const { eventsByDate } = useContext(EventContext);
   const weekRowsContainer = useRef();
   const [maxNumberOfEvents, setMaxNumberOfEvents] = useState(0);
 
-  const eventsPerDay = monthViewDays(startOfMonth, events);
+  const eventsPerDay = monthViewDays(startOfMonth, eventsByDate);
   const currentMonth = dayjs(startOfMonth).month();
 
   const daysList = Object.keys(eventsPerDay);
