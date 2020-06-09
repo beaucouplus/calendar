@@ -102,7 +102,7 @@ function createYearCalendarCells(year, eventsByDate) {
           month: month,
           day: day,
           hasDate: true,
-          date: date,
+          date: dayjs(date).format("YYYY-MM-DD"),
           events: dailyEvents,
           hasEvents: dailyEvents && dailyEvents.length > 0,
         });

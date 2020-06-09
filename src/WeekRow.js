@@ -224,7 +224,12 @@ function AllDayEvent({ date, event, events, display, css }) {
               className={`absolute gap-2 top-0 left-0  grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}
             >
               {weeklyRemainingDays.map((day) => (
-                <AllDayEventPart day={day} events={events} event={event} />
+                <AllDayEventPart
+                  day={day}
+                  events={events}
+                  event={event}
+                  key={day.date}
+                />
               ))}
             </div>
             {event.title}

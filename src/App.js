@@ -12,7 +12,7 @@ function App() {
   const currentDate = new Date();
 
   const [year, setYear] = useState(currentDate.getFullYear());
-  const monthStart = dayjs(currentDate).startOf("month").toDate();
+  const monthStart = dayjs(currentDate).startOf("month").format("YYYY-MM-DD");
   const [startOfMonth, setStartOfMonth] = useState(monthStart);
   const [currentView, setCurrentView] = useState("MonthView");
 

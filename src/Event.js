@@ -52,6 +52,7 @@ function Event({ event, chosenEventId }) {
 
 Event.propTypes = exact({
   event: PropTypes.object.isRequired,
+  chosenEventId: PropTypes.number,
 });
 
 function EventDetails({ event, onDeleteEvent }) {

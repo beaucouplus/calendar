@@ -35,7 +35,7 @@ function DayModal({ date, chosenEventId }) {
 }
 
 DayModal.propTypes = {
-  date: PropTypes.instanceOf(Date).isRequired,
+  date: PropTypes.string.isRequired,
   events: PropTypes.array,
 };
 

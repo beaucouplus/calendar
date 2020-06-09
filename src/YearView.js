@@ -121,8 +121,8 @@ function DayCell({ date, hasEvents, css }) {
 }
 
 DayCell.propTypes = exact({
-  date: PropTypes.instanceOf(Date).isRequired,
-  events: PropTypes.array,
+  date: PropTypes.string.isRequired,
+  hasEvents: PropTypes.bool,
   css: PropTypes.object,
 });
 

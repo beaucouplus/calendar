@@ -47,7 +47,7 @@ function DayView({ events, chosenEventId, date, displayForm, onCloseForm }) {
 DayView.propTypes = exact({
   events: PropTypes.array,
   chosenEventId: PropTypes.number,
-  date: PropTypes.instanceOf(Date).isRequired,
+  date: PropTypes.string.isRequired,
   displayForm: PropTypes.bool.isRequired,
   onCloseForm: PropTypes.func.isRequired,
 });

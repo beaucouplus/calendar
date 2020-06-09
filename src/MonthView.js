@@ -13,7 +13,7 @@ function MonthView({ startOfMonth }) {
   const [maxNumberOfEvents, setMaxNumberOfEvents] = useState(0);
 
   const eventsPerDay = monthViewDays(startOfMonth, eventsByDate);
-  const currentMonth = dayjs(startOfMonth).month();
+  const currentMonth = dayjs(startOfMonth, "YYYY-MM-DD").month();
 
   const daysList = Object.keys(eventsPerDay);
   const eventsPerDaySize = daysList.length;
@@ -50,6 +50,10 @@ function MonthView({ startOfMonth }) {
   );
 }
 
+MonthView.propTypes = exact({
+  startOfMonth: PropTypes.string.isRequired,
+});
+
 function WeekDayTitles() {
   const weekDays = [
     "Monday",
@@ -73,9 +77,5 @@ function WeekDayTitles() {
     </div>
   );
 }
-
-MonthView.propTypes = exact({
-  startOfMonth: PropTypes.instanceOf(Date).isRequired,
-});
 
 export default MonthView;
