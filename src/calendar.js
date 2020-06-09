@@ -104,6 +104,7 @@ function createYearCalendarCells(year, eventsByDate) {
           hasDate: true,
           date: date,
           events: dailyEvents,
+          hasEvents: dailyEvents && dailyEvents.length > 0,
         });
       }
     });

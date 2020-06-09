@@ -221,7 +221,7 @@ function AllDayEvent({ date, event, events, display, css }) {
             key={event.id}
           >
             <div
-              className={`absolute top-0 left-0 gap-2 grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}
+              className={`absolute gap-2 top-0 left-0  grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}
             >
               {weeklyRemainingDays.map((day) => (
                 <AllDayEventPart day={day} events={events} event={event} />
@@ -248,7 +248,7 @@ function AllDayEventPart({ day, event }) {
   return (
     <>
       <div
-        className={`border-b-4 border-transparent hover:border-orange-400`}
+        className={`border-b-4 border-transparent hover:border-orange-400 first:mx-2 last:mx-2`}
         onClick={() => handleClick()}
       >
         &nbsp;

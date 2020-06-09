@@ -24,6 +24,7 @@ module.exports = {
       "last",
     ],
     padding: ["responsive", "last"],
+    margin: ["responsive", "first", "last"],
   },
   plugins: [],
 };

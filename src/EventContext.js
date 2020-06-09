@@ -77,8 +77,8 @@ const dummyEvents = [
   },
   {
     id: 13,
-    start: { date: null, datetime: "2020-07-30T16:00:00+02:00" },
-    end: { date: null, datetime: "2020-07-30T17:30:00+02:00" },
+    start: { date: null, datetime: "2020-08-02T16:00:00+02:00" },
+    end: { date: null, datetime: "2020-08-02T17:30:00+02:00" },
     title: "Another coffee. Love coffee",
   },
   {

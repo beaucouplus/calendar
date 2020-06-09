@@ -75,7 +75,12 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell date={day.date} events={day.events} css={css} key={id} />
+          <DayCell
+            date={day.date}
+            hasEvents={day.hasEvents}
+            css={css}
+            key={id}
+          />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -89,14 +94,14 @@ function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
 
-function DayCell({ date, events, css }) {
+function DayCell({ date, hasEvents, css }) {
   const [showModal, setShowModal] = useState(false);
   const [showDate, setShowDate] = useState(false);
   const closeModal = () => setShowModal(false);
 
   const weekday = dayjs(date).format("dddd");
 
-  const tdStyle = calendarCellStyle(date, events);
+  const tdStyle = calendarCellStyle(date, hasEvents);
 
   return (
     <>
@@ -109,7 +114,7 @@ function DayCell({ date, events, css }) {
         {weekday[0]} <CellDate date={date} isShown={showDate} />
       </td>
       <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} events={events} />
+        <DayModal date={date} />
       </Modal>
     </>
   );
