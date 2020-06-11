@@ -198,7 +198,9 @@ function TimedEvent({ date, event, css }) {
 function AllDayEvent({ date, event, display, css }) {
   const remainingDuration = event.duration - event.position;
 
-  const currentWeekDayIndex = dayjs(date).day();
+  const weekDay = dayjs(date).day();
+  const currentWeekDayIndex = weekDay === 0 ? 7 : weekDay;
+
   const remainingDaysUntilEndOfWeek =
     currentWeekDayIndex + remainingDuration > 7
       ? 7 - currentWeekDayIndex + 1
