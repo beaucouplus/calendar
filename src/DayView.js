@@ -84,6 +84,7 @@ function DayPlanning({ events, chosenEventId }) {
         title="All Day"
         isShown={allDayevents.length > 0}
         chosenEventId={chosenEventId}
+        marginBottom={8}
       />
       <EventList
         events={morningEvents}
@@ -112,11 +113,17 @@ DayPlanning.propTypes = exact({
   chosenEventId: PropTypes.number,
 });
 
-function EventList({ events, chosenEventId, title, isShown }) {
+function EventList({
+  events,
+  chosenEventId,
+  title,
+  isShown,
+  marginBottom = 2,
+}) {
   return (
     <>
       {isShown && (
-        <div className="mb-2">
+        <div className={`mb-${marginBottom}`}>
           <div className="h-auto flex self-stretch">
             <ul className="block w-full space-y-2">
               <h2 className="pl-4 text-md text-blue-700">{title}</h2>
