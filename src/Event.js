@@ -74,7 +74,7 @@ function AllDayEventHeader({ event }) {
         <div className="flex border-b border-gray-300 pb-2">
           <div className="flex items-center pr-2 text-md text-blue-700 font-semibold tracking-wider">
             {dayjs(event.start.date).format("MMM DD")}{" "}
-            <i class="gg-arrow-right mx-2"></i>
+            <i className="gg-arrow-right mx-2"></i>
             {dayjs(event.end.date).format("MMM DD")}
           </div>
           <div className="text-xs px-2 py-1 flex flex-grow justify-end">
