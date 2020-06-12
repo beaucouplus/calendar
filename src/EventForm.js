@@ -64,12 +64,12 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
       {display && (
         <form
           action=""
-          className="mt-10 w-full bg-white p-10 rounded-lg"
+          className="mt-10 w-full bg-white p-6 rounded-lg"
           onSubmit={handleSubmit}
         >
           <div id="form-title" className="">
-            <h3 className="leading-relaxed text-2xl tracking-wider text-blue-700 font-semibold">
-              New Event
+            <h3 className="flex items-center leading-relaxed text-xl tracking-wider text-blue-700 font-medium">
+              <i className="gg-add-r mr-2"></i> New Event
             </h3>
           </div>
           <div className="mt-2">
@@ -83,6 +83,18 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             />
           </div>
           <TimeInput
+            title={"Start time"}
+            timeInput={timeInput}
+            onChooseHour={(event) => chooseHour(event)}
+            onChooseMinutes={(event) => chooseMinutes(event)}
+            hours={hours}
+            minutes={minutes}
+            onHandleChange={(e) => handleChange(e)}
+            onValidate={() => validate(true)}
+            onInvalidate={() => validate(false)}
+          />
+          <TimeInput
+            title={"End time"}
             timeInput={timeInput}
             onChooseHour={(event) => chooseHour(event)}
             onChooseMinutes={(event) => chooseMinutes(event)}
@@ -118,6 +130,7 @@ EventForm.propTypes = exact({
 });
 
 function TimeInput({
+  title,
   timeInput,
   onHandleChange,
   hours,
@@ -140,8 +153,8 @@ function TimeInput({
                  hover:bg-blue-100 hover:text-blue-700 hover:border-blue-800
                  focus:outline-none
                  `,
-    timePickerToggle: `flex justify-center bg-gray-400
-                  py-2 px-4
+    timePickerToggle: `flex justify-center items-center bg-gray-400
+                  px-4
                   border-r-2 border-b-2 border-t-2 border-gray-400
                   rounded-r rounded-l-none
                   text-gray-800 text-center
@@ -184,8 +197,8 @@ function TimeInput({
   };
 
   return (
-    <div className="mt-2">
-      <EventLabel>Start time</EventLabel>
+    <div className="mt-4">
+      <EventLabel>{title}</EventLabel>
       <div className="flex group">
         <input
           className={`${styles.timeInput} ${timeInputStyle}`}
