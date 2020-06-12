@@ -32,16 +32,11 @@ function Event({ event, chosenEventId }) {
       className={`block bg-white rounded-lg shadow-sm border-2 hover:border-blue-600 border-transparent focus-within:border-blue-600`}
     >
       <Button css={buttonStyle} callBack={handleClick} withFocus={false}>
-        <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
-          {/* will need a proper component to handle the difference between all day and timed */}
-          {event.allDay
-            ? `Day ${event.position}`
-            : dayjs(event.start.datetime).format("HH:mm")}
-        </div>
-        <div className="pl-4 text-left">{event.title}</div>
-        <div className="flex flex-grow justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
-          <i className="gg-chevron-down"></i>
-        </div>
+        {event.allDay ? (
+          <AllDayEventHeader event={event} />
+        ) : (
+          <TimedEventHeader event={event} />
+        )}
       </Button>
       {showDetails && (
         <EventDetails event={event} onDeleteEvent={handleDeleteEvent} />
@@ -53,6 +48,50 @@ function Event({ event, chosenEventId }) {
 Event.propTypes = exact({
   event: PropTypes.object.isRequired,
   chosenEventId: PropTypes.number,
+});
+
+function TimedEventHeader({ event }) {
+  return (
+    <>
+      <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
+        {dayjs(event.start.datetime).format("HH:mm")}
+      </div>
+      <div className="pl-4 text-left">{event.title}</div>
+      <div className="flex flex-grow justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
+        <i className="gg-chevron-down"></i>
+      </div>
+    </>
+  );
+}
+TimedEventHeader.propTypes = exact({
+  event: PropTypes.object.isRequired,
+});
+
+function AllDayEventHeader({ event }) {
+  return (
+    <>
+      <div className="flex-none w-full flex flex-col">
+        <div className="flex border-b border-gray-300 pb-2">
+          <div className="flex items-center pr-2 text-md text-blue-700 font-semibold tracking-wider">
+            {dayjs(event.start.date).format("MMM DD")}{" "}
+            <i class="gg-arrow-right mx-2"></i>
+            {dayjs(event.end.date).format("MMM DD")}
+          </div>
+          <div className="text-xs px-2 py-1 flex flex-grow justify-end">
+            Day {event.position}
+          </div>
+          <div className="flex justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
+            <i className="gg-chevron-down"></i>
+          </div>
+        </div>
+        <div className="mt-2 text-left flex items-start">{event.title}</div>
+      </div>
+    </>
+  );
+}
+
+AllDayEventHeader.propTypes = exact({
+  event: PropTypes.object.isRequired,
 });
 
 function EventDetails({ event, onDeleteEvent }) {
