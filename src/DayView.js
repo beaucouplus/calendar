@@ -32,7 +32,7 @@ function DayView({ events, chosenEventId, date, displayForm, onCloseForm }) {
       display: true,
       onClose: onCloseForm,
     },
-    DayPlanning: { events: sortedEvents, chosenEventId },
+    DayPlanning: { events: sortedEvents, chosenEventId, date },
     EmptyPlanning: {},
   };
   const CurrentDayPlanningView = views[currentView];
@@ -58,21 +58,25 @@ const EmptyPlanning = () => (
   </div>
 );
 
-function DayPlanning({ events, chosenEventId }) {
+function DayPlanning({ events, chosenEventId, date }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
+    const createIsoDateTime = (date, time) => date + "T" + time + ":00+02:00";
+
     if (!eventList) return false;
     return eventList.filter((event) => {
-      const eventTime = dayjs(event.start.datetime, "HH:mm");
+      const eventDayLowerLimit = createIsoDateTime(date, lowerLimit);
+      const eventDayUpperLimit = createIsoDateTime(date, upperLimit);
+      const eventTime = dayjs(event.start.datetime);
       return eventTime.isBetween(
-        dayjs(lowerLimit, "HH:mm"),
-        dayjs(upperLimit, "HH:mm"),
+        dayjs(eventDayLowerLimit),
+        dayjs(eventDayUpperLimit),
         null,
         "[)"
       );
     });
   };
   const timedEvents = events.filter((e) => !e.allDay);
-  const allDayevents = events.filter((e) => e.allDay);
+  const allDayEvents = events.filter((e) => e.allDay);
   const morningEvents = filterEventsBetween(timedEvents, "00:00", "11:59");
   const afternoonEvents = filterEventsBetween(timedEvents, "12:00", "18:59");
   const eveningEvents = filterEventsBetween(timedEvents, "19:00", "23:59");
@@ -80,9 +84,9 @@ function DayPlanning({ events, chosenEventId }) {
   return (
     <div className="grid grid-rows mt-10 mb-20">
       <EventList
-        events={allDayevents}
+        events={allDayEvents}
         title="All Day"
-        isShown={allDayevents.length > 0}
+        isShown={allDayEvents.length > 0}
         chosenEventId={chosenEventId}
         marginBottom={8}
       />
@@ -111,6 +115,7 @@ function DayPlanning({ events, chosenEventId }) {
 DayPlanning.propTypes = exact({
   events: PropTypes.array,
   chosenEventId: PropTypes.number,
+  date: PropTypes.string.isRequired,
 });
 
 function EventList({
@@ -143,11 +148,16 @@ function EventList({
   );
 }
 
+EventList.defaultProps = {
+  marginBottom: 2,
+};
+
 EventList.propTypes = exact({
   events: PropTypes.array.isRequired,
   chosenEventId: PropTypes.number,
   title: PropTypes.string.isRequired,
   isShown: PropTypes.bool.isRequired,
+  marginBottom: PropTypes.number.isRequired,
 });
 
 export default DayView;
