@@ -24,6 +24,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   const [timeInput, setTimeInput] = useState("12:00");
   const [hours, minutes] = timeInput.split(":");
 
+  const [isAllDayEvent, setIsAllDayEvent] = useState(false);
   const [valid, validate] = useState(false);
 
   const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
@@ -43,10 +44,6 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   const handleDayChange = (day) => {
     console.log(day);
     setDateInput(day);
-  };
-
-  const formatDate = (date) => {
-    return dayjs(date).format("YYYY-MM-DD");
   };
 
   const selectText = () => titleInput.current.select();
@@ -84,7 +81,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               <i className="gg-add-r mr-2"></i> New Event
             </h3>
           </div>
-          <div className="mt-2">
+          <div className="mt-4">
             <EventLabel>Title</EventLabel>
             <input
               ref={titleInput}
@@ -94,38 +91,46 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               onFocus={selectText}
             />
           </div>
-          <div className="mt-2">
-            <EventLabel>End date</EventLabel>
-            <DayPickerInput
-              onDayChange={handleDayChange}
-              inputProps={{ className: `${styles.input} w-full` }}
-              value={dateInput}
-              formatDate={formatDate}
-              format="YYYY-MM-DD"
+          <div className="mt-4">
+            <Toggle
+              checked={isAllDayEvent}
+              onCheck={() => setIsAllDayEvent(!isAllDayEvent)}
+              checkedTitle="All Day Event"
+              unCheckedTitle="All Day Event?"
             />
           </div>
-          <TimeInput
-            title={"Start time"}
-            timeInput={timeInput}
-            onChooseHour={(event) => chooseHour(event)}
-            onChooseMinutes={(event) => chooseMinutes(event)}
-            hours={hours}
-            minutes={minutes}
-            onHandleChange={(e) => handleChange(e)}
-            onValidate={() => validate(true)}
-            onInvalidate={() => validate(false)}
-          />
-          <TimeInput
-            title={"End time"}
-            timeInput={timeInput}
-            onChooseHour={(event) => chooseHour(event)}
-            onChooseMinutes={(event) => chooseMinutes(event)}
-            hours={hours}
-            minutes={minutes}
-            onHandleChange={(e) => handleChange(e)}
-            onValidate={() => validate(true)}
-            onInvalidate={() => validate(false)}
-          />
+          {isAllDayEvent ? (
+            <AllDayEventInput
+              onDayChange={handleDayChange}
+              css={styles.input}
+              inputValue={dateInput}
+            />
+          ) : (
+            <>
+              <TimeInput
+                title={"Start time"}
+                timeInput={timeInput}
+                onChooseHour={(event) => chooseHour(event)}
+                onChooseMinutes={(event) => chooseMinutes(event)}
+                hours={hours}
+                minutes={minutes}
+                onHandleChange={(e) => handleChange(e)}
+                onValidate={() => validate(true)}
+                onInvalidate={() => validate(false)}
+              />
+              <TimeInput
+                title={"End time"}
+                timeInput={timeInput}
+                onChooseHour={(event) => chooseHour(event)}
+                onChooseMinutes={(event) => chooseMinutes(event)}
+                hours={hours}
+                minutes={minutes}
+                onHandleChange={(e) => handleChange(e)}
+                onValidate={() => validate(true)}
+                onInvalidate={() => validate(false)}
+              />
+            </>
+          )}
 
           <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
@@ -140,6 +145,22 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
         </form>
       )}
     </>
+  );
+}
+
+function AllDayEventInput({ onDayChange, css, inputValue }) {
+  const formatDate = (date) => dayjs(date).format("YYYY-MM-DD");
+  return (
+    <div className="mt-4">
+      <EventLabel>End date</EventLabel>
+      <DayPickerInput
+        onDayChange={onDayChange}
+        inputProps={{ className: `${css} w-full` }}
+        value={inputValue}
+        formatDate={formatDate}
+        format="YYYY-MM-DD"
+      />
+    </div>
   );
 }
 
@@ -252,6 +273,42 @@ function EventLabel({ children }) {
     <label className="block w-full leading-relaxed tracking-wider text-blue-700 ">
       {children}
     </label>
+  );
+}
+
+function Toggle({ checked, onCheck, checkedTitle, unCheckedTitle }) {
+  const styles = {
+    toggle: `absolute block
+       w-4 h-4 mt-1 ml-1
+       bg-white rounded-full shadow
+       inset-y-0 left-0
+       focus-within:shadow-outline
+       transition-transform duration-200 ease-in-out`,
+    checked: `transform translate-x-full`,
+  };
+
+  return (
+    <div class="flex flex-col">
+      <label
+        htmlFor={checked ? "checked" : "unchecked"}
+        className="mt-3 inline-flex items-center cursor-pointer"
+        onClick={onCheck}
+      >
+        <span className="relative">
+          <span
+            className={`block w-10 h-6 ${
+              checked ? "bg-blue-600" : "bg-gray-400"
+            } rounded-full shadow-inner`}
+          ></span>
+          <span className={`${styles.toggle} ${checked && styles.checked}`}>
+            <input type="checkbox" className="absolute opacity-0 w-0 h-0" />
+          </span>
+        </span>
+        <span className="ml-3 text-md text-gray-700">
+          {checked ? checkedTitle : unCheckedTitle}
+        </span>
+      </label>
+    </div>
   );
 }
 
