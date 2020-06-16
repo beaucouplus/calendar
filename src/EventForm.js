@@ -166,6 +166,8 @@ function AllDayEventInput({
     setDatePickerShown(!datePickerShown);
   };
 
+  const close = () => setDatePickerShown(!datePickerShown);
+
   return (
     <div className="grid grid-cols-7 gap-2">
       <div className="col-span-3">
@@ -181,24 +183,32 @@ function AllDayEventInput({
           className={`${css}`}
           value={inputValue}
           onChange={onInputChange}
-          onFocus={() => setDatePickerShown(!datePickerShown)}
+          onClick={() => setDatePickerShown(!datePickerShown)}
         />
         <DatePickerOverlay
           show={datePickerShown}
           onDayClick={handleDayClick}
           inputValue={inputValue}
+          onClose={close}
         />
       </div>
     </div>
   );
 }
 
-function DatePickerOverlay({ show, onDayClick, inputValue }) {
+function DatePickerOverlay({ show, onDayClick, inputValue, date, onClose }) {
   return (
     <>
       {show && (
-        <div className="absolute right-0 top-20 mt-1 bg-white border border-gray-300 rounded shadow">
-          <DayPicker onDayClick={onDayClick} value={inputValue} />
+        <div
+          className="absolute right-0 top-20 mt-1 bg-white border border-gray-300 rounded shadow"
+          onMouseLeave={onClose}
+        >
+          <DayPicker
+            onDayClick={onDayClick}
+            value={inputValue}
+            disabledDays={[{ before: dayjs(date).toDate() }]}
+          />
         </div>
       )}
     </>
