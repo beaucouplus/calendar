@@ -161,6 +161,11 @@ function AllDayEventInput({
 
   const [datePickerShown, setDatePickerShown] = useState(false);
 
+  const handleDayClick = (day) => {
+    onDayChange(day);
+    setDatePickerShown(!datePickerShown);
+  };
+
   return (
     <div className="grid grid-cols-7 gap-2">
       <div className="col-span-3">
@@ -180,7 +185,7 @@ function AllDayEventInput({
         />
         <DatePickerOverlay
           show={datePickerShown}
-          onDayClick={onDayChange}
+          onDayClick={handleDayClick}
           inputValue={inputValue}
         />
       </div>
