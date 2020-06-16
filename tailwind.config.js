@@ -1,7 +1,14 @@
 module.exports = {
   purge: [],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+      },
+    },
   },
   variants: {
     textColor: ["responsive", "hover", "focus", "group-hover", "group-focus"],

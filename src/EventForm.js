@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
-import DayPickerInput from "react-day-picker/DayPickerInput";
+import DayPicker from "react-day-picker/DayPicker";
 import "react-day-picker/lib/style.css";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import TimePicker from "./TimePicker";
@@ -41,10 +41,9 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     setTimeInput(event.target.value);
   };
 
-  const handleDayChange = (day) => {
-    console.log(day);
-    setDateInput(day);
-  };
+  const handleDayInputChange = (e) => setDateInput(e.target.value);
+  const handleDayChange = (day) =>
+    setDateInput(dayjs(day).format("YYYY-MM-DD"));
 
   const selectText = () => titleInput.current.select();
 
@@ -102,6 +101,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           <div className="mt-2 border border-gray-300 rounded p-4">
             {isAllDayEvent ? (
               <AllDayEventInput
+                onInputChange={handleDayInputChange}
                 onDayChange={handleDayChange}
                 css={styles.input}
                 inputValue={dateInput}
@@ -145,7 +145,13 @@ EventForm.propTypes = exact({
   events: PropTypes.array,
 });
 
-function AllDayEventInput({ onDayChange, css, inputValue, date }) {
+function AllDayEventInput({
+  onInputChange,
+  onDayChange,
+  css,
+  inputValue,
+  date,
+}) {
   const disabledInput = `bg-white appearance-none
   border-2 border-gray-300 rounded
   w-full
@@ -153,7 +159,8 @@ function AllDayEventInput({ onDayChange, css, inputValue, date }) {
   text-gray-600 leading-tight
   focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`;
 
-  const formatDate = (date) => dayjs(date).format("YYYY-MM-DD");
+  const [datePickerShown, setDatePickerShown] = useState(false);
+
   return (
     <div className="grid grid-cols-7 gap-2">
       <div className="col-span-3">
@@ -163,20 +170,35 @@ function AllDayEventInput({ onDayChange, css, inputValue, date }) {
       <div className="flex items-end mb-2 justify-center">
         <i className="gg-arrow-right mx-2 text-blue-600"></i>
       </div>
-      <div className="col-span-3">
+      <div className="col-span-3 relative">
         <EventLabel>End date</EventLabel>
-        <DayPickerInput
-          onDayChange={onDayChange}
-          inputProps={{ className: `${css}` }}
+        <input
+          className={`${css}`}
           value={inputValue}
-          formatDate={formatDate}
-          format="YYYY-MM-DD"
+          onChange={onInputChange}
+          onFocus={() => setDatePickerShown(!datePickerShown)}
+        />
+        <DatePickerOverlay
+          show={datePickerShown}
+          onDayClick={onDayChange}
+          inputValue={inputValue}
         />
       </div>
     </div>
   );
 }
 
+function DatePickerOverlay({ show, onDayClick, inputValue }) {
+  return (
+    <>
+      {show && (
+        <div className="absolute right-0 top-20 mt-1 bg-white border border-gray-300 rounded shadow">
+          <DayPicker onDayClick={onDayClick} value={inputValue} />
+        </div>
+      )}
+    </>
+  );
+}
 function TimeInput({
   title,
   timeInput,
