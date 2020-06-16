@@ -99,14 +99,15 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               unCheckedTitle="All Day Event?"
             />
           </div>
-          {isAllDayEvent ? (
-            <AllDayEventInput
-              onDayChange={handleDayChange}
-              css={styles.input}
-              inputValue={dateInput}
-            />
-          ) : (
-            <>
+          <div className="mt-2 border border-gray-300 rounded p-4">
+            {isAllDayEvent ? (
+              <AllDayEventInput
+                onDayChange={handleDayChange}
+                css={styles.input}
+                inputValue={dateInput}
+                date={date}
+              />
+            ) : (
               <TimeInput
                 title={"Start time"}
                 timeInput={timeInput}
@@ -118,20 +119,8 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                 onValidate={() => validate(true)}
                 onInvalidate={() => validate(false)}
               />
-              <TimeInput
-                title={"End time"}
-                timeInput={timeInput}
-                onChooseHour={(event) => chooseHour(event)}
-                onChooseMinutes={(event) => chooseMinutes(event)}
-                hours={hours}
-                minutes={minutes}
-                onHandleChange={(e) => handleChange(e)}
-                onValidate={() => validate(true)}
-                onInvalidate={() => validate(false)}
-              />
-            </>
-          )}
-
+            )}
+          </div>
           <div className="flex mt-6 space-x-2">
             <BlueSubmitButton />
             <OutlineButton
@@ -148,22 +137,6 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   );
 }
 
-function AllDayEventInput({ onDayChange, css, inputValue }) {
-  const formatDate = (date) => dayjs(date).format("YYYY-MM-DD");
-  return (
-    <div className="mt-4">
-      <EventLabel>End date</EventLabel>
-      <DayPickerInput
-        onDayChange={onDayChange}
-        inputProps={{ className: `${css} w-full` }}
-        value={inputValue}
-        formatDate={formatDate}
-        format="YYYY-MM-DD"
-      />
-    </div>
-  );
-}
-
 EventForm.propTypes = exact({
   date: PropTypes.string.isRequired,
   display: PropTypes.bool.isRequired,
@@ -171,6 +144,38 @@ EventForm.propTypes = exact({
   onClose: PropTypes.func.isRequired,
   events: PropTypes.array,
 });
+
+function AllDayEventInput({ onDayChange, css, inputValue, date }) {
+  const disabledInput = `bg-white appearance-none
+  border-2 border-gray-300 rounded
+  w-full
+  py-2 px-4
+  text-gray-600 leading-tight
+  focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`;
+
+  const formatDate = (date) => dayjs(date).format("YYYY-MM-DD");
+  return (
+    <div className="grid grid-cols-7 gap-2">
+      <div className="col-span-3">
+        <EventLabel>Start Date</EventLabel>
+        <input className={disabledInput} value={date} disabled />
+      </div>
+      <div className="flex items-end mb-2 justify-center">
+        <i className="gg-arrow-right mx-2 text-blue-600"></i>
+      </div>
+      <div className="col-span-3">
+        <EventLabel>End date</EventLabel>
+        <DayPickerInput
+          onDayChange={onDayChange}
+          inputProps={{ className: `${css}` }}
+          value={inputValue}
+          formatDate={formatDate}
+          format="YYYY-MM-DD"
+        />
+      </div>
+    </div>
+  );
+}
 
 function TimeInput({
   title,
@@ -240,9 +245,9 @@ function TimeInput({
   };
 
   return (
-    <div className="mt-4">
+    <div className="">
       <EventLabel>{title}</EventLabel>
-      <div className="flex group">
+      <div className="flex group w-1/2">
         <input
           className={`${styles.timeInput} ${timeInputStyle}`}
           type="text"
@@ -288,27 +293,25 @@ function Toggle({ checked, onCheck, checkedTitle, unCheckedTitle }) {
   };
 
   return (
-    <div class="flex flex-col">
-      <label
-        htmlFor={checked ? "checked" : "unchecked"}
-        className="mt-3 inline-flex items-center cursor-pointer"
-        onClick={onCheck}
-      >
-        <span className="relative">
-          <span
-            className={`block w-10 h-6 ${
-              checked ? "bg-blue-600" : "bg-gray-400"
-            } rounded-full shadow-inner`}
-          ></span>
-          <span className={`${styles.toggle} ${checked && styles.checked}`}>
-            <input type="checkbox" className="absolute opacity-0 w-0 h-0" />
-          </span>
+    <label
+      htmlFor={checked ? "checked" : "unchecked"}
+      className="mt-3 inline-flex items-center cursor-pointer"
+      onClick={onCheck}
+    >
+      <span className="relative">
+        <span
+          className={`block w-10 h-6 ${
+            checked ? "bg-blue-600" : "bg-gray-400"
+          } rounded-full shadow-inner`}
+        ></span>
+        <span className={`${styles.toggle} ${checked && styles.checked}`}>
+          <input type="checkbox" className="absolute opacity-0 w-0 h-0" />
         </span>
-        <span className="ml-3 text-md text-gray-700">
-          {checked ? checkedTitle : unCheckedTitle}
-        </span>
-      </label>
-    </div>
+      </span>
+      <span className="ml-3 text-md text-gray-700">
+        {checked ? checkedTitle : unCheckedTitle}
+      </span>
+    </label>
   );
 }
 
