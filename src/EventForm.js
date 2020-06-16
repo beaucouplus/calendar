@@ -1,7 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
+import DayPickerInput from "react-day-picker/DayPickerInput";
+import "react-day-picker/lib/style.css";
 import { Button, OutlineButton, BlueSubmitButton } from "./Button";
 import TimePicker from "./TimePicker";
 
@@ -18,6 +20,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
   };
 
+  const [dateInput, setDateInput] = useState(date);
   const [timeInput, setTimeInput] = useState("12:00");
   const [hours, minutes] = timeInput.split(":");
 
@@ -35,6 +38,15 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
 
   const handleChange = (event) => {
     setTimeInput(event.target.value);
+  };
+
+  const handleDayChange = (day) => {
+    console.log(day);
+    setDateInput(day);
+  };
+
+  const formatDate = (date) => {
+    return dayjs(date).format("YYYY-MM-DD");
   };
 
   const selectText = () => titleInput.current.select();
@@ -82,6 +94,16 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               onFocus={selectText}
             />
           </div>
+          <div className="mt-2">
+            <EventLabel>End date</EventLabel>
+            <DayPickerInput
+              onDayChange={handleDayChange}
+              inputProps={{ className: `${styles.input} w-full` }}
+              value={dateInput}
+              formatDate={formatDate}
+              format="YYYY-MM-DD"
+            />
+          </div>
           <TimeInput
             title={"Start time"}
             timeInput={timeInput}
@@ -122,7 +144,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
 }
 
 EventForm.propTypes = exact({
-  date: PropTypes.instanceOf(Date).isRequired,
+  date: PropTypes.string.isRequired,
   display: PropTypes.bool.isRequired,
   onAddEvent: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
