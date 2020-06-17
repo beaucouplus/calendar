@@ -20,11 +20,11 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
   };
 
-  const [dateInput, setDateInput] = useState(date);
+  const [dateInput, setDateInput] = useState({ date, isAllDayEvent: false });
+
   const [timeInput, setTimeInput] = useState("12:00");
   const [hours, minutes] = timeInput.split(":");
 
-  const [isAllDayEvent, setIsAllDayEvent] = useState(false);
   const [valid, validate] = useState(false);
 
   const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
@@ -37,13 +37,17 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     setTimeInput(`${hours}:${renderTwoDigits(event.currentTarget.value)}`);
   };
 
-  const handleChange = (event) => {
+  const handleTimeInputChange = (event) => {
     setTimeInput(event.target.value);
   };
 
-  const handleDayInputChange = (e) => setDateInput(e.target.value);
+  // day input handlers, good candidates to a reducer as it seems
+  const handleDayToggle = () =>
+    setDateInput({ ...dateInput, isAllDayEvent: !dateInput.isAllDayEvent });
+  const handleDayInputChange = (e) =>
+    setDateInput({ ...dateInput, date: e.target.value });
   const handleDayChange = (day) =>
-    setDateInput(dayjs(day).format("YYYY-MM-DD"));
+    setDateInput({ ...dateInput, date: dayjs(day).format("YYYY-MM-DD") });
 
   const selectText = () => titleInput.current.select();
 
@@ -51,19 +55,33 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     event.preventDefault();
     if (!valid) return;
 
-    const timeFormat = `YYYY-MM-DDT${timeInput}:00+02:00`;
-    const eventTime = dayjs(date).format(timeFormat);
-    onAddEvent({
-      start: {
-        date: null,
-        datetime: eventTime,
-      },
-      end: {
-        date: null,
-        datetime: dayjs(eventTime).add(1, "hour").format(timeFormat),
-      },
-      title: titleInput.current.value,
-    });
+    if (dateInput.isAllDayEvent) {
+      onAddEvent({
+        start: {
+          date: date,
+          datetime: null,
+        },
+        end: {
+          date: dateInput.date,
+          datetime: null,
+        },
+        title: titleInput.current.value,
+      });
+    } else {
+      const timeFormat = `YYYY-MM-DDT${timeInput}:00+02:00`;
+      const eventTime = dayjs(date).format(timeFormat);
+      onAddEvent({
+        start: {
+          date: null,
+          datetime: eventTime,
+        },
+        end: {
+          date: null,
+          datetime: dayjs(eventTime).add(1, "hour").format(timeFormat),
+        },
+        title: titleInput.current.value,
+      });
+    }
     onClose();
   };
 
@@ -92,19 +110,19 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           </div>
           <div className="mt-4">
             <Toggle
-              checked={isAllDayEvent}
-              onCheck={() => setIsAllDayEvent(!isAllDayEvent)}
+              checked={dateInput.isAllDayEvent}
+              onCheck={handleDayToggle}
               checkedTitle="All Day Event"
               unCheckedTitle="All Day Event?"
             />
           </div>
           <div className="mt-2 border border-gray-300 rounded p-4">
-            {isAllDayEvent ? (
+            {dateInput.isAllDayEvent ? (
               <AllDayEventInput
                 onInputChange={handleDayInputChange}
                 onDayChange={handleDayChange}
                 css={styles.input}
-                inputValue={dateInput}
+                inputValue={dateInput.date}
                 date={date}
               />
             ) : (
@@ -115,7 +133,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                 onChooseMinutes={(event) => chooseMinutes(event)}
                 hours={hours}
                 minutes={minutes}
-                onHandleChange={(e) => handleChange(e)}
+                onHandleChange={(e) => handleTimeInputChange(e)}
                 onValidate={() => validate(true)}
                 onInvalidate={() => validate(false)}
               />
