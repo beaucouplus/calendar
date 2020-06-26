@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
+import produce from "immer";
 import dayjs from "dayjs";
 import DayPicker from "react-day-picker/DayPicker";
 import "react-day-picker/lib/style.css";
@@ -20,8 +21,39 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
   };
 
-  const [dateInput, setDateInput] = useState({ date, isAllDayEvent: false });
+  // TODO finish reducer
+  // update submit
+  //
+  const reducer = produce((draft, action) => {
+    console.log(action.type, action.name);
+    switch (action.type) {
+      case "toggle":
+        draft.isAllDayEvent = !draft.isAllDayEvent;
+        break;
+      case "addEndDateFromInput":
+        draft.event.end.date = action.name;
+        break;
+      case "addEndDateFromPicker":
+        draft.event.end.date = dayjs(action.name).format("YYYY-MM-DD");
+        break;
+      default:
+    }
+  });
 
+  const [eventForm, dispatch] = useReducer(reducer, {
+    event: {
+      start: {
+        date: date,
+        datetime: null,
+      },
+      end: {
+        date: date,
+        datetime: null,
+      },
+      title: "No title",
+    },
+    isAllDayEvent: false,
+  });
   const [timeInput, setTimeInput] = useState("12:00");
   const [hours, minutes] = timeInput.split(":");
 
@@ -41,28 +73,20 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     setTimeInput(event.target.value);
   };
 
-  // day input handlers, good candidates to a reducer as it seems
-  const handleDayToggle = () =>
-    setDateInput({ ...dateInput, isAllDayEvent: !dateInput.isAllDayEvent });
-  const handleDayInputChange = (e) =>
-    setDateInput({ ...dateInput, date: e.target.value });
-  const handleDayChange = (day) =>
-    setDateInput({ ...dateInput, date: dayjs(day).format("YYYY-MM-DD") });
-
   const selectText = () => titleInput.current.select();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!valid) return;
 
-    if (dateInput.isAllDayEvent) {
+    if (eventForm.isAllDayEvent) {
       onAddEvent({
         start: {
           date: date,
           datetime: null,
         },
         end: {
-          date: dateInput.date,
+          date: eventForm.date,
           datetime: null,
         },
         title: titleInput.current.value,
@@ -110,19 +134,23 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           </div>
           <div className="mt-4">
             <Toggle
-              checked={dateInput.isAllDayEvent}
-              onCheck={handleDayToggle}
+              checked={eventForm.isAllDayEvent}
+              onCheck={() => dispatch({ type: "toggle" })}
               checkedTitle="All Day Event"
               unCheckedTitle="All Day Event?"
             />
           </div>
           <div className="mt-2 border border-gray-300 rounded p-4">
-            {dateInput.isAllDayEvent ? (
+            {eventForm.isAllDayEvent ? (
               <AllDayEventInput
-                onInputChange={handleDayInputChange}
-                onDayChange={handleDayChange}
+                onInputChange={(e) =>
+                  dispatch({ type: "addEndDateFromInput", name: e })
+                }
+                onPickerChange={(day) =>
+                  dispatch({ type: "addEndDateFromPicker", name: day })
+                }
                 css={styles.input}
-                inputValue={dateInput.date}
+                inputValue={eventForm.event.end.date}
                 date={date}
               />
             ) : (
@@ -165,7 +193,7 @@ EventForm.propTypes = exact({
 
 function AllDayEventInput({
   onInputChange,
-  onDayChange,
+  onPickerChange,
   css,
   inputValue,
   date,
@@ -180,7 +208,7 @@ function AllDayEventInput({
   const [datePickerShown, setDatePickerShown] = useState(false);
 
   const handleDayClick = (day) => {
-    onDayChange(day);
+    onPickerChange(day);
     setDatePickerShown(!datePickerShown);
   };
 
