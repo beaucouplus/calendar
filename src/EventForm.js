@@ -35,32 +35,40 @@ const eventFormReducer = produce((draft, action) => {
     case "toggleDate":
       draft.isAllDayEvent = !draft.isAllDayEvent;
       break;
+
     case "addEndDateFromInput":
       draft.event.end.date = action.name;
       break;
+
     case "addEndDateFromPicker":
       draft.event.end.date = timeManager.toYear(action.name);
       break;
+
     case "addStartHourFromTimePicker":
       draft.event.start.datetime = timeManager.updateHour(draft.event.start.datetime, action.name);
       hours = action.name;
       draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
       break;
+
     case "addStartMinutesFromTimePicker":
       draft.event.start.datetime = timeManager.updateMinute(draft.event.start.datetime, action.name);
       minutes = action.name;
       draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
       break;
+
     case "addStartTimeFromTimeInput":
       draft.startTimeInput.inputValue = action.name;
       break;
+
     case "validateStartTime":
       draft.startTimeInput.valid = true;
       draft.event.start.datetime = timeManager.updateTime(draft.event.start.datetime, hours, minutes);
       break;
+
     case "invalidateStartTime":
       draft.startTimeInput.valid = false;
       break;
+
     case "submit":
       if (draft.isAllDayEvent) {
         draft.event.start.datetime = null;
@@ -71,6 +79,7 @@ const eventFormReducer = produce((draft, action) => {
       }
       draft.readyForSubmit = true;
       break;
+
     default:
   }
 });
