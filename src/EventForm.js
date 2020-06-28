@@ -32,6 +32,10 @@ const eventFormReducer = produce((draft, action) => {
   const timeManager = new timeHelper({ iso: ISOTimeFormat, year: "YYYY-MM-DD" });
   let [hours, minutes] = draft.startTimeInput.inputValue.split(":");
   switch (action.type) {
+    case "updateTitle":
+      draft.event.title = action.name;
+      break;
+
     case "toggleDate":
       draft.isAllDayEvent = !draft.isAllDayEvent;
       break;
@@ -151,7 +155,8 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               ref={titleInput}
               className={styles.input}
               type="text"
-              defaultValue="Add a title to your event"
+              value={eventForm.event.title}
+              onChange={(event) => dispatch({ type: "updateTitle", name: event.target.value })}
               onFocus={selectText}
             />
           </div>
