@@ -1,15 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
-import { range } from "./utils";
+import { range } from "../../../utils";
 
-function TimePicker({
-  eventHour,
-  eventMinutes,
-  onChooseHour,
-  onChooseMinutes,
-  display,
-}) {
+function TimePicker({ eventHour, eventMinutes, onChooseHour, onChooseMinutes, display }) {
   const hours_range = range(0, 23);
   const minutes_range = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
   return (
@@ -23,10 +17,7 @@ function TimePicker({
               </option>
             ))}
           </SelectInput>
-          <SelectInput
-            currentValue={eventMinutes}
-            handleChange={onChooseMinutes}
-          >
+          <SelectInput currentValue={eventMinutes} handleChange={onChooseMinutes}>
             {minutes_range.map((minute) => (
               <option value={minute} key={minute}>
                 {minute} minutes
