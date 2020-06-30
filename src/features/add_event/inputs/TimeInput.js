@@ -10,7 +10,7 @@ function TimeInput({ title, timeInput, onHandleChange, onChooseHour, onChooseMin
   const toggleTimePicker = () => setTimePickerShown(!timePickerShown);
 
   const styles = {
-    timeInput: `flex flex-grow
+    timeInput: `flex flex-grow w-full
                      bg-gray-100 appearance-none
                      py-2 px-4
                      text-gray-700 leading-tight
@@ -56,10 +56,12 @@ function TimeInput({ title, timeInput, onHandleChange, onChooseHour, onChooseMin
     toggleTimePicker();
   };
 
+  useEffect(() => console.log("in timeinput >", timeInput));
+
   return (
-    <div className="">
+    <div>
       <EventLabel>{title}</EventLabel>
-      <div className="flex group w-1/2">
+      <div className="flex group w-2/3">
         <input
           className={`${styles.timeInput} ${timeInputStyle}`}
           type="text"

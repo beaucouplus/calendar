@@ -5,10 +5,12 @@ function range(start, end) {
 
 const chunk = (input, size) => {
   return input.reduce((arr, item, idx) => {
-    return idx % size === 0
-      ? [...arr, [item]]
-      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
+    return idx % size === 0 ? [...arr, [item]] : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
   }, []);
 };
 
-export { range, chunk };
+const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
+const hourStringtoNumbers = (string) => string.split(":").map((item) => Number(item));
+const numbersToHourString = (hour, minute) => `${renderTwoDigits(Number(hour))}:${renderTwoDigits(Number(minute))}`;
+
+export { range, chunk, renderTwoDigits, hourStringtoNumbers, numbersToHourString };

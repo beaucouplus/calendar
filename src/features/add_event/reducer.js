@@ -1,8 +1,10 @@
+// PACKAGES
 import produce from "immer";
 import dayjs from "dayjs";
 
-const ISOTimeFormat = `YYYY-MM-DDTHH:mm:00+02:00`;
-const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
+// SCRIPTS
+import { numbersToHourString } from "../../utils";
+import timeFormats from "../../common/timeFormats";
 
 class timeHelper {
   constructor(formats) {
@@ -10,11 +12,8 @@ class timeHelper {
   }
 
   toYear = (time) => dayjs(time).format(this.formats.year);
-
-  toHumanReadableTime = (hours, minutes) => `${renderTwoDigits(Number(hours))}:${renderTwoDigits(Number(minutes))}`;
-
+  toHumanReadableTime = (hour, minute) => numbersToHourString(hour, minute);
   updateHour = (currentTime, hour) => dayjs(currentTime, this.formats.iso).hour(hour).format(this.formats.iso);
-
   updateMinute = (currentTime, minute) => dayjs(currentTime, this.formats.iso).minute(minute).format(this.formats.iso);
 
   updateTime = (currentTime, hour, minute) =>
@@ -22,7 +21,7 @@ class timeHelper {
 }
 
 const eventFormReducer = produce((draft, action) => {
-  const timeManager = new timeHelper({ iso: ISOTimeFormat, year: "YYYY-MM-DD" });
+  const timeManager = new timeHelper(timeFormats);
   let [hours, minutes] = draft.startTimeInput.inputValue.split(":");
   switch (action.type) {
     case "updateTitle":
@@ -59,6 +58,7 @@ const eventFormReducer = produce((draft, action) => {
 
     case "validateStartTime":
       draft.startTimeInput.valid = true;
+      draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
       draft.event.start.datetime = timeManager.updateTime(draft.event.start.datetime, hours, minutes);
       break;
 

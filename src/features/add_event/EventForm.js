@@ -11,7 +11,7 @@ import eventFormReducer from "./reducer";
 
 // COMPONENTS
 import { OutlineButton, BlueSubmitButton } from "../../Button";
-import { AllDayEventInput, TimeInput, Toggle, EventLabel } from "./inputs/index";
+import { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTime } from "./inputs/index";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
@@ -91,7 +91,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               unCheckedTitle="All Day Event?"
             />
           </div>
-          <div className="mt-2 border border-gray-300 rounded p-4">
+          <div className="mt-2 border border-gray-300 rounded p-6">
             {eventForm.isAllDayEvent ? (
               <AllDayEventInput
                 onInputChange={(event) => dispatch({ type: "addEndDateFromInput", name: event })}
@@ -101,30 +101,33 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                 date={date}
               />
             ) : (
-              <TimeInput
-                title={"Start time"}
-                timeInput={eventForm.startTimeInput.inputValue}
-                onChooseHour={(event) =>
-                  dispatch({
-                    type: "addStartHourFromTimePicker",
-                    name: event.target.value,
-                  })
-                }
-                onChooseMinutes={(event) =>
-                  dispatch({
-                    type: "addStartMinutesFromTimePicker",
-                    name: event.target.value,
-                  })
-                }
-                onHandleChange={(event) =>
-                  dispatch({
-                    type: "addStartTimeFromTimeInput",
-                    name: event.target.value,
-                  })
-                }
-                onValidate={() => dispatch({ type: "validateStartTime" })}
-                onInvalidate={() => dispatch({ type: "invalidateStartTime" })}
-              />
+              <div className="">
+                <TimeInput
+                  title={"Start time"}
+                  timeInput={eventForm.startTimeInput.inputValue}
+                  onChooseHour={(event) =>
+                    dispatch({
+                      type: "addStartHourFromTimePicker",
+                      name: event.target.value,
+                    })
+                  }
+                  onChooseMinutes={(event) =>
+                    dispatch({
+                      type: "addStartMinutesFromTimePicker",
+                      name: event.target.value,
+                    })
+                  }
+                  onHandleChange={(event) =>
+                    dispatch({
+                      type: "addStartTimeFromTimeInput",
+                      name: event.target.value,
+                    })
+                  }
+                  onValidate={() => dispatch({ type: "validateStartTime" })}
+                  onInvalidate={() => dispatch({ type: "invalidateStartTime" })}
+                />
+                <EndTime minEndTime={eventForm.startTimeInput.inputValue} />
+              </div>
             )}
           </div>
           <div className="flex mt-6 space-x-2">
