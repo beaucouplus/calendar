@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import timeFormats from "./common/timeFormats";
+
 function range(start, end) {
   if (start === end) return [start];
   return [start, ...range(start + 1, end)];
@@ -13,4 +16,7 @@ const renderTwoDigits = (int) => (int < 10 ? `0${int}` : `${int}`);
 const hourStringtoNumbers = (string) => string.split(":").map((item) => Number(item));
 const numbersToHourString = (hour, minute) => `${renderTwoDigits(Number(hour))}:${renderTwoDigits(Number(minute))}`;
 
-export { range, chunk, renderTwoDigits, hourStringtoNumbers, numbersToHourString };
+const isoDateTimeFromStrings = (date, time) =>
+  dayjs(`${date}T${time}:00+02:00`, timeFormats.iso).format(timeFormats.iso);
+
+export { range, chunk, renderTwoDigits, hourStringtoNumbers, numbersToHourString, isoDateTimeFromStrings };

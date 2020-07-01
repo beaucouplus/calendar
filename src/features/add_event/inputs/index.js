@@ -3,6 +3,6 @@ import EventLabel from "./EventLabel";
 import AllDayEventInput from "./AllDayEventInput";
 import TimeInput from "./TimeInput";
 import Toggle from "./Toggle";
-import EndTime from "./EndTime";
+import EndTimeInput from "./EndTimeInput";
 
-export { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTime };
+export { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTimeInput };

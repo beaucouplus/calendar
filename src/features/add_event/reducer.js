@@ -3,7 +3,7 @@ import produce from "immer";
 import dayjs from "dayjs";
 
 // SCRIPTS
-import { numbersToHourString } from "../../utils";
+import { numbersToHourString, hourStringtoNumbers } from "../../utils";
 import timeFormats from "../../common/timeFormats";
 
 class timeHelper {
@@ -12,8 +12,11 @@ class timeHelper {
   }
 
   toYear = (time) => dayjs(time).format(this.formats.year);
+
   toHumanReadableTime = (hour, minute) => numbersToHourString(hour, minute);
+
   updateHour = (currentTime, hour) => dayjs(currentTime, this.formats.iso).hour(hour).format(this.formats.iso);
+
   updateMinute = (currentTime, minute) => dayjs(currentTime, this.formats.iso).minute(minute).format(this.formats.iso);
 
   updateTime = (currentTime, hour, minute) =>
@@ -22,7 +25,7 @@ class timeHelper {
 
 const eventFormReducer = produce((draft, action) => {
   const timeManager = new timeHelper(timeFormats);
-  let [hours, minutes] = draft.startTimeInput.inputValue.split(":");
+  let [hours, minutes] = hourStringtoNumbers(draft.startInput.time);
   switch (action.type) {
     case "updateTitle":
       draft.event.title = action.name;
@@ -43,27 +46,34 @@ const eventFormReducer = produce((draft, action) => {
     case "addStartHourFromTimePicker":
       draft.event.start.datetime = timeManager.updateHour(draft.event.start.datetime, action.name);
       hours = action.name;
-      draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
+      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
       break;
 
     case "addStartMinutesFromTimePicker":
       draft.event.start.datetime = timeManager.updateMinute(draft.event.start.datetime, action.name);
       minutes = action.name;
-      draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
+      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
       break;
 
     case "addStartTimeFromTimeInput":
-      draft.startTimeInput.inputValue = action.name;
+      draft.startInput.time = action.name;
       break;
 
     case "validateStartTime":
-      draft.startTimeInput.valid = true;
-      draft.startTimeInput.inputValue = timeManager.toHumanReadableTime(hours, minutes);
-      draft.event.start.datetime = timeManager.updateTime(draft.event.start.datetime, hours, minutes);
+      const newStartTime = timeManager.updateTime(draft.event.start.datetime, hours, minutes);
+      draft.startInput.valid = true;
+      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
+      draft.event.start.datetime = newStartTime;
+      draft.event.end.datetime = newStartTime;
       break;
 
     case "invalidateStartTime":
-      draft.startTimeInput.valid = false;
+      draft.startInput.valid = false;
+      break;
+
+    case "addEndTime":
+      const [endHour, endMinute] = hourStringtoNumbers(action.name);
+      draft.event.end.datetime = timeManager.updateTime(draft.event.end.datetime, endHour, endMinute);
       break;
 
     case "submit":

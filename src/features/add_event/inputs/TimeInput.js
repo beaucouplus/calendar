@@ -56,8 +56,6 @@ function TimeInput({ title, timeInput, onHandleChange, onChooseHour, onChooseMin
     toggleTimePicker();
   };
 
-  useEffect(() => console.log("in timeinput >", timeInput));
-
   return (
     <div>
       <EventLabel>{title}</EventLabel>

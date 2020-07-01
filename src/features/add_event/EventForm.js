@@ -11,7 +11,7 @@ import eventFormReducer from "./reducer";
 
 // COMPONENTS
 import { OutlineButton, BlueSubmitButton } from "../../Button";
-import { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTime } from "./inputs/index";
+import { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTimeInput } from "./inputs/index";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
@@ -30,19 +30,19 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
   const defaultEvent = {
     event: {
       start: {
-        date: date,
+        date,
         datetime: defaultEventStartTime,
       },
       end: {
-        date: date,
-        datetime: dayjs(defaultEventStartTime).add(1, "hour").format(timeFormats.iso),
+        date,
+        datetime: defaultEventStartTime,
       },
       title: "Please add a title",
     },
     isAllDayEvent: false,
     readyForSubmit: false,
-    startTimeInput: {
-      inputValue: "12:00",
+    startInput: {
+      time: "12:00",
       valid: true,
     },
   };
@@ -104,7 +104,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               <div className="">
                 <TimeInput
                   title={"Start time"}
-                  timeInput={eventForm.startTimeInput.inputValue}
+                  timeInput={eventForm.startInput.time}
                   onChooseHour={(event) =>
                     dispatch({
                       type: "addStartHourFromTimePicker",
@@ -126,7 +126,10 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
                   onValidate={() => dispatch({ type: "validateStartTime" })}
                   onInvalidate={() => dispatch({ type: "invalidateStartTime" })}
                 />
-                <EndTime minEndTime={eventForm.startTimeInput.inputValue} />
+                <EndTimeInput
+                  defaultEndTime={eventForm.event.end.datetime}
+                  onChooseEndTime={(time) => dispatch({ type: "addEndTime", name: time })}
+                />
               </div>
             )}
           </div>
