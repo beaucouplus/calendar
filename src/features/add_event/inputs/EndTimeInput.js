@@ -13,45 +13,41 @@ import timeFormats from "../../../common/timeFormats";
 
 const MAX_DURATION = 12;
 
-function addHalfHour(time, maxTime) {
+function incrementTime(time, maxTime, step = 60) {
   let currentTime = dayjs(time, timeFormats.iso);
+
   const maxEndTime = dayjs(maxTime, timeFormats.iso).add(MAX_DURATION, "hours");
-  currentTime = currentTime.add(30, "minutes");
+  currentTime = currentTime.add(step, "minutes");
 
   if (currentTime > maxEndTime) return maxEndTime.format(timeFormats.iso);
   return currentTime.format(timeFormats.iso);
 }
 
-function subtractHalfHour(time, minTime) {
+function subtractTime(time, minTime, step = 15) {
   let currentTime = dayjs(time, timeFormats.iso);
   const minEndTime = dayjs(minTime, timeFormats.iso);
-  currentTime = currentTime.subtract(30, "minutes");
+  currentTime = currentTime.subtract(step, "minutes");
 
   if (currentTime < minEndTime) return minEndTime.format(timeFormats.iso);
   return currentTime.format(timeFormats.iso);
 }
 
-const add1HourToTime = (time, minTime) => {
-  const plusThirty = addHalfHour(time, minTime);
-  return addHalfHour(plusThirty, minTime);
-};
-
 function EndTime({ defaultEndTime }) {
   const [newEndTime, setNewEndTime] = useState(defaultEndTime);
 
   function addToEndTime() {
-    const nextEndTime = addHalfHour(newEndTime, defaultEndTime);
+    const nextEndTime = incrementTime(newEndTime, defaultEndTime);
     setNewEndTime(nextEndTime);
   }
 
   function subtractFromEndTime() {
-    const nextEndTime = subtractHalfHour(newEndTime, defaultEndTime);
+    const nextEndTime = subtractTime(newEndTime, defaultEndTime);
     setNewEndTime(nextEndTime);
   }
 
   const displayedEndTime = dayjs(newEndTime, timeFormats.iso).format("HH:mm");
 
-  const newDefaultEndTime = add1HourToTime(defaultEndTime, defaultEndTime);
+  const newDefaultEndTime = incrementTime(defaultEndTime, defaultEndTime, 60);
   useEffect(() => {
     // if new prop defaultEndTime, reset state and add 1 hour
     setNewEndTime(newDefaultEndTime);
