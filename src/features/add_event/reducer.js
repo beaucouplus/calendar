@@ -32,22 +32,26 @@ class timeHelper {
   };
 
   incrementTime = (time, maxTime, step = 30) => {
-    let currentTime = dayjs(time, timeFormats.iso);
+    let currentTime = dayjs(time, this.formats.iso);
 
-    const maxEndTime = dayjs(maxTime, timeFormats.iso).add(MAX_DURATION, "hours");
+    const maxEndTime = dayjs(maxTime, this.formats.iso).add(MAX_DURATION, "hours");
     currentTime = currentTime.add(step, "minutes");
 
-    if (currentTime > maxEndTime) return maxEndTime.format(timeFormats.iso);
-    return currentTime.format(timeFormats.iso);
+    if (currentTime > maxEndTime) return maxEndTime.format(this.formats.iso);
+    return currentTime.format(this.formats.iso);
   };
 
   subtractTime = (time, minTime, step = 30) => {
-    let currentTime = dayjs(time, timeFormats.iso);
-    const minEndTime = dayjs(minTime, timeFormats.iso);
+    let currentTime = dayjs(time, this.formats.iso);
+    const minEndTime = dayjs(minTime, this.formats.iso);
     currentTime = currentTime.subtract(step, "minutes");
 
-    if (currentTime < minEndTime) return minEndTime.format(timeFormats.iso);
-    return currentTime.format(timeFormats.iso);
+    if (currentTime < minEndTime) return minEndTime.format(this.formats.iso);
+    return currentTime.format(this.formats.iso);
+  };
+
+  isBefore = (startTime, endTime) => {
+    return dayjs(startTime, this.formats.iso) < dayjs(endTime, this.formats.iso);
   };
 }
 
@@ -120,7 +124,12 @@ const eventFormReducer = produce((draft, action) => {
       draft.endInput.valid = validEndTime;
       if (validEndTime) {
         const [endHour, endMinute] = hourStringtoNumbers(action.name);
-        draft.event.end.datetime = timeManager.updateTime(draft.event.event.datetime, endHour, endMinute);
+        const newEndTime = timeManager.updateTime(draft.event.end.datetime, endHour, endMinute);
+        if (timeManager.isBefore(draft.event.start.datetime, newEndTime)) {
+          draft.event.end.datetime = newEndTime;
+        } else {
+          draft.event.end.datetime = dayjs(newEndTime).add(1, "day").format(timeFormats.iso);
+        }
       }
       break;
 
