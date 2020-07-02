@@ -1,17 +1,19 @@
 import React, { useRef, useEffect, useReducer } from "react";
+
 // PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
-import dayjs from "dayjs";
 import "react-day-picker/lib/style.css";
-import timeFormats from "../../common/timeFormats";
 
 // REDUCER
 import eventFormReducer from "./reducer";
 
+// SCRIPTS
+import createDefaultEvent from "./defaultEvent";
+
 // COMPONENTS
 import { OutlineButton, BlueSubmitButton } from "../../Button";
-import { AllDayEventInput, TimeInput, Toggle, EventLabel, EndTimeInput } from "./inputs/index";
+import { AllDayEventInput, StartTimeInput, Toggle, EventLabel, EndTimeInput } from "./inputs/index";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
   const titleInput = useRef();
@@ -26,27 +28,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
             focus:outline-none focus:text-blue-700 focus:bg-blue-100 focus:border-blue-800`,
   };
 
-  const defaultEventStartTime = dayjs(date).format(timeFormats.iso);
-  const defaultEvent = {
-    event: {
-      start: {
-        date,
-        datetime: defaultEventStartTime,
-      },
-      end: {
-        date,
-        datetime: defaultEventStartTime,
-      },
-      title: "Please add a title",
-    },
-    isAllDayEvent: false,
-    readyForSubmit: false,
-    startInput: {
-      time: "12:00",
-      valid: true,
-    },
-  };
-
+  const defaultEvent = createDefaultEvent(date);
   const [eventForm, dispatch] = useReducer(eventFormReducer, defaultEvent);
 
   useEffect(() => {
@@ -56,12 +38,35 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
     }
   });
 
-  const selectText = () => titleInput.current.select();
-
+  // HANDLERS
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch({ type: "submit" });
   };
+
+  // Title
+  const updateTitle = (event) => dispatch({ type: "updateTitle", name: event.target.value });
+  const selectText = () => titleInput.current.select();
+
+  // Toggle
+  const toggleDate = () => dispatch({ type: "toggleDate" });
+
+  // AllDayEventInput
+  const addEndDateFromInput = (event) => dispatch({ type: "addEndDateFromInput", name: event });
+  const addEndDateFromPicker = (day) => dispatch({ type: "addEndDateFromPicker", name: day });
+
+  // StartTimeInput
+  const addStartHourFromTimePicker = (event) =>
+    dispatch({ type: "addStartHourFromTimePicker", name: event.target.value });
+  const addStartMinutesFromTimePicker = (event) =>
+    dispatch({ type: "addStartMinutesFromTimePicker", name: event.target.value });
+  const addStartTimeFromTimeInput = (event) =>
+    dispatch({ type: "addStartTimeFromTimeInput", name: event.target.value });
+
+  // EndTimeInput
+  const addEndTimeFromPicker = () => dispatch({ type: "addEndTimeFromPicker" });
+  const subtractEndTimeFromPicker = () => dispatch({ type: "subtractEndTimeFromPicker" });
+  const addEndTimeFromTimeInput = (event) => dispatch({ type: "addEndTimeFromTimeInput", name: event.target.value });
 
   return (
     <>
@@ -79,14 +84,14 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
               className={styles.input}
               type="text"
               value={eventForm.event.title}
-              onChange={(event) => dispatch({ type: "updateTitle", name: event.target.value })}
+              onChange={updateTitle}
               onFocus={selectText}
             />
           </div>
           <div className="mt-4">
             <Toggle
               checked={eventForm.isAllDayEvent}
-              onCheck={() => dispatch({ type: "toggleDate" })}
+              onCheck={toggleDate}
               checkedTitle="All Day Event"
               unCheckedTitle="All Day Event?"
             />
@@ -94,41 +99,28 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
           <div className="mt-2 border border-gray-300 rounded p-6">
             {eventForm.isAllDayEvent ? (
               <AllDayEventInput
-                onInputChange={(event) => dispatch({ type: "addEndDateFromInput", name: event })}
-                onPickerChange={(day) => dispatch({ type: "addEndDateFromPicker", name: day })}
+                onInputChange={addEndDateFromInput}
+                onPickerChange={addEndDateFromPicker}
                 css={styles.input}
                 inputValue={eventForm.event.end.date ? eventForm.event.end.date : ""}
                 date={date}
               />
             ) : (
               <div className="">
-                <TimeInput
+                <StartTimeInput
                   title={"Start time"}
                   timeInput={eventForm.startInput.time}
-                  onChooseHour={(event) =>
-                    dispatch({
-                      type: "addStartHourFromTimePicker",
-                      name: event.target.value,
-                    })
-                  }
-                  onChooseMinutes={(event) =>
-                    dispatch({
-                      type: "addStartMinutesFromTimePicker",
-                      name: event.target.value,
-                    })
-                  }
-                  onHandleChange={(event) =>
-                    dispatch({
-                      type: "addStartTimeFromTimeInput",
-                      name: event.target.value,
-                    })
-                  }
-                  onValidate={() => dispatch({ type: "validateStartTime" })}
-                  onInvalidate={() => dispatch({ type: "invalidateStartTime" })}
+                  onChooseHour={addStartHourFromTimePicker}
+                  onChooseMinutes={addStartMinutesFromTimePicker}
+                  onHandleChange={addStartTimeFromTimeInput}
+                  validInput={eventForm.startInput.valid}
                 />
                 <EndTimeInput
-                  defaultEndTime={eventForm.event.end.datetime}
-                  onChooseEndTime={(time) => dispatch({ type: "addEndTime", name: time })}
+                  timeInput={eventForm.endInput.time}
+                  onAddEndTime={addEndTimeFromPicker}
+                  onSubtractEndtime={subtractEndTimeFromPicker}
+                  onHandleChange={addEndTimeFromTimeInput}
+                  validInput={eventForm.endInput.valid}
                 />
               </div>
             )}

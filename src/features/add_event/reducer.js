@@ -3,8 +3,10 @@ import produce from "immer";
 import dayjs from "dayjs";
 
 // SCRIPTS
-import { numbersToHourString, hourStringtoNumbers } from "../../utils";
+import { hourStringtoNumbers } from "../../utils";
 import timeFormats from "../../common/timeFormats";
+
+const MAX_DURATION = 12;
 
 class timeHelper {
   constructor(formats) {
@@ -13,19 +15,45 @@ class timeHelper {
 
   toYear = (time) => dayjs(time).format(this.formats.year);
 
-  toHumanReadableTime = (hour, minute) => numbersToHourString(hour, minute);
+  toHourMinute = (time) => dayjs(time, this.formats.iso).format(this.formats.hourMinutes);
 
   updateHour = (currentTime, hour) => dayjs(currentTime, this.formats.iso).hour(hour).format(this.formats.iso);
 
   updateMinute = (currentTime, minute) => dayjs(currentTime, this.formats.iso).minute(minute).format(this.formats.iso);
 
-  updateTime = (currentTime, hour, minute) =>
-    dayjs(currentTime, this.formats.iso).hour(hour).minute(minute).format(this.formats.iso);
+  updateTime = (currentTime, hour, minute) => {
+    return dayjs(currentTime, this.formats.iso).hour(hour).minute(minute).format(this.formats.iso);
+  };
+
+  validateTime = (timeString) => {
+    const [currentHours, currentMinutes] = hourStringtoNumbers(timeString);
+    return (
+      timeString.length === 5 && currentHours >= 0 && currentHours < 24 && currentMinutes >= 0 && currentMinutes <= 59
+    );
+  };
+
+  incrementTime = (time, maxTime, step = 30) => {
+    let currentTime = dayjs(time, timeFormats.iso);
+
+    const maxEndTime = dayjs(maxTime, timeFormats.iso).add(MAX_DURATION, "hours");
+    currentTime = currentTime.add(step, "minutes");
+
+    if (currentTime > maxEndTime) return maxEndTime.format(timeFormats.iso);
+    return currentTime.format(timeFormats.iso);
+  };
+
+  subtractTime = (time, minTime, step = 30) => {
+    let currentTime = dayjs(time, timeFormats.iso);
+    const minEndTime = dayjs(minTime, timeFormats.iso);
+    currentTime = currentTime.subtract(step, "minutes");
+
+    if (currentTime < minEndTime) return minEndTime.format(timeFormats.iso);
+    return currentTime.format(timeFormats.iso);
+  };
 }
 
 const eventFormReducer = produce((draft, action) => {
   const timeManager = new timeHelper(timeFormats);
-  let [hours, minutes] = hourStringtoNumbers(draft.startInput.time);
   switch (action.type) {
     case "updateTitle":
       draft.event.title = action.name;
@@ -44,36 +72,57 @@ const eventFormReducer = produce((draft, action) => {
       break;
 
     case "addStartHourFromTimePicker":
-      draft.event.start.datetime = timeManager.updateHour(draft.event.start.datetime, action.name);
-      hours = action.name;
-      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
+      const newHour = timeManager.updateHour(draft.event.start.datetime, action.name);
+      draft.event.start.datetime = newHour;
+      draft.event.end.datetime = newHour;
+      const formattedNewHour = timeManager.toHourMinute(newHour);
+      draft.startInput.time = formattedNewHour;
+      draft.endInput.time = formattedNewHour;
       break;
 
     case "addStartMinutesFromTimePicker":
-      draft.event.start.datetime = timeManager.updateMinute(draft.event.start.datetime, action.name);
-      minutes = action.name;
-      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
+      const newMinutes = timeManager.updateMinute(draft.event.start.datetime, action.name);
+      draft.event.start.datetime = newMinutes;
+      draft.event.end.datetime = newMinutes;
+      const formattedNewMinutes = timeManager.toHourMinute(newMinutes);
+      draft.startInput.time = formattedNewMinutes;
+      draft.endInput.time = formattedNewMinutes;
       break;
 
     case "addStartTimeFromTimeInput":
       draft.startInput.time = action.name;
+      const validStartTime = timeManager.validateTime(draft.startInput.time);
+      draft.startInput.valid = validStartTime;
+      if (validStartTime) {
+        const [startHour, startMinute] = hourStringtoNumbers(action.name);
+        const newStartTime = timeManager.updateTime(draft.event.start.datetime, startHour, startMinute);
+        draft.event.start.datetime = newStartTime;
+        draft.event.end.datetime = newStartTime;
+        draft.endInput.time = action.name;
+        draft.endInput.valid = true;
+      }
       break;
 
-    case "validateStartTime":
-      const newStartTime = timeManager.updateTime(draft.event.start.datetime, hours, minutes);
-      draft.startInput.valid = true;
-      draft.startInput.time = timeManager.toHumanReadableTime(hours, minutes);
-      draft.event.start.datetime = newStartTime;
-      draft.event.end.datetime = newStartTime;
+    case "addEndTimeFromPicker":
+      const futureEndTime = timeManager.incrementTime(draft.event.end.datetime, draft.event.end.datetime);
+      draft.event.end.datetime = futureEndTime;
+      draft.endInput.time = timeManager.toHourMinute(futureEndTime);
       break;
 
-    case "invalidateStartTime":
-      draft.startInput.valid = false;
+    case "subtractEndTimeFromPicker":
+      const pastEndTime = timeManager.subtractTime(draft.event.end.datetime, draft.event.start.datetime);
+      draft.event.end.datetime = pastEndTime;
+      draft.endInput.time = timeManager.toHourMinute(pastEndTime);
       break;
 
-    case "addEndTime":
-      const [endHour, endMinute] = hourStringtoNumbers(action.name);
-      draft.event.end.datetime = timeManager.updateTime(draft.event.end.datetime, endHour, endMinute);
+    case "addEndTimeFromTimeInput":
+      draft.endInput.time = action.name;
+      const validEndTime = timeManager.validateTime(action.name);
+      draft.endInput.valid = validEndTime;
+      if (validEndTime) {
+        const [endHour, endMinute] = hourStringtoNumbers(action.name);
+        draft.event.end.datetime = timeManager.updateTime(draft.event.event.datetime, endHour, endMinute);
+      }
       break;
 
     case "submit":
