@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 
+// PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
+
 // COMPONENTS
 import { Button } from "../../../Button";
 import TimePicker from "./TimePicker";
@@ -52,5 +56,13 @@ function TimeInput({ title, timeInput, validInput, onHandleChange, onChooseHour,
     </div>
   );
 }
+TimeInput.propTypes = exact({
+  title: PropTypes.string.isRequired,
+  timeInput: PropTypes.string.isRequired,
+  validInput: PropTypes.bool.isRequired,
+  onHandleChange: PropTypes.func.isRequired,
+  onChooseHour: PropTypes.func.isRequired,
+  onChooseMinutes: PropTypes.func.isRequired,
+});
 
 export default TimeInput;

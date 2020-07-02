@@ -1,5 +1,9 @@
 import React from "react";
 
+// PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
+
 // COMPONENTS
 import EventLabel from "./EventLabel";
 import { Button } from "../../../Button";
@@ -46,5 +50,13 @@ function EndTime({ timeInput, validInput, onAddEndTime, onSubtractEndtime, onHan
     </div>
   );
 }
+
+EndTime.propTypes = exact({
+  timeInput: PropTypes.string.isRequired,
+  validInput: PropTypes.bool.isRequired,
+  onAddEndTime: PropTypes.func.isRequired,
+  onSubtractEndtime: PropTypes.func.isRequired,
+  onHandleChange: PropTypes.func.isRequired,
+});
 
 export default EndTime;

@@ -1,6 +1,10 @@
 import React from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
+
+// SCRIPTS
 import { range } from "../../../utils";
 
 function TimePicker({ eventHour, eventMinutes, onChooseHour, onChooseMinutes, display }) {

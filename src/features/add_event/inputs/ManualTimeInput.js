@@ -1,5 +1,9 @@
 import React from "react";
 
+// PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
+
 function ManualTimeInput({ timeInput, validInput, onHandleChange, radius = "rounded-none" }) {
   const styles = {
     timeInput: `flex flex-grow w-full
@@ -26,5 +30,16 @@ function ManualTimeInput({ timeInput, validInput, onHandleChange, radius = "roun
     />
   );
 }
+
+ManualTimeInput.propTypes = exact({
+  timeInput: PropTypes.string.isRequired,
+  validInput: PropTypes.bool.isRequired,
+  onHandleChange: PropTypes.func.isRequired,
+  radius: PropTypes.string.isRequired,
+});
+
+ManualTimeInput.defaultProps = {
+  radius: "rounded-none",
+};
 
 export default ManualTimeInput;

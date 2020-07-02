@@ -1,5 +1,9 @@
 import React from "react";
 
+// PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
+
 function Toggle({ checked, onCheck, checkedTitle, unCheckedTitle }) {
   const styles = {
     toggle: `absolute block
@@ -27,5 +31,12 @@ function Toggle({ checked, onCheck, checkedTitle, unCheckedTitle }) {
     </label>
   );
 }
+
+Toggle.propTypes = exact({
+  checkedTitle: PropTypes.string.isRequired,
+  unCheckedTitle: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onCheck: PropTypes.func.isRequired,
+});
 
 export default Toggle;

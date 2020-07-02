@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 // PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import DayPicker from "react-day-picker/DayPicker";
 
@@ -47,6 +49,14 @@ function AllDayEventInput({ onInputChange, onPickerChange, css, inputValue, date
   );
 }
 
+AllDayEventInput.propTypes = exact({
+  date: PropTypes.string.isRequired,
+  css: PropTypes.string.isRequired,
+  onPickerChange: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func.isRequired,
+  inputValue: PropTypes.string.isRequired,
+});
+
 function DatePickerOverlay({ show, onDayClick, inputValue, date, onClose }) {
   return (
     <>
@@ -61,5 +71,13 @@ function DatePickerOverlay({ show, onDayClick, inputValue, date, onClose }) {
     </>
   );
 }
+
+DatePickerOverlay.propTypes = exact({
+  date: PropTypes.string,
+  show: PropTypes.bool.isRequired,
+  onDayClick: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  inputValue: PropTypes.string.isRequired,
+});
 
 export default AllDayEventInput;
