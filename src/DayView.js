@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-import EventForm from "./EventForm";
+import EventForm from "./features/add_event/EventForm";
 import Event from "./Event";
 import { sortEvents } from "./calendar";
 import { EventContext } from "./EventContext";
@@ -52,11 +52,7 @@ DayView.propTypes = exact({
   onCloseForm: PropTypes.func.isRequired,
 });
 
-const EmptyPlanning = () => (
-  <div className="mt-10 text-blue-700 text-2xl tracking-wider">
-    No events today.
-  </div>
-);
+const EmptyPlanning = () => <div className="mt-10 text-blue-700 text-2xl tracking-wider">No events today.</div>;
 
 function DayPlanning({ events, chosenEventId, date }) {
   const filterEventsBetween = (eventList, lowerLimit, upperLimit) => {
@@ -67,12 +63,7 @@ function DayPlanning({ events, chosenEventId, date }) {
       const eventDayLowerLimit = createIsoDateTime(date, lowerLimit);
       const eventDayUpperLimit = createIsoDateTime(date, upperLimit);
       const eventTime = dayjs(event.start.datetime);
-      return eventTime.isBetween(
-        dayjs(eventDayLowerLimit),
-        dayjs(eventDayUpperLimit),
-        null,
-        "[)"
-      );
+      return eventTime.isBetween(dayjs(eventDayLowerLimit), dayjs(eventDayUpperLimit), null, "[)");
     });
   };
   const timedEvents = events.filter((e) => !e.allDay);
@@ -118,13 +109,7 @@ DayPlanning.propTypes = exact({
   date: PropTypes.string.isRequired,
 });
 
-function EventList({
-  events,
-  chosenEventId,
-  title,
-  isShown,
-  marginBottom = 2,
-}) {
+function EventList({ events, chosenEventId, title, isShown, marginBottom = 2 }) {
   return (
     <>
       {isShown && (
@@ -132,14 +117,7 @@ function EventList({
           <div className="h-auto flex self-stretch">
             <ul className="block w-full space-y-2">
               <h2 className="pl-4 text-md text-blue-700">{title}</h2>
-              {events &&
-                events.map((event) => (
-                  <Event
-                    key={event.id}
-                    event={event}
-                    chosenEventId={chosenEventId}
-                  />
-                ))}
+              {events && events.map((event) => <Event key={event.id} event={event} chosenEventId={chosenEventId} />)}
             </ul>
           </div>
         </div>
