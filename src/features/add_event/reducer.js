@@ -3,7 +3,7 @@ import produce from "immer";
 import dayjs from "dayjs";
 
 // SCRIPTS
-import { hourStringtoNumbers } from "../../utils";
+import { hourStringtoNumbers, isoDateTimeToString } from "../../utils";
 import timeFormats from "../../common/timeFormats";
 
 const MAX_DURATION = 12;
@@ -15,8 +15,7 @@ class timeHelper {
 
   toYear = (time) => dayjs(time).format(this.formats.year);
 
-  toHourMinute = (time) => dayjs(time, this.formats.iso).format(this.formats.hourMinutes);
-
+  toHourMinute = isoDateTimeToString;
   updateHour = (currentTime, hour) => dayjs(currentTime, this.formats.iso).hour(hour).format(this.formats.iso);
 
   updateMinute = (currentTime, minute) => dayjs(currentTime, this.formats.iso).minute(minute).format(this.formats.iso);

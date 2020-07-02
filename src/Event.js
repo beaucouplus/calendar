@@ -10,6 +10,7 @@ import { EventContext } from "./EventContext";
 
 // SCRIPTS
 import timeFormats from "./common/timeFormats";
+import { isoDateTimeToString } from "./utils";
 
 // COMPONENTS
 import { Button } from "./Button";
@@ -55,13 +56,13 @@ function TimedEventHeader({ event }) {
   return (
     <>
       <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
-        {dayjs(event.start.datetime).format(timeFormats.hourMinutes)}
+        {isoDateTimeToString(event.start.datetime)}
       </div>
       <div className="pl-4 text-left">{event.title}</div>
       <div className="ml-4 flex flex-grow justify-end ">
         <div className="flex text-gray-800 text-xs items-center pr-2">
           <i className="gg-arrow-right transform scale-75 text-gray-600 mr-1"></i>
-          {dayjs(event.end.datetime).format(timeFormats.hourMinutes)}
+          {isoDateTimeToString(event.end.datetime)}
         </div>
       </div>
       <div className="flex justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
@@ -80,8 +81,8 @@ function AllDayEventHeader({ event }) {
       <div className="flex-none w-full flex flex-col">
         <div className="flex border-b border-gray-300 pb-2">
           <div className="flex items-center pr-2 text-md text-blue-700 font-semibold tracking-wider">
-            {dayjs(event.start.date).format("MMM DD")} <i className="gg-arrow-right mx-2"></i>
-            {dayjs(event.end.date).format("MMM DD")}
+            {dayjs(event.start.date).format(timeFormats.monthDay)} <i className="gg-arrow-right mx-2"></i>
+            {dayjs(event.end.date).format(timeFormats.monthDay)}
           </div>
           <div className="text-xs px-2 py-1 flex flex-grow justify-end">
             Day {event.position} of {event.duration}

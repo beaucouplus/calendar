@@ -19,4 +19,14 @@ const numbersToHourString = (hour, minute) => `${renderTwoDigits(Number(hour))}:
 const isoDateTimeFromStrings = (date, time) =>
   dayjs(`${date}T${time}:00+02:00`, timeFormats.iso).format(timeFormats.iso);
 
-export { range, chunk, renderTwoDigits, hourStringtoNumbers, numbersToHourString, isoDateTimeFromStrings };
+const isoDateTimeToString = (time) => dayjs(time, timeFormats.iso).format(timeFormats.hourMinutes);
+
+export {
+  range,
+  chunk,
+  renderTwoDigits,
+  hourStringtoNumbers,
+  numbersToHourString,
+  isoDateTimeFromStrings,
+  isoDateTimeToString,
+};
