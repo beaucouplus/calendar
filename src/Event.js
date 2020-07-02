@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
-import { Button } from "./Button";
-import { EventContext } from "./EventContext";
 import dayjs from "dayjs";
+
+// CONTEXT
+import { EventContext } from "./EventContext";
+
+// SCRIPTS
+import timeFormats from "./common/timeFormats";
+
+// COMPONENTS
+import { Button } from "./Button";
 
 function Event({ event, chosenEventId }) {
   const isShown = event.id === chosenEventId;
@@ -15,9 +24,7 @@ function Event({ event, chosenEventId }) {
     onDeleteEvent(event);
   };
 
-  const handleClick = () => {
-    setShowDetails(!showDetails);
-  };
+  const handleClick = () => setShowDetails(!showDetails);
 
   const buttonStyle = `group flex items-start
                    w-full h-auto 
@@ -32,15 +39,9 @@ function Event({ event, chosenEventId }) {
       className={`block bg-white rounded-lg shadow-sm border-2 hover:border-blue-600 border-transparent focus-within:border-blue-600`}
     >
       <Button css={buttonStyle} callBack={handleClick} withFocus={false}>
-        {event.allDay ? (
-          <AllDayEventHeader event={event} />
-        ) : (
-          <TimedEventHeader event={event} />
-        )}
+        {event.allDay ? <AllDayEventHeader event={event} /> : <TimedEventHeader event={event} />}
       </Button>
-      {showDetails && (
-        <EventDetails event={event} onDeleteEvent={handleDeleteEvent} />
-      )}
+      {showDetails && <EventDetails event={event} onDeleteEvent={handleDeleteEvent} />}
     </li>
   );
 }
@@ -54,10 +55,16 @@ function TimedEventHeader({ event }) {
   return (
     <>
       <div className="w-1/8 text-blue-700 font-semibold tracking-wider text-right">
-        {dayjs(event.start.datetime).format("HH:mm")}
+        {dayjs(event.start.datetime).format(timeFormats.hourMinutes)}
       </div>
       <div className="pl-4 text-left">{event.title}</div>
-      <div className="flex flex-grow justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
+      <div className="ml-4 flex flex-grow justify-end ">
+        <div className="flex text-gray-800 text-xs items-center pr-2">
+          <i className="gg-arrow-right transform scale-75 text-gray-600 mr-1"></i>
+          {dayjs(event.end.datetime).format(timeFormats.hourMinutes)}
+        </div>
+      </div>
+      <div className="flex justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
         <i className="gg-chevron-down"></i>
       </div>
     </>
@@ -73,12 +80,11 @@ function AllDayEventHeader({ event }) {
       <div className="flex-none w-full flex flex-col">
         <div className="flex border-b border-gray-300 pb-2">
           <div className="flex items-center pr-2 text-md text-blue-700 font-semibold tracking-wider">
-            {dayjs(event.start.date).format("MMM DD")}{" "}
-            <i className="gg-arrow-right mx-2"></i>
+            {dayjs(event.start.date).format("MMM DD")} <i className="gg-arrow-right mx-2"></i>
             {dayjs(event.end.date).format("MMM DD")}
           </div>
           <div className="text-xs px-2 py-1 flex flex-grow justify-end">
-            Day {event.position}
+            Day {event.position} of {event.duration}
           </div>
           <div className="flex justify-end text-gray-400 group-focus:text-blue-600 group-hover:text-blue-600 group-active:text-blue-600">
             <i className="gg-chevron-down"></i>
@@ -98,22 +104,16 @@ function EventDetails({ event, onDeleteEvent }) {
   return (
     <div className="text-gray-700 text-sm pb-2 px-4">
       <div className="mt-2" id="event-description">
-        This event will take place somewhere, on the edge of the Earth. Might be
-        useful to take something with me, such as a bottle of water or some
-        snacks. Also, I shall wear very light clothes as the weather will
-        probably be very warm.
+        This event will take place somewhere, on the edge of the Earth. Might be useful to take something with me, such
+        as a bottle of water or some snacks. Also, I shall wear very light clothes as the weather will probably be very
+        warm.
       </div>
-      <div
-        className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded"
-        id="event-location"
-      >
+      <div className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded" id="event-location">
         <h3 className="font-semibold">Where?</h3>
         <p>21 jump street, NY 20383</p>
       </div>
       <div className="flex flex-row justify-end py-2">
-        <DeleteButton callBack={() => onDeleteEvent(event)}>
-          delete
-        </DeleteButton>
+        <DeleteButton callBack={() => onDeleteEvent(event)}>delete</DeleteButton>
       </div>
     </div>
   );
