@@ -15,10 +15,9 @@ import { isoDateTimeToString } from "../../common/utils";
 // COMPONENTS
 import { Button } from "../../common/Button";
 
-function Event({ event, chosenEventId }) {
-  const isShown = event.id === chosenEventId;
-  const { onDeleteEvent } = useContext(EventContext);
-  const [showDetails, setShowDetails] = useState(isShown);
+function Event({ event }) {
+  const { modalStatus, onDeleteEvent } = useContext(EventContext);
+  const [showDetails, setShowDetails] = useState(modalStatus.chosenEventId === event.id);
 
   const handleDeleteEvent = (event) => {
     setShowDetails(false);
@@ -49,7 +48,6 @@ function Event({ event, chosenEventId }) {
 
 Event.propTypes = exact({
   event: PropTypes.object.isRequired,
-  chosenEventId: PropTypes.number,
 });
 
 function TimedEventHeader({ event }) {

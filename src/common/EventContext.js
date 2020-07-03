@@ -7,7 +7,20 @@ const EventContext = React.createContext();
 function EventStore({ children }) {
   const [events, setEvents] = useState(seeds);
   const [eventID, setEventID] = useState(seeds.length);
+  const [modalStatus, setModalStatus] = useState({ displayed: false, date: null, chosenEventId: null });
   const eventsByDate = groupEventsByDateAndType(events);
+
+  const displayModal = (date) => {
+    setModalStatus({ date, displayed: true, chosenEventId: null });
+  };
+
+  const displayModalAndChooseEvent = (date, eventId) => {
+    setModalStatus({ date, displayed: true, chosenEventId: eventId });
+  };
+
+  const closeModal = () => {
+    setModalStatus({ displayed: false, date: null, chosenEventId: null });
+  };
 
   function addEvent(event) {
     setEventID(eventID + 1);
@@ -28,6 +41,10 @@ function EventStore({ children }) {
         onAddEvent: addEvent,
         onDeleteEvent: deleteEvent,
         eventsByDate: eventsByDate,
+        displayModal,
+        closeModal,
+        displayModalAndChooseEvent,
+        modalStatus,
       }}
     >
       {children}

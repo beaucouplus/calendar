@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 
 // PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
+// CONTEXT
+import { EventContext } from "../../../common/EventContext";
+
 // SCRIPTS
 import { range } from "../../../common/utils";
 
-// COMPONENTS
-import Modal from "../../modal/Modal";
-import DayModal from "../day_view/DayModal";
-
 function EventSummary({ date, event }) {
-  const [showModal, setShowModal] = useState(false);
-  const [chosenEventId, setChosenEventId] = useState(undefined);
-  const [modalDate, setModalDate] = useState(date);
-
-  useEffect(() => console.log(showModal, chosenEventId));
+  const { displayModalAndChooseEvent } = useContext(EventContext);
 
   const handleClick = (newDate) => {
-    newDate && setModalDate(newDate);
-
-    setShowModal(true);
-    setChosenEventId(event.id);
+    if (typeof newDate === "string") {
+      displayModalAndChooseEvent(newDate, event.id);
+    } else {
+      displayModalAndChooseEvent(date, event.id);
+    }
   };
-
-  const closeModal = () => setShowModal(false);
 
   const weekDay = dayjs(date).day();
   const gridPosition = weekDay === 0 ? 7 : weekDay;
@@ -35,24 +29,17 @@ function EventSummary({ date, event }) {
                         cursor-pointer z-10 
                         hover:bg-orange-300 hover:border-orange-400`;
 
-  return (
-    <>
-      {event.allDay ? (
-        <AllDayEvent
-          date={date}
-          event={event}
-          key={event.id}
-          display={event.displayed}
-          css={eventStyle}
-          onHandleClick={handleClick}
-        />
-      ) : (
-        <TimedEvent date={date} event={event} key={event.id} css={eventStyle} onHandleClick={handleClick} />
-      )}
-      <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={modalDate} chosenEventId={chosenEventId} />
-      </Modal>
-    </>
+  return event.allDay ? (
+    <AllDayEvent
+      date={date}
+      event={event}
+      key={event.id}
+      display={event.displayed}
+      css={eventStyle}
+      onHandleClick={handleClick}
+    />
+  ) : (
+    <TimedEvent date={date} event={event} key={event.id} css={eventStyle} onHandleClick={handleClick} />
   );
 }
 
@@ -115,7 +102,7 @@ function AllDayEvent({ date, event, display, css, onHandleClick }) {
           >
             <div className={`absolute gap-2 top-0 left-0  grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}>
               {weeklyRemainingDays.map((day) => (
-                <AllDayEventPart day={day} event={event} key={day.date} onHandleClick={onHandleClick} />
+                <AllDayEventPart day={day} key={day.date} onHandleClick={onHandleClick} />
               ))}
             </div>
             {event.title}
@@ -135,15 +122,11 @@ AllDayEvent.propTypes = exact({
 });
 
 function AllDayEventPart({ day, onHandleClick }) {
-  const handleClick = () => {
-    onHandleClick(day.date);
-  };
-
   return (
     <>
       <div
         className={`border-b-4 border-transparent hover:border-orange-400 first:mx-2 last:mx-2`}
-        onClick={handleClick}
+        onClick={onHandleClick}
       >
         &nbsp;
       </div>
@@ -153,7 +136,7 @@ function AllDayEventPart({ day, onHandleClick }) {
 
 AllDayEventPart.propTypes = exact({
   day: PropTypes.object.isRequired,
-  event: PropTypes.object.isRequired,
+  onHandleClick: PropTypes.func.isRequired,
 });
 
 export default EventSummary;

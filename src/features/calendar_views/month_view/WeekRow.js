@@ -1,16 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useContext } from "react";
 
 // PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
+// CONTEXT
+import { EventContext } from "../../../common/EventContext";
+
 // SCRIPTS
 import { sortEvents } from "../../../common/calendar";
 
 // COMPONENTS
-import Modal from "../../modal/Modal";
-import DayModal from "../day_view/DayModal";
 import EventSummary from "./EventSummary";
 
 function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
@@ -61,8 +62,8 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
 
   const monthDay = dayjs(day).date();
   const titleRef = useRef();
-  const [showModal, setShowModal] = useState(false);
-  const closeModal = () => setShowModal(false);
+
+  const { displayModal } = useContext(EventContext);
 
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
@@ -78,22 +79,17 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
     future: "bg-white bg-opacity-25 text-gray-700 hover:bg-gray-300 hover:bg-opacity-25 hover:text-black",
   };
 
+  const handleClick = () => displayModal(day);
   const currentStyle = styles[chooseStyle()];
 
   return (
     <>
-      <div
-        className={`${currentStyle} relative px-2 py-2 border-b border-b-500 cursor-pointer`}
-        onClick={() => setShowModal(true)}
-      >
+      <div className={`${currentStyle} relative px-2 py-2 border-b border-b-500 cursor-pointer`} onClick={handleClick}>
         <div className={`text-md font-semibold`} ref={titleRef}>
           {monthDay}
         </div>
         <RemainingEventsNumber remainingEventsNumber={remainingEventsNumber} isShown={!!remainingEventsNumber} />
       </div>
-      <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={day} />
-      </Modal>
     </>
   );
 };

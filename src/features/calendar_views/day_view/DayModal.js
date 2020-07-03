@@ -16,7 +16,7 @@ import { Button } from "../../../common/Button";
 // DAYJS PLUGINS
 dayjs.extend(customParseFormat);
 
-function DayModal({ date, chosenEventId }) {
+function DayModal({ date }) {
   const [displayForm, setDisplayForm] = useState(false);
   const closeForm = () => setDisplayForm(false);
   const triggerForm = () => setDisplayForm(!displayForm);
@@ -31,20 +31,13 @@ function DayModal({ date, chosenEventId }) {
         </h2>
         <AddEventButton callBack={() => triggerForm()} />
       </header>
-      <DayView
-        events={events}
-        chosenEventId={chosenEventId}
-        date={date}
-        displayForm={displayForm}
-        onCloseForm={closeForm}
-      />
+      <DayView events={events} date={date} displayForm={displayForm} onCloseForm={closeForm} />
     </div>
   );
 }
 
 DayModal.propTypes = exact({
-  date: PropTypes.string.isRequired,
-  chosenEventId: PropTypes.number,
+  date: PropTypes.string,
 });
 
 function AddEventButton({ callBack }) {

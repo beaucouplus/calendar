@@ -36,23 +36,25 @@ function MonthView({ startOfMonth }) {
   }, [startOfMonth, eventsPerDaySize]);
 
   return (
-    <div className={`flex flex-col flex-grow h-full border-t border-gray-500`}>
-      <WeekDayTitles />
-      <div
-        ref={weekRowsContainer}
-        className={`grid grid-rows-${weeks.length} h-full items-stretch divide-x divide-gray-300`}
-      >
-        {weeks.map((week, idx) => (
-          <WeekRow
-            eventsPerDay={eventsPerDay}
-            week={week}
-            month={currentMonth}
-            maxNumberOfEvents={maxNumberOfEvents}
-            key={idx}
-          />
-        ))}
+    <>
+      <div className={`flex flex-col flex-grow h-full border-t border-gray-500`}>
+        <WeekDayTitles />
+        <div
+          ref={weekRowsContainer}
+          className={`grid grid-rows-${weeks.length} h-full items-stretch divide-x divide-gray-300`}
+        >
+          {weeks.map((week, idx) => (
+            <WeekRow
+              eventsPerDay={eventsPerDay}
+              week={week}
+              month={currentMonth}
+              maxNumberOfEvents={maxNumberOfEvents}
+              key={idx}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
