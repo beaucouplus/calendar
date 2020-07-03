@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
 // PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import ReactDOM from "react-dom";
 import FocusTrap from "focus-trap-react";
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -64,5 +66,11 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
     document.body
   );
 }
+
+Modal.propTypes = exact({
+  children: PropTypes.node.isRequired,
+  modalContentRef: PropTypes.string.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+});
 
 export default Modal;

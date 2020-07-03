@@ -76,6 +76,10 @@ function MonthsRow({ css }) {
   );
 }
 
+MonthsRow.propTypes = exact({
+  css: PropTypes.object.isRequired,
+});
+
 function DaysRow({ days, css }) {
   const tdClass = `${css.cellBorders} font-semibold text-center text-gray-700`;
   const monthDay = dayjs(days[0].date).format("D");
@@ -95,9 +99,18 @@ function DaysRow({ days, css }) {
   );
 }
 
+DaysRow.propTypes = exact({
+  days: PropTypes.array.isRequired,
+  css: PropTypes.object.isRequired,
+});
+
 function EmptyCell({ css }) {
   return <td className={`${css.cellBorders}`}></td>;
 }
+
+EmptyCell.propTypes = exact({
+  css: PropTypes.object.isRequired,
+});
 
 function DayCell({ date, hasEvents, css }) {
   const [showModal, setShowModal] = useState(false);

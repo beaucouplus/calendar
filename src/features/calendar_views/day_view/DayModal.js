@@ -44,7 +44,7 @@ function DayModal({ date, chosenEventId }) {
 
 DayModal.propTypes = exact({
   date: PropTypes.string.isRequired,
-  events: PropTypes.array,
+  chosenEventId: PropTypes.number,
 });
 
 function AddEventButton({ callBack }) {
