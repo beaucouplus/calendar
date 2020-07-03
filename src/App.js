@@ -62,7 +62,7 @@ function CalendarView({ view, year, startOfMonth }) {
 
 CalendarView.propTypes = exact({
   view: PropTypes.string.isRequired,
-  year: PropTypes.string.isRequired,
+  year: PropTypes.number.isRequired,
   startOfMonth: PropTypes.string.isRequired,
 });
 

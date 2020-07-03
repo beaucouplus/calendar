@@ -79,7 +79,7 @@ function Header({ year, onSetYear, startOfMonth, onSetStartOfMonth, currentView,
 }
 
 Header.propTypes = exact({
-  year: PropTypes.string.isRequired,
+  year: PropTypes.number.isRequired,
   onSetYear: PropTypes.func.isRequired,
   startOfMonth: PropTypes.string.isRequired,
   onSetStartOfMonth: PropTypes.func.isRequired,
@@ -109,7 +109,7 @@ function CurrentViewMenu({
 }
 
 CurrentViewMenu.propTypes = exact({
-  year: PropTypes.string.isRequired,
+  year: PropTypes.number.isRequired,
   startOfMonth: PropTypes.string.isRequired,
   currentView: PropTypes.string.isRequired,
   onPreviousYear: PropTypes.func.isRequired,

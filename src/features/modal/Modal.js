@@ -30,6 +30,12 @@ function Modal({ children, showModal, onCloseModal }) {
   );
 }
 
+Modal.propTypes = exact({
+  children: PropTypes.node.isRequired,
+  showModal: PropTypes.bool,
+  onCloseModal: PropTypes.func.isRequired,
+});
+
 function ModalContent({ children, onCloseModal, modalContentRef }) {
   const onKeyDown = (event) => {
     if (event.keyCode === 27) {
@@ -67,9 +73,9 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
   );
 }
 
-Modal.propTypes = exact({
+ModalContent.propTypes = exact({
   children: PropTypes.node.isRequired,
-  modalContentRef: PropTypes.string.isRequired,
+  modalContentRef: PropTypes.object.isRequired,
   onCloseModal: PropTypes.func.isRequired,
 });
 

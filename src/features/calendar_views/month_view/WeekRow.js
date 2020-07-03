@@ -26,9 +26,9 @@ function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
   );
 }
 WeekRow.propTypes = exact({
-  eventsPerDay: PropTypes.number.isRequired,
+  eventsPerDay: PropTypes.object.isRequired,
   week: PropTypes.array.isRequired,
-  month: PropTypes.string.isRequired,
+  month: PropTypes.number.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
@@ -50,8 +50,8 @@ function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
 
 WeekDays.propTypes = exact({
   week: PropTypes.array.isRequired,
-  month: PropTypes.string.isRequired,
-  eventsPerDay: PropTypes.number.isRequired,
+  month: PropTypes.number.isRequired,
+  eventsPerDay: PropTypes.object.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
@@ -100,8 +100,8 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
 
 WeekDay.propTypes = exact({
   day: PropTypes.string.isRequired,
-  month: PropTypes.string.isRequired,
-  events: PropTypes.array.isRequired,
+  month: PropTypes.number.isRequired,
+  events: PropTypes.array,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
@@ -149,7 +149,7 @@ function DailyEventList({ date, events, maxNumberOfEvents }) {
 }
 DailyEventList.propTypes = exact({
   date: PropTypes.string.isRequired,
-  events: PropTypes.array.isRequired,
+  events: PropTypes.array,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
@@ -228,10 +228,9 @@ function AllDayEvent({ date, event, display, css }) {
   );
 }
 
-// date, event, display, css
 AllDayEvent.propTypes = exact({
   date: PropTypes.string.isRequired,
-  event: PropTypes.string.isRequired,
+  event: PropTypes.object.isRequired,
   display: PropTypes.bool.isRequired,
   css: PropTypes.string.isRequired,
 });
@@ -262,7 +261,7 @@ function AllDayEventPart({ day, event }) {
 }
 
 AllDayEventPart.propTypes = exact({
-  day: PropTypes.string.isRequired,
+  day: PropTypes.object.isRequired,
   event: PropTypes.object.isRequired,
 });
 
