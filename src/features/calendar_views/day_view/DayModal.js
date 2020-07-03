@@ -1,11 +1,19 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { EventContext } from "./EventContext";
-import DayView from "./DayView";
-import { Button } from "./Button";
 
+// CONTEXT
+import { EventContext } from "../../../common/EventContext";
+
+// COMPONENTS
+import DayView from "./DayView";
+import { Button } from "../../../common/Button";
+
+// DAYJS PLUGINS
 dayjs.extend(customParseFormat);
 
 function DayModal({ date, chosenEventId }) {
@@ -34,10 +42,10 @@ function DayModal({ date, chosenEventId }) {
   );
 }
 
-DayModal.propTypes = {
+DayModal.propTypes = exact({
   date: PropTypes.string.isRequired,
   events: PropTypes.array,
-};
+});
 
 function AddEventButton({ callBack }) {
   const style = `flex items-center
@@ -50,15 +58,11 @@ function AddEventButton({ callBack }) {
                  cursor-pointer`;
 
   return (
-    <Button
-      callBack={callBack}
-      css={style}
-      ariaLabel="new event form"
-      ariaLabelledBy="new-event-form"
-    >
+    <Button callBack={callBack} css={style} ariaLabel="new event form" ariaLabelledBy="new-event-form">
       <i className="gg-add-r mr-3"></i>New
     </Button>
   );
 }
+// No need for propType as Button already has a propType
 
 export default DayModal;

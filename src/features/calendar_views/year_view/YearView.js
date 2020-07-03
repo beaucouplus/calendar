@@ -1,13 +1,23 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
-import Modal from "./Modal";
-import { range } from "./utils";
-import { createYearCalendarCells, calendarCellStyle } from "./calendar";
-import DayModal from "./DayModal";
-import { EventContext } from "./EventContext";
+
+// CONTEXT
+import { EventContext } from "../../../common/EventContext";
+
+// SCRIPTS
+import { range } from "../../../common/utils";
+import { createYearCalendarCells, calendarCellStyle } from "../../../common/calendar";
+
+// COMPONENTS
+import Modal from "../../modal/Modal";
+import DayModal from "../day_view/DayModal";
+
+// DAYJS COMPONENTS
 dayjs.extend(LocalizedFormat);
 
 function YearView({ year }) {
@@ -75,12 +85,7 @@ function DaysRow({ days, css }) {
       <td className={tdClass}>{monthDay}</td>
       {days.map((day, id) =>
         day.hasDate ? (
-          <DayCell
-            date={day.date}
-            hasEvents={day.hasEvents}
-            css={css}
-            key={id}
-          />
+          <DayCell date={day.date} hasEvents={day.hasEvents} css={css} key={id} />
         ) : (
           <EmptyCell css={css} key={id} />
         )
@@ -127,9 +132,7 @@ DayCell.propTypes = exact({
 });
 
 function CellDate({ isShown, date }) {
-  return (
-    <>{isShown && <span className="px-1">{dayjs(date).format("D")}</span>}</>
-  );
+  return <>{isShown && <span className="px-1">{dayjs(date).format("D")}</span>}</>;
 }
 
 export default YearView;

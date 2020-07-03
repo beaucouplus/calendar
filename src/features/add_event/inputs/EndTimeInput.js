@@ -6,10 +6,8 @@ import exact from "prop-types-exact";
 
 // COMPONENTS
 import EventLabel from "./EventLabel";
-import { Button } from "../../../Button";
-
-// SCRIPTS
 import ManualTimeInput from "./ManualTimeInput";
+import { Button } from "../../../common/Button";
 
 function EndTime({ timeInput, validInput, onAddEndTime, onSubtractEndtime, onHandleChange }) {
   const styles = {

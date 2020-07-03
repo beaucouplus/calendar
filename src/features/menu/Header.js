@@ -1,33 +1,22 @@
-import React, { useContext, useState } from "react";
-import { Button, OutlineButton } from "./Button";
-import { EventContext } from "./EventContext";
-import dayjs from "dayjs";
-import Modal from "./Modal";
-import DayModal from "./DayModal";
+import React, { useState } from "react";
 
-function Header({
-  year,
-  onSetYear,
-  startOfMonth,
-  onSetStartOfMonth,
-  currentView,
-  onSelectView,
-}) {
+// PACKAGES
+import dayjs from "dayjs";
+
+// COMPONENTS
+import { Button, OutlineButton } from "../../common/Button";
+import Modal from "../modal/Modal";
+import DayModal from "../calendar_views/day_view/DayModal";
+
+function Header({ year, onSetYear, startOfMonth, onSetStartOfMonth, currentView, onSelectView }) {
   const [showModal, setShowModal] = useState(false);
 
   const previousYear = () => onSetYear(year - 1);
   const nextYear = () => onSetYear(year + 1);
 
   const previousMonth = () =>
-    onSetStartOfMonth(
-      dayjs(startOfMonth, "YYYY-MM-DD")
-        .subtract(1, "month")
-        .format("YYYY-MM-DD")
-    );
-  const nextMonth = () =>
-    onSetStartOfMonth(
-      dayjs(startOfMonth, "YYYY-MM-DD").add(1, "month").format("YYYY-MM-DD")
-    );
+    onSetStartOfMonth(dayjs(startOfMonth, "YYYY-MM-DD").subtract(1, "month").format("YYYY-MM-DD"));
+  const nextMonth = () => onSetStartOfMonth(dayjs(startOfMonth, "YYYY-MM-DD").add(1, "month").format("YYYY-MM-DD"));
   const today = dayjs().startOf("day").format("YYYY-MM-DD");
 
   const openModal = () => setShowModal(true);

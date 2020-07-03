@@ -1,8 +1,12 @@
 import React, { useEffect, useRef } from "react";
+
+// PACKAGES
 import ReactDOM from "react-dom";
 import FocusTrap from "focus-trap-react";
 import useOnclickOutside from "react-cool-onclickoutside";
-import { ModalButton } from "./Button";
+
+// COMPONENTS
+import { ModalButton } from "../../common/Button";
 
 function Modal({ children, showModal, onCloseModal }) {
   const modalContent = useRef();
@@ -14,10 +18,7 @@ function Modal({ children, showModal, onCloseModal }) {
   return (
     <>
       {showModal ? (
-        <ModalContent
-          onCloseModal={onCloseModal}
-          modalContentRef={modalContent}
-        >
+        <ModalContent onCloseModal={onCloseModal} modalContentRef={modalContent}>
           {children}
         </ModalContent>
       ) : (
@@ -44,10 +45,7 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
         tabIndex="-1"
         onKeyDown={onKeyDown}
       >
-        <div
-          ref={modalContentRef}
-          className="static box-border top-0 right-0 h-screen w-sm bg-white border shadow-md"
-        >
+        <div ref={modalContentRef} className="static box-border top-0 right-0 h-screen w-sm bg-white border shadow-md">
           <div className="w-full flex items-center justify-end flex-wrap pt-3 pr-3">
             <ModalButton
               callBack={() => onCloseModal()}
@@ -59,9 +57,7 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
             </ModalButton>
           </div>
 
-          <div className="h-full box-border overflow-auto flex flex-col justify-start">
-            {children}
-          </div>
+          <div className="h-full box-border overflow-auto flex flex-col justify-start">{children}</div>
         </div>
       </aside>
     </FocusTrap>,

@@ -6,14 +6,14 @@ import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
 // CONTEXT
-import { EventContext } from "./EventContext";
+import { EventContext } from "../../common/EventContext";
 
 // SCRIPTS
-import timeFormats from "./common/timeFormats";
-import { isoDateTimeToString } from "./utils";
+import timeFormats from "../../common/timeFormats";
+import { isoDateTimeToString } from "../../common/utils";
 
 // COMPONENTS
-import { Button } from "./Button";
+import { Button } from "../../common/Button";
 
 function Event({ event, chosenEventId }) {
   const isShown = event.id === chosenEventId;
