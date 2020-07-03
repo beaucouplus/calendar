@@ -139,7 +139,7 @@ function ViewMenu({ period, previous, next }) {
 }
 
 ViewMenu.propTypes = exact({
-  period: PropTypes.string.isRequired,
+  period: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   previous: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
 });

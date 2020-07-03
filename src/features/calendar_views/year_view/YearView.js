@@ -13,10 +13,6 @@ import { EventContext } from "../../../common/EventContext";
 import { range } from "../../../common/utils";
 import { createYearCalendarCells, calendarCellStyle } from "../../../common/calendar";
 
-// COMPONENTS
-import Modal from "../../modal/Modal";
-import DayModal from "../day_view/DayModal";
-
 // DAYJS COMPONENTS
 dayjs.extend(LocalizedFormat);
 
@@ -113,11 +109,11 @@ EmptyCell.propTypes = exact({
 });
 
 function DayCell({ date, hasEvents, css }) {
-  const [showModal, setShowModal] = useState(false);
+  const { displayModal } = useContext(EventContext);
   const [showDate, setShowDate] = useState(false);
-  const closeModal = () => setShowModal(false);
 
   const weekday = dayjs(date).format("dddd");
+  const handleClick = () => displayModal(date);
 
   const tdStyle = calendarCellStyle(date, hasEvents);
 
@@ -125,15 +121,12 @@ function DayCell({ date, hasEvents, css }) {
     <>
       <td
         className={`px-2 ${css.cellBorders} ${tdStyle} font-semibold cursor-pointer`}
-        onClick={() => setShowModal(true)}
+        onClick={handleClick}
         onMouseEnter={() => setShowDate(true)}
         onMouseLeave={() => setShowDate(false)}
       >
         {weekday[0]} <CellDate date={date} isShown={showDate} />
       </td>
-      <Modal showModal={showModal} onCloseModal={closeModal}>
-        <DayModal date={date} />
-      </Modal>
     </>
   );
 }
