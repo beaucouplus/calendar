@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 // PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 
 // COMPONENTS
-import { Button } from "../../../Button";
+import { Button } from "../../../common/Button";
 import TimePicker from "./TimePicker";
 import EventLabel from "./EventLabel";
 import ManualTimeInput from "./ManualTimeInput";

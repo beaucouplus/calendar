@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import timeFormats from "./common/timeFormats";
+import timeFormats from "./timeFormats";
 
 function range(start, end) {
   if (start === end) return [start];

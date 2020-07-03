@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 
 // SCRIPTS
-import { range } from "../../../utils";
+import { range } from "../../../common/utils";
 
 function TimePicker({ eventHour, eventMinutes, onChooseHour, onChooseMinutes, display }) {
   const hours_range = range(0, 23);

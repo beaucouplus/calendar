@@ -1,12 +1,13 @@
-// packages
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
+// PACKAGES
 import dayjs from "dayjs";
 
-// local files
-import Header from "./Header";
-import YearView from "./YearView";
-import MonthView from "./MonthView";
-import { EventStore } from "./EventContext";
+// COMPONENTS
+import Header from "./features/menu/Header";
+import YearView from "./features/calendar_views/year_view/YearView";
+import MonthView from "./features/calendar_views/month_view/MonthView";
+import { EventStore } from "./common/EventContext";
 
 function App() {
   const currentDate = new Date();
@@ -31,11 +32,7 @@ function App() {
           startOfMonth={startOfMonth}
           onSetStartOfMonth={setStartOfMonth}
         />
-        <CalendarView
-          view={currentView}
-          year={year}
-          startOfMonth={startOfMonth}
-        />
+        <CalendarView view={currentView} year={year} startOfMonth={startOfMonth} />
       </div>
     </EventStore>
   );

@@ -12,7 +12,7 @@ import eventFormReducer from "./reducer";
 import createDefaultEvent from "./defaultEvent";
 
 // COMPONENTS
-import { OutlineButton, BlueSubmitButton } from "../../Button";
+import { OutlineButton, BlueSubmitButton } from "../../common/Button";
 import { AllDayEventInput, StartTimeInput, Toggle, EventLabel, EndTimeInput } from "./inputs/index";
 
 function EventForm({ events, date, display, onAddEvent, onClose }) {
@@ -36,7 +36,7 @@ function EventForm({ events, date, display, onAddEvent, onClose }) {
       onAddEvent(eventForm.event);
       onClose();
     }
-  });
+  }, [eventForm, onAddEvent, onClose]);
 
   // HANDLERS
   const handleSubmit = (event) => {

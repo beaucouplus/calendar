@@ -1,13 +1,22 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-import EventForm from "./features/add_event/EventForm";
-import Event from "./Event";
-import { sortEvents } from "./calendar";
-import { EventContext } from "./EventContext";
 
+// COMPONENTS
+import EventForm from "../../add_event/EventForm";
+import Event from "../../event/Event";
+
+// SCRIPTS
+import { sortEvents } from "../../../common/calendar";
+
+// CONTEXT
+import { EventContext } from "../../../common/EventContext";
+
+// DAYJS PLUGINS
 dayjs.extend(isBetween);
 
 function DayView({ events, chosenEventId, date, displayForm, onCloseForm }) {

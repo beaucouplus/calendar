@@ -3,7 +3,7 @@ import produce from "immer";
 import dayjs from "dayjs";
 
 // SCRIPTS
-import { hourStringtoNumbers, isoDateTimeToString } from "../../utils";
+import { hourStringtoNumbers, isoDateTimeToString } from "../../common/utils";
 import timeFormats from "../../common/timeFormats";
 
 const MAX_DURATION = 12;
