@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
 // PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import ReactDOM from "react-dom";
 import FocusTrap from "focus-trap-react";
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -27,6 +29,12 @@ function Modal({ children, showModal, onCloseModal }) {
     </>
   );
 }
+
+Modal.propTypes = exact({
+  children: PropTypes.node.isRequired,
+  showModal: PropTypes.bool,
+  onCloseModal: PropTypes.func.isRequired,
+});
 
 function ModalContent({ children, onCloseModal, modalContentRef }) {
   const onKeyDown = (event) => {
@@ -64,5 +72,11 @@ function ModalContent({ children, onCloseModal, modalContentRef }) {
     document.body
   );
 }
+
+ModalContent.propTypes = exact({
+  children: PropTypes.node.isRequired,
+  modalContentRef: PropTypes.object.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+});
 
 export default Modal;

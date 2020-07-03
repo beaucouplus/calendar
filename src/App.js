@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 // PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
 // COMPONENTS
@@ -57,5 +59,11 @@ function CalendarView({ view, year, startOfMonth }) {
     </div>
   );
 }
+
+CalendarView.propTypes = exact({
+  view: PropTypes.string.isRequired,
+  year: PropTypes.number.isRequired,
+  startOfMonth: PropTypes.string.isRequired,
+});
 
 export default App;

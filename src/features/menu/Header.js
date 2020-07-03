@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 // PACKAGES
+import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
 // COMPONENTS
@@ -76,6 +78,15 @@ function Header({ year, onSetYear, startOfMonth, onSetStartOfMonth, currentView,
   );
 }
 
+Header.propTypes = exact({
+  year: PropTypes.number.isRequired,
+  onSetYear: PropTypes.func.isRequired,
+  startOfMonth: PropTypes.string.isRequired,
+  onSetStartOfMonth: PropTypes.func.isRequired,
+  currentView: PropTypes.string.isRequired,
+  onSelectView: PropTypes.func.isRequired,
+});
+
 function CurrentViewMenu({
   currentView,
   year,
@@ -97,6 +108,16 @@ function CurrentViewMenu({
   return <ViewMenu {...viewProps[currentView]} />;
 }
 
+CurrentViewMenu.propTypes = exact({
+  year: PropTypes.number.isRequired,
+  startOfMonth: PropTypes.string.isRequired,
+  currentView: PropTypes.string.isRequired,
+  onPreviousYear: PropTypes.func.isRequired,
+  onNextYear: PropTypes.func.isRequired,
+  onPreviousMonth: PropTypes.func.isRequired,
+  onNextMonth: PropTypes.func.isRequired,
+});
+
 function ViewMenu({ period, previous, next }) {
   return (
     <div className="flex space-x-6 px-5 h-full items-center align-middle border-r border-gray-500">
@@ -116,5 +137,11 @@ function ViewMenu({ period, previous, next }) {
     </div>
   );
 }
+
+ViewMenu.propTypes = exact({
+  period: PropTypes.string.isRequired,
+  previous: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+});
 
 export default Header;

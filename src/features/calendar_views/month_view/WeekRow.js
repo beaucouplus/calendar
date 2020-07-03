@@ -25,6 +25,12 @@ function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
     </div>
   );
 }
+WeekRow.propTypes = exact({
+  eventsPerDay: PropTypes.object.isRequired,
+  week: PropTypes.array.isRequired,
+  month: PropTypes.number.isRequired,
+  maxNumberOfEvents: PropTypes.number.isRequired,
+});
 
 function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
   return (
@@ -41,6 +47,13 @@ function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
     </div>
   );
 }
+
+WeekDays.propTypes = exact({
+  week: PropTypes.array.isRequired,
+  month: PropTypes.number.isRequired,
+  eventsPerDay: PropTypes.object.isRequired,
+  maxNumberOfEvents: PropTypes.number.isRequired,
+});
 
 const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
   const remainingEventsNumber =
@@ -85,6 +98,13 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
   );
 };
 
+WeekDay.propTypes = exact({
+  day: PropTypes.string.isRequired,
+  month: PropTypes.number.isRequired,
+  events: PropTypes.array,
+  maxNumberOfEvents: PropTypes.number.isRequired,
+});
+
 function RemainingEventsNumber({ remainingEventsNumber, isShown }) {
   return (
     <>
@@ -127,6 +147,11 @@ function DailyEventList({ date, events, maxNumberOfEvents }) {
     </>
   );
 }
+DailyEventList.propTypes = exact({
+  date: PropTypes.string.isRequired,
+  events: PropTypes.array,
+  maxNumberOfEvents: PropTypes.number.isRequired,
+});
 
 function TimedEvent({ date, event, css }) {
   const [showModal, setShowModal] = useState(false);
@@ -146,6 +171,12 @@ function TimedEvent({ date, event, css }) {
     setShowModal(true);
     setChosenEventId(event.id);
   };
+
+  TimedEvent.propTypes = exact({
+    date: PropTypes.string.isRequired,
+    event: PropTypes.object.isRequired,
+    css: PropTypes.string.isRequired,
+  });
 
   return (
     <>
@@ -197,6 +228,13 @@ function AllDayEvent({ date, event, display, css }) {
   );
 }
 
+AllDayEvent.propTypes = exact({
+  date: PropTypes.string.isRequired,
+  event: PropTypes.object.isRequired,
+  display: PropTypes.bool.isRequired,
+  css: PropTypes.string.isRequired,
+});
+
 function AllDayEventPart({ day, event }) {
   const [showModal, setShowModal] = useState(false);
   const closeModal = () => setShowModal(false);
@@ -221,5 +259,10 @@ function AllDayEventPart({ day, event }) {
     </>
   );
 }
+
+AllDayEventPart.propTypes = exact({
+  day: PropTypes.object.isRequired,
+  event: PropTypes.object.isRequired,
+});
 
 export default WeekRow;

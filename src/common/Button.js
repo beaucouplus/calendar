@@ -1,5 +1,8 @@
 import React from "react";
+
+// PACKAGES
 import PropTypes from "prop-types";
+import exact from "prop-types-exact";
 
 function Button(
   {
@@ -33,11 +36,27 @@ function Button(
   );
 }
 
-Button.propTypes = {
+Button.defaultProps = {
+  type: "button",
+  css: "",
+  ariaLabel: "",
+  ariaLabelledBy: "",
+  value: "",
+  autoFocus: false,
+  withFocus: true,
+};
+
+Button.propTypes = exact({
   callBack: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
-  css: PropTypes.string,
-};
+  css: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  ariaLabel: PropTypes.string.isRequired,
+  ariaLabelledBy: PropTypes.string.isRequired,
+  autoFocus: PropTypes.bool.isRequired,
+  withFocus: PropTypes.bool.isRequired,
+});
 
 function BlueButton({ children, callBack }) {
   const blueStyle = `
@@ -54,21 +73,8 @@ function BlueButton({ children, callBack }) {
   );
 }
 
-function SubmitButton({
-  css,
-  value = "Submit",
-  ariaLabel = "submit",
-  ariaLabelledBy = "submit",
-}) {
-  return (
-    <input
-      type="submit"
-      value={value}
-      className={css}
-      aria-label={ariaLabel}
-      aria-labelledby={ariaLabelledBy}
-    />
-  );
+function SubmitButton({ css, value = "Submit", ariaLabel = "submit", ariaLabelledBy = "submit" }) {
+  return <input type="submit" value={value} className={css} aria-label={ariaLabel} aria-labelledby={ariaLabelledBy} />;
 }
 
 function BlueSubmitButton({ value, ariaLabel, ariaLabelledBy }) {
@@ -79,14 +85,7 @@ function BlueSubmitButton({ value, ariaLabel, ariaLabelledBy }) {
                      rounded
                      cursor-pointer`;
 
-  return (
-    <SubmitButton
-      value={value}
-      css={blueStyle}
-      ariaLabel={ariaLabel}
-      ariaLabelledBy={ariaLabelledBy}
-    />
-  );
+  return <SubmitButton value={value} css={blueStyle} ariaLabel={ariaLabel} ariaLabelledBy={ariaLabelledBy} />;
 }
 
 function OutlineSubmitButton({ value }) {
@@ -100,13 +99,7 @@ function OutlineSubmitButton({ value }) {
   return <SubmitButton value={value} css={outlineStyle} />;
 }
 
-function ModalButton({
-  children,
-  callBack,
-  ariaLabel,
-  ariaLabelledBy,
-  autoFocus,
-}) {
+function ModalButton({ children, callBack, ariaLabel, ariaLabelledBy, autoFocus }) {
   const outlineStyle = `bg-transparent hover:bg-blue-800
                  text-xs text-blue-700 font-semibold hover:text-white
                  py-1 px-2
@@ -126,13 +119,7 @@ function ModalButton({
   );
 }
 
-function OutlineButton({
-  children,
-  callBack,
-  ariaLabel,
-  ariaLabelledBy,
-  autoFocus,
-}) {
+function OutlineButton({ children, callBack, ariaLabel, ariaLabelledBy, autoFocus }) {
   const outlineStyle = `bg-transparent hover:bg-blue-800 focus:bg-blue-800
                  text-xs text-blue-700 font-semibold hover:text-white focus:text-white
                  py-2 px-4
@@ -152,12 +139,4 @@ function OutlineButton({
   );
 }
 
-export {
-  Button,
-  SubmitButton,
-  ModalButton,
-  OutlineButton,
-  OutlineSubmitButton,
-  BlueSubmitButton,
-  BlueButton,
-};
+export { Button, SubmitButton, ModalButton, OutlineButton, OutlineSubmitButton, BlueSubmitButton, BlueButton };
