@@ -15,7 +15,7 @@ const WeekDay = ({ date, month, events, maxNumberOfEvents }) => {
   const monthDay = dayjs(date).date();
   const titleRef = useRef();
 
-  const { displayModal } = useContext(EventContext);
+  const { modal } = useContext(EventContext);
 
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
@@ -31,7 +31,7 @@ const WeekDay = ({ date, month, events, maxNumberOfEvents }) => {
     future: "bg-white bg-opacity-25 text-gray-700 hover:bg-gray-300 hover:bg-opacity-25 hover:text-black",
   };
 
-  const handleClick = () => displayModal(date);
+  const handleClick = () => modal.display(date);
   const currentStyle = styles[chooseStyle()];
 
   return (

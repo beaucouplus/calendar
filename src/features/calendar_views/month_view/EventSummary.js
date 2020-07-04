@@ -12,9 +12,9 @@ import { EventContext } from "../../../common/EventContext";
 import { range } from "../../../common/utils";
 
 function EventSummary({ date, event }) {
-  const { displayModalAndChooseEvent } = useContext(EventContext);
+  const { modal } = useContext(EventContext);
 
-  const chooseDate = (chosenDate) => displayModalAndChooseEvent(chosenDate, event.id);
+  const chooseDate = (chosenDate) => modal.chooseEvent(chosenDate, event.id);
 
   const weekDay = dayjs(date).day();
   const gridPosition = weekDay === 0 ? 7 : weekDay;

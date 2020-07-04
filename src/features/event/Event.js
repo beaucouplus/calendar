@@ -16,8 +16,8 @@ import { isoDateTimeToString } from "../../common/utils";
 import { Button } from "../../common/Button";
 
 function Event({ event }) {
-  const { modalStatus, onDeleteEvent } = useContext(EventContext);
-  const [showDetails, setShowDetails] = useState(modalStatus.chosenEventId === event.id);
+  const { modal, onDeleteEvent } = useContext(EventContext);
+  const [showDetails, setShowDetails] = useState(modal.status.chosenEventId === event.id);
 
   const handleDeleteEvent = (event) => {
     setShowDetails(false);

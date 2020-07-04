@@ -1,26 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import { groupEventsByDateAndType } from "./calendar";
 import seeds from "./seeds";
+
+function modalReducer(state, action) {
+  switch (action.type) {
+    case "display":
+      return { date: action.date, displayed: true, chosenEventId: null };
+    case "chooseEvent":
+      return { date: action.date, displayed: true, chosenEventId: action.eventId };
+    case "close":
+      return { date: null, displayed: false, chosenEventId: null };
+    default:
+      return state;
+  }
+}
+
+function useModal() {
+  const [status, dispatch] = useReducer(modalReducer, { displayed: false, date: null, chosenEventId: null });
+
+  function display(date) {
+    dispatch({ type: "display", date });
+  }
+
+  const chooseEvent = (date, eventId) => {
+    dispatch({ type: "chooseEvent", date, eventId });
+  };
+
+  const close = () => {
+    dispatch({ type: "close" });
+  };
+
+  return { status, display, chooseEvent, close };
+}
 
 const EventContext = React.createContext();
 
 function EventStore({ children }) {
   const [events, setEvents] = useState(seeds);
   const [eventID, setEventID] = useState(seeds.length);
-  const [modalStatus, setModalStatus] = useState({ displayed: false, date: null, chosenEventId: null });
   const eventsByDate = groupEventsByDateAndType(events);
-
-  const displayModal = (date) => {
-    setModalStatus({ date, displayed: true, chosenEventId: null });
-  };
-
-  const displayModalAndChooseEvent = (date, eventId) => {
-    setModalStatus({ date, displayed: true, chosenEventId: eventId });
-  };
-
-  const closeModal = () => {
-    setModalStatus({ displayed: false, date: null, chosenEventId: null });
-  };
+  const modal = useModal();
 
   function addEvent(event) {
     setEventID(eventID + 1);
@@ -41,10 +60,7 @@ function EventStore({ children }) {
         onAddEvent: addEvent,
         onDeleteEvent: deleteEvent,
         eventsByDate: eventsByDate,
-        displayModal,
-        closeModal,
-        displayModalAndChooseEvent,
-        modalStatus,
+        modal: modal,
       }}
     >
       {children}

@@ -46,7 +46,7 @@ function App() {
 }
 
 function CalendarView({ view, year, startOfMonth }) {
-  const { modalStatus, closeModal } = useContext(EventContext);
+  const { modal } = useContext(EventContext);
 
   const views = {
     YearView,
@@ -63,8 +63,8 @@ function CalendarView({ view, year, startOfMonth }) {
   return (
     <div className="flex-grow">
       <CurrentView {...viewProps[view]} />
-      <Modal showModal={modalStatus.displayed} onCloseModal={closeModal}>
-        <DayModal date={modalStatus.date} />
+      <Modal showModal={modal.status.displayed} onCloseModal={modal.close}>
+        <DayModal date={modal.status.date} />
       </Modal>
     </div>
   );
