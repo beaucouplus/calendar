@@ -20,13 +20,13 @@ function MonthView({ startOfMonth }) {
   const weekRowsContainer = useRef();
   const [maxNumberOfEvents, setMaxNumberOfEvents] = useState(0);
 
-  const eventsPerDay = monthViewDays(startOfMonth, eventsByDate);
+  const datesToEvents = monthViewDays(startOfMonth, eventsByDate);
   const currentMonth = dayjs(startOfMonth, "YYYY-MM-DD").month();
 
-  const daysList = Object.keys(eventsPerDay);
-  const eventsPerDaySize = daysList.length;
+  const dateList = Object.keys(datesToEvents);
+  const eventsPerDaySize = dateList.length;
 
-  const weeks = chunk(daysList, 7);
+  const datesGroupedByWeek = chunk(dateList, 7);
 
   useEffect(() => {
     const maxHeight = Math.round(weekRowsContainer.current.offsetHeight / (eventsPerDaySize / 7));
@@ -41,12 +41,12 @@ function MonthView({ startOfMonth }) {
         <WeekDayTitles />
         <div
           ref={weekRowsContainer}
-          className={`grid grid-rows-${weeks.length} h-full items-stretch divide-x divide-gray-300`}
+          className={`grid grid-rows-${datesGroupedByWeek.length} h-full items-stretch divide-x divide-gray-300`}
         >
-          {weeks.map((week, idx) => (
+          {datesGroupedByWeek.map((weekDates, idx) => (
             <WeekRow
-              eventsPerDay={eventsPerDay}
-              week={week}
+              datesToEvents={datesToEvents}
+              weekDates={weekDates}
               month={currentMonth}
               maxNumberOfEvents={maxNumberOfEvents}
               key={idx}

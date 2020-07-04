@@ -23,6 +23,7 @@ function DayModal({ date }) {
 
   const { eventsByDate } = useContext(EventContext);
   const events = eventsByDate[date];
+
   return (
     <div className="mt-8 h-full flex flex-col">
       <header className="flex items-center justify-between pl-6 px-3 pb-3">

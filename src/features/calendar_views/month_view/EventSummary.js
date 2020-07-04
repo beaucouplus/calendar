@@ -14,13 +14,7 @@ import { range } from "../../../common/utils";
 function EventSummary({ date, event }) {
   const { displayModalAndChooseEvent } = useContext(EventContext);
 
-  const handleClick = (newDate) => {
-    if (typeof newDate === "string") {
-      displayModalAndChooseEvent(newDate, event.id);
-    } else {
-      displayModalAndChooseEvent(date, event.id);
-    }
-  };
+  const chooseDate = (chosenDate) => displayModalAndChooseEvent(chosenDate, event.id);
 
   const weekDay = dayjs(date).day();
   const gridPosition = weekDay === 0 ? 7 : weekDay;
@@ -36,10 +30,10 @@ function EventSummary({ date, event }) {
       key={event.id}
       display={event.displayed}
       css={eventStyle}
-      onHandleClick={handleClick}
+      onHandleClick={chooseDate}
     />
   ) : (
-    <TimedEvent date={date} event={event} key={event.id} css={eventStyle} onHandleClick={handleClick} />
+    <TimedEvent date={date} event={event} key={event.id} css={eventStyle} onHandleClick={chooseDate} />
   );
 }
 
@@ -102,7 +96,7 @@ function AllDayEvent({ date, event, display, css, onHandleClick }) {
           >
             <div className={`absolute gap-2 top-0 left-0  grid grid-cols-${remainingDaysUntilEndOfWeek} w-full h-full`}>
               {weeklyRemainingDays.map((day) => (
-                <AllDayEventPart day={day} key={day.date} onHandleClick={onHandleClick} />
+                <AllDayEventPart date={day.date} key={day.date} onHandleClick={onHandleClick} />
               ))}
             </div>
             {event.title}
@@ -121,12 +115,14 @@ AllDayEvent.propTypes = exact({
   onHandleClick: PropTypes.func.isRequired,
 });
 
-function AllDayEventPart({ day, onHandleClick }) {
+function AllDayEventPart({ date, onHandleClick }) {
+  const handleClick = () => onHandleClick(date);
+
   return (
     <>
       <div
         className={`border-b-4 border-transparent hover:border-orange-400 first:mx-2 last:mx-2`}
-        onClick={onHandleClick}
+        onClick={handleClick}
       >
         &nbsp;
       </div>
@@ -135,7 +131,7 @@ function AllDayEventPart({ day, onHandleClick }) {
 }
 
 AllDayEventPart.propTypes = exact({
-  day: PropTypes.object.isRequired,
+  date: PropTypes.string.isRequired,
   onHandleClick: PropTypes.func.isRequired,
 });
 

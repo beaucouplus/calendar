@@ -11,32 +11,37 @@ import { sortEvents } from "../../../common/calendar";
 import EventSummary from "./EventSummary";
 import WeekDay from "./WeekDay";
 
-function WeekRow({ eventsPerDay, week, month, maxNumberOfEvents }) {
+function WeekRow({ datesToEvents, weekDates, month, maxNumberOfEvents }) {
   return (
     <div className="grid grid-cols-7 content-start row-gap-1 relative pt-8 grid-flow-col-dense">
       <>
-        {week.map((date) => (
-          <DailyEventList date={date} events={eventsPerDay[date]} maxNumberOfEvents={maxNumberOfEvents} key={date} />
+        {weekDates.map((date) => (
+          <DailyEventList date={date} events={datesToEvents[date]} maxNumberOfEvents={maxNumberOfEvents} key={date} />
         ))}
       </>
-      <WeekDays week={week} month={month} eventsPerDay={eventsPerDay} maxNumberOfEvents={maxNumberOfEvents} />
+      <WeekDays
+        weekDates={weekDates}
+        month={month}
+        datesToEvents={datesToEvents}
+        maxNumberOfEvents={maxNumberOfEvents}
+      />
     </div>
   );
 }
 WeekRow.propTypes = exact({
-  eventsPerDay: PropTypes.object.isRequired,
-  week: PropTypes.array.isRequired,
+  datesToEvents: PropTypes.object.isRequired,
+  weekDates: PropTypes.array.isRequired,
   month: PropTypes.number.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 
-function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
+function WeekDays({ weekDates, month, datesToEvents, maxNumberOfEvents }) {
   return (
     <div className="absolute top-0 h-full left-0 grid grid-cols-7 w-full divide-x divide-gray-300">
-      {week.map((weekDay) => (
+      {weekDates.map((weekDay) => (
         <WeekDay
-          day={weekDay}
-          events={eventsPerDay[weekDay]}
+          date={weekDay}
+          events={datesToEvents[weekDay]}
           month={month}
           maxNumberOfEvents={maxNumberOfEvents}
           key={weekDay}
@@ -47,9 +52,9 @@ function WeekDays({ week, month, eventsPerDay, maxNumberOfEvents }) {
 }
 
 WeekDays.propTypes = exact({
-  week: PropTypes.array.isRequired,
+  weekDates: PropTypes.array.isRequired,
   month: PropTypes.number.isRequired,
-  eventsPerDay: PropTypes.object.isRequired,
+  datesToEvents: PropTypes.object.isRequired,
   maxNumberOfEvents: PropTypes.number.isRequired,
 });
 

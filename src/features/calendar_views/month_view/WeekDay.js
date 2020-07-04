@@ -8,18 +8,18 @@ import dayjs from "dayjs";
 // CONTEXT
 import { EventContext } from "../../../common/EventContext";
 
-const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
+const WeekDay = ({ date, month, events, maxNumberOfEvents }) => {
   const remainingEventsNumber =
     events && maxNumberOfEvents < events.length ? events.length - maxNumberOfEvents : undefined;
 
-  const monthDay = dayjs(day).date();
+  const monthDay = dayjs(date).date();
   const titleRef = useRef();
 
   const { displayModal } = useContext(EventContext);
 
   const chooseStyle = () => {
     const today = dayjs().startOf("day");
-    const currentDate = dayjs(day).startOf("day");
+    const currentDate = dayjs(date).startOf("day");
     if (month !== currentDate.month() || (currentDate.isBefore(today) && month === today.month())) return "past";
     if (currentDate.isSame(today)) return "today";
     return "future";
@@ -31,7 +31,7 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
     future: "bg-white bg-opacity-25 text-gray-700 hover:bg-gray-300 hover:bg-opacity-25 hover:text-black",
   };
 
-  const handleClick = () => displayModal(day);
+  const handleClick = () => displayModal(date);
   const currentStyle = styles[chooseStyle()];
 
   return (
@@ -47,7 +47,7 @@ const WeekDay = ({ day, month, events, maxNumberOfEvents }) => {
 };
 
 WeekDay.propTypes = exact({
-  day: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
   month: PropTypes.number.isRequired,
   events: PropTypes.array,
   maxNumberOfEvents: PropTypes.number.isRequired,
