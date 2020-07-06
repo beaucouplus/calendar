@@ -39,7 +39,7 @@ function Header({ year, onSetYear, startOfMonth, onSetStartOfMonth, currentView,
           <li>
             <Button
               callBack={() => onSelectView("YearView")}
-              css="w-16 justify-center font-semibold border-l border-t border-b border-gray-500 rounded-l py-1 hover:bg-blue-800 hover:text-white"
+              css="w-16 justify-center font-semibold border-l border-t border-b border-gray-500 rounded-l rounded-r-none py-1 hover:bg-blue-800 hover:text-white"
             >
               Y
             </Button>
@@ -47,7 +47,7 @@ function Header({ year, onSetYear, startOfMonth, onSetStartOfMonth, currentView,
           <li>
             <Button
               callBack={() => onSelectView("MonthView")}
-              css="w-16 justify-center font-semibold border border-gray-500 rounded-r py-1 hover:bg-blue-800 hover:text-white"
+              css="w-16 justify-center font-semibold border border-gray-500 rounded-l-none rounded-r py-1 hover:bg-blue-800 hover:text-white"
             >
               M
             </Button>
