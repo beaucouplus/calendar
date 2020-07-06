@@ -1,37 +1,7 @@
 import React, { useState, useReducer } from "react";
 import { groupEventsByDateAndType } from "./calendar";
 import seeds from "./seeds";
-
-function modalReducer(state, action) {
-  switch (action.type) {
-    case "display":
-      return { date: action.date, displayed: true, chosenEventId: null };
-    case "chooseEvent":
-      return { date: action.date, displayed: true, chosenEventId: action.eventId };
-    case "close":
-      return { date: null, displayed: false, chosenEventId: null };
-    default:
-      return state;
-  }
-}
-
-function useModal() {
-  const [status, dispatch] = useReducer(modalReducer, { displayed: false, date: null, chosenEventId: null });
-
-  function display(date) {
-    dispatch({ type: "display", date });
-  }
-
-  const chooseEvent = (date, eventId) => {
-    dispatch({ type: "chooseEvent", date, eventId });
-  };
-
-  const close = () => {
-    dispatch({ type: "close" });
-  };
-
-  return { status, display, chooseEvent, close };
-}
+import useModal from "../features/modal/useModal";
 
 const EventContext = React.createContext();
 
