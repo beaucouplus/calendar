@@ -109,11 +109,11 @@ EmptyCell.propTypes = exact({
 });
 
 function DayCell({ date, hasEvents, css }) {
-  const { displayModal } = useContext(EventContext);
+  const { modal } = useContext(EventContext);
   const [showDate, setShowDate] = useState(false);
 
   const weekday = dayjs(date).format("dddd");
-  const handleClick = () => displayModal(date);
+  const handleClick = () => modal.display(date);
 
   const tdStyle = calendarCellStyle(date, hasEvents);
 
