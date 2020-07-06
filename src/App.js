@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 // PACKAGES
 import PropTypes from "prop-types";
 import exact from "prop-types-exact";
 import dayjs from "dayjs";
 
+// CONTEXT
+import { EventContext } from "./common/EventContext";
+
 // COMPONENTS
+import Modal from "./features/modal/Modal";
+import DayModal from "./features/calendar_views/day_view/DayModal";
 import Header from "./features/menu/Header";
 import YearView from "./features/calendar_views/year_view/YearView";
 import MonthView from "./features/calendar_views/month_view/MonthView";
@@ -41,6 +46,8 @@ function App() {
 }
 
 function CalendarView({ view, year, startOfMonth }) {
+  const { modal } = useContext(EventContext);
+
   const views = {
     YearView,
     MonthView,
@@ -56,6 +63,9 @@ function CalendarView({ view, year, startOfMonth }) {
   return (
     <div className="flex-grow">
       <CurrentView {...viewProps[view]} />
+      <Modal showModal={modal.status.displayed} onCloseModal={modal.close}>
+        <DayModal date={modal.status.date} />
+      </Modal>
     </div>
   );
 }
