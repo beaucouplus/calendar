@@ -47,13 +47,13 @@ function AddEventButton({ callBack }) {
                  text-xs text-white font-semibold align-middle
                  hover:bg-blue-800 hover:text-white
                  ml-4
-                 py-2 px-6
+                 py-2 px-4
                  rounded
                  cursor-pointer`;
 
   return (
     <Button callBack={callBack} css={style} ariaLabel="new event form" ariaLabelledBy="new-event-form">
-      <i className="gg-add-r mr-3"></i>New
+      <i className="gg-add-r mr-1 transform scale-75 "></i>New
     </Button>
   );
 }
